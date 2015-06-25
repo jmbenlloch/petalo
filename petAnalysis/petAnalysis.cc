@@ -1,4 +1,5 @@
 
+#include "TF1.h"
 #include<petAnalysis.h>
 
 ClassImp(petAnalysis)
@@ -48,7 +49,12 @@ bool petAnalysis::execute(gate::Event& evt){
   
   gate::Centella::instance()
     ->hman()->fill(this->alabel("Energy"),energy);
-  
+
+  //find primary particle:
+//  for(unsigned int i=0;i<evt.GetMCParticles().size();i++){
+//	  std::cout << "Primary: " << evt.GetMCParticles()[i]->IsPrimary() << "; Process: " << evt.GetMCParticles()[i]->GetCreatorProc() << " - Daughters: " << evt.GetMCParticles()[i]->GetDaughters().size() << std::endl;
+ // }
+
   return true;
 
 }
@@ -62,6 +68,14 @@ bool petAnalysis::finalize(){
   gate::Run* run = &gate::Centella::instance()->getRun();
   int nevt = gate::int_from_string(run->fetch_sstore("num_events"));
   _m.message("Number of generated events in file:",nevt,gate::NORMAL);
+
+  // Actual hist name includes algorithm's name
+  TH1* hist = gate::Centella::instance()->hman()->operator[]("petAnalysis_Energy");
+  hist->Rebin(125);
+  double maxV = hist->GetBinCenter( hist->GetMaximumBin() );
+  TF1* gauF = new TF1("gauF","gaus",0,10000);
+  hist->Fit("gauF","","e",5000,6000);
+  std::cout << "FWHM res = " << 2.35*gauF->GetParameter(2)/gauF->GetParameter(1) << std::endl;
   
   return true;
 
