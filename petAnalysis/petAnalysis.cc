@@ -1,4 +1,5 @@
 
+#include "barycenterAlgorithm.hh"
 #include "TF1.h"
 #include<petAnalysis.h>
 
@@ -49,6 +50,70 @@ bool petAnalysis::execute(gate::Event& evt){
   
   _m.message("Event number:",evt.GetEventID(),gate::VERBOSE);
 
+  // Classify sensor hits per plane
+  std::vector<gate::Hit*> plane0,plane1,plane2,plane3,plane4;
+
+  for(unsigned int i=0;i<evt.GetMCSensHits().size(); i++){
+	  int id = evt.GetMCSensHits()[i]->GetID();
+	  if(id < 100){
+		  plane0.push_back(evt.GetMCSensHits()[i]);
+//		  std::cout << "Plane 0: " << evt.GetMCSensHits()[i]->GetPosition().x() << ", \t" << evt.GetMCSensHits()[i]->GetPosition().y() << ", \t" << evt.GetMCSensHits()[i]->GetPosition().z() << std::endl;
+	  }else if(id < 2000){
+		  plane1.push_back(evt.GetMCSensHits()[i]);
+//		  std::cout << "Plane 1: " << evt.GetMCSensHits()[i]->GetPosition().x() << ", \t" << evt.GetMCSensHits()[i]->GetPosition().y() << ", \t" << evt.GetMCSensHits()[i]->GetPosition().z() << std::endl;
+	  }else if(id < 3000){
+		  plane2.push_back(evt.GetMCSensHits()[i]);
+//		  std::cout << "Plane 2: " << evt.GetMCSensHits()[i]->GetPosition().x() << ", \t" << evt.GetMCSensHits()[i]->GetPosition().y() << ", \t" << evt.GetMCSensHits()[i]->GetPosition().z() << std::endl;
+	  }else if(id < 4000){
+		  plane3.push_back(evt.GetMCSensHits()[i]);
+//		  std::cout << "Plane 3: " << evt.GetMCSensHits()[i]->GetPosition().x() << ", \t" << evt.GetMCSensHits()[i]->GetPosition().y() << ", \t" << evt.GetMCSensHits()[i]->GetPosition().z() << std::endl;
+	  }else{
+		  plane4.push_back(evt.GetMCSensHits()[i]);
+//		  std::cout << "Plane 4: " << evt.GetMCSensHits()[i]->GetPosition().x() << ", \t" << evt.GetMCSensHits()[i]->GetPosition().y() << ", \t" << evt.GetMCSensHits()[i]->GetPosition().z() << std::endl;
+	  }
+//	  std::cout << evt.GetMCSensHits()[i]->GetPosition().x() << ", \t" << evt.GetMCSensHits()[i]->GetPosition().y() << std::endl;
+  }
+
+  double x=0.,y=0.,z=0.;
+  util::barycenterAlgorithm* barycenter = new util::barycenterAlgorithm();
+  // Plane 0
+  barycenter->setPlane("yz");
+  barycenter->computePosition(plane0);
+  std::cout << "Plane 0: y = " << barycenter->getX1() << " ; z = " << barycenter->getX2() << std::endl;
+  y += barycenter->getX1();
+  z += barycenter->getX2();
+  // Plane 1
+  barycenter->setPlane("xy");
+  barycenter->computePosition(plane1);
+  std::cout << "Plane 1: x = " << barycenter->getX1() << " ; y = " << barycenter->getX2() << std::endl;
+  x += barycenter->getX1();
+  y += barycenter->getX2();
+  // Plane 2
+  barycenter->setPlane("yz");
+  barycenter->computePosition(plane2);
+  std::cout << "Plane 2: y = " << barycenter->getX1() << " ; z = " << barycenter->getX2() << std::endl;
+  y += barycenter->getX1();
+  z += barycenter->getX2();
+  // Plane 3
+  barycenter->setPlane("xz");
+  barycenter->computePosition(plane3);
+  std::cout << "Plane 3: x = " << barycenter->getX1() << " ; z = " << barycenter->getX2() << std::endl;
+  x += barycenter->getX1();
+  z += barycenter->getX2();
+  // Plane 4
+  barycenter->setPlane("xz");
+  barycenter->computePosition(plane4);
+  std::cout << "Plane 4: x = " << barycenter->getX1() << " ; z = " << barycenter->getX2() << std::endl;
+  x += barycenter->getX1();
+  z += barycenter->getX2();
+
+  // Average
+  x = x/3.;
+  y = y/3.;
+  z = z/4.;
+  std::cout << "Avg: x = " << x << ";\t y = " << y << ";\t z = " << z << std::endl;
+
+  // Energy histogram
   int energy = 0;
   for(unsigned int i=0;i<evt.GetMCSensHits().size(); i++){
 	  energy += evt.GetMCSensHits()[i]->GetAmplitude();
@@ -57,11 +122,14 @@ bool petAnalysis::execute(gate::Event& evt){
   gate::Centella::instance()
     ->hman()->fill(this->alabel("Energy"),energy);
 
+  // Classify event as compton or photoelectric
   int countPhoto = fetch_istore("photoCount");
   int countCompton = fetch_istore("photoCompton");
   int comptFlag = 0;
 
   gate::MCParticle* primary;
+  const gate::MCParticle* firstDaughter;
+  double firstDaughterTime = 10000000.;
 
   //std::cout << "Particles: "<< evt.GetMCParticles().size() << "\n";
   for(unsigned int i=0;i<evt.GetMCParticles().size();i++){
@@ -75,11 +143,30 @@ bool petAnalysis::execute(gate::Event& evt){
 		  for(unsigned int j=0; j<particle->GetDaughters().size();j++){
 			  if(particle->GetDaughters()[j]->GetCreatorProc() == std::string("compt")){
 				 comptFlag = 1;
-				 break;
+//				 break;
+			  }
+	//		  std::cout << "Time: " << particle->GetDaughters()[j]->GetInitialVtx4D().GetT() <<  ";\t First Time: " << firstDaughterTime << std::endl;
+			  //Search the first daughter
+			  if(particle->GetDaughters()[j]->GetInitialVtx4D().GetT() < firstDaughterTime){
+				  firstDaughter = particle->GetDaughters()[j];
+				  firstDaughterTime = particle->GetDaughters()[j]->GetInitialVtx4D().GetT();
+	//			  std::cout << "this\n";
 			  }
 		  }
 	  }
   }
+
+  //True position of the first interaction
+  std::cout << "True: x = " << firstDaughter->GetInitialVtx4D().GetX() << 
+	  ";\t y = " << firstDaughter->GetInitialVtx4D().GetY() << 
+	  ";\t z = " << firstDaughter->GetInitialVtx4D().GetZ() << std::endl;
+
+  // %Error (at zero order...)
+  double xErr = (x - firstDaughter->GetInitialVtx4D().GetX())/101.15;
+  double yErr = (y - firstDaughter->GetInitialVtx4D().GetY())/101.15;
+  double zErr = (z - firstDaughter->GetInitialVtx4D().GetZ())/101.15;
+  std::cout << "Error: x = " << xErr << ";\t y = " << yErr << ";\t z = " << zErr << std::endl;
+  
 
   if(comptFlag){
 	  countCompton++;
