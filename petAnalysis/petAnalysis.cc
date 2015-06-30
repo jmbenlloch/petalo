@@ -1,4 +1,5 @@
 
+#include <algorithm> 
 #include "barycenterAlgorithm.hh"
 #include "TF1.h"
 #include<petAnalysis.h>
@@ -49,6 +50,7 @@ bool petAnalysis::initialize(){
   store("photoEGamma",0);
   store("photoE",0);
   store("photoWall",0);
+  store("comptWall",0);
 
   return true;
 
@@ -63,18 +65,12 @@ bool petAnalysis::execute(gate::Event& evt){
   _m.message("Event number:",evt.GetEventID(),gate::VERBOSE);
 
   //Reconstruct point
-//  gate::Point3D reconsPoint; 
-//  reconstruction(evt,reconsPoint);
+  gate::Point3D reconsPoint; 
+  reconstruction(evt,reconsPoint);
 
   //Fill energy histogram
   energyHist(evt);
 
-  // Classify event as compton or photoelectric
-  int countPhoto = fetch_istore("photoCount");
-  int countCompton = fetch_istore("photoCompton");
-  int photoEGamma = fetch_istore("photoEGamma");
-  int photoE= fetch_istore("photoE");
-  int photoWall = fetch_istore("photoWall");
 
   // Search primary particle and its first daughter
   gate::MCParticle primary;
@@ -82,87 +78,22 @@ bool petAnalysis::execute(gate::Event& evt){
   findFirstParticle(evt.GetMCParticles(),primary);
   findFirstParticle(primary.GetDaughters(),firstDaughter);
 
-  //True position of the first interaction
-//  std::cout << "True: x = " << firstDaughter->GetInitialVtx4D().GetX() << 
-//	  ";\t y = " << firstDaughter->GetInitialVtx4D().GetY() << 
-//	  ";\t z = " << firstDaughter->GetInitialVtx4D().GetZ() << std::endl;
+  // Classify event as compton or photoelectric
+  classifyEvent(primary,firstDaughter);
 
-  // %Error (at zero order...)
-/*  double xErr = (reconsPoint.x() - firstDaughter->GetInitialVtx4D().GetX());
-  double yErr = (reconsPoint.y() - firstDaughter->GetInitialVtx4D().GetY());
-  double zErr = (reconsPoint.z() - firstDaughter->GetInitialVtx4D().GetZ());
-  double error = std::sqrt(std::pow(xErr,2) + std::pow(yErr,2) + std::pow(zErr,2));
-  //std::cout << "Error: x = " << error << std::endl;
-  
+  //Compute distance from reconstructed to true
+  gate::Point3D realVertex = firstDaughter.GetInitialVtx(); 
+  double error = distance(reconsPoint, realVertex); 
+
+	//True position of the first interaction
+//  std::cout << "True: x = " << firstDaughter.GetInitialVtx4D().GetX() << 
+//	  ";\t y = " << firstDaughter.GetInitialVtx4D().GetY() << 
+//	  ";\t z = " << firstDaughter.GetInitialVtx4D().GetZ() << std::endl;
+
   gate::Centella::instance()
-    ->hman()->fill(this->alabel("Error"),error);
-*/
-
-  if(firstDaughter.GetCreatorProc() == std::string("compt")){
-	  countCompton++;
-	  //std::cout << "\t Compton\n";
-	  //Need to find first interaction
-	  //for(unsigned int j=0; j<primary->GetDaughters().size();j++){
-		//  std::cout << "\t Vol: " <<primary->GetDaughters()[j]->GetInitialVol();
-	  //}
-	  //std::cout << std::endl;
-  }else{
-	  countPhoto++;
-	 // std::cout << "\t Photo ->";
-	  for(unsigned int j=0; j<primary.GetDaughters().size();j++){
-	//	  std::cout << "\t PDG/Proc/Energy: " << primary.GetDaughters()[j]->GetPDG() << "/" << primary.GetDaughters()[j]->GetCreatorProc() << "/" << primary.GetDaughters()[j]->GetInitialMom().GetE();
-
-		  //Electron
-		  if(primary.GetDaughters()[j]->GetPDG() == 11){
-			  gate::Centella::instance()
-				  ->hman()->fill(this->alabel("PhotEnergy"),primary.GetDaughters()[j]->GetInitialMom().GetE());
-		  }else if(primary.GetDaughters()[j]->GetPDG() == 22){ //Photon
-			  gate::Centella::instance()
-				  ->hman()->fill(this->alabel("XeGammaEnergy"),primary.GetDaughters()[j]->GetInitialMom().GetE());
-		  }
-	   } 
-	  if(primary.GetDaughters().size() == 1){
-		  photoE++;
-		  if(primary.GetFinalVol() == "WALL"){
-			  photoWall++;
-		  }
-	  }else{
-		  photoEGamma++;
-	  }
-/*	  std::cout << std::endl;
-	  //If only one particle generated then should be energy deposition (due to geant4 IR cut)
-	  if(primary.GetDaughters().size() == 1){
-		  //Only one track
-		  std::cout << "Tracks: " << primary.GetDaughters()[0]->GetTracks().size();
-		  if(primary.GetDaughters()[0]->GetTracks().size() > 0){
-			  std::cout << "\t Hits: " << primary.GetDaughters()[0]->GetTracks()[0]->GetHits().size();
-			  std::cout << "\t HitsEnergy: " << primary.GetDaughters()[0]->GetTracks()[0]->GetHitsEnergy() << std::endl;
-		  }else{
-			  std::cout << " noTracks" << primary.GetDaughters()[0]->GetCreatorProc() << " - id:" << evt.GetEventID() << std::endl;
-			  std::cout << "Initial x: " << primary.GetDaughters()[0]->GetInitialVtx4D().x() << 
-			  " y: " << primary.GetDaughters()[0]->GetInitialVtx4D().y() << 
-			  " z: " << primary.GetDaughters()[0]->GetInitialVtx4D().z() <<
-			  " t: " << primary.GetDaughters()[0]->GetInitialVtx4D().GetT() << std::endl;
-			  std::cout << "Final x: " << primary.GetDaughters()[0]->GetFinalVtx4D().x() << 
-			  " y: " << primary.GetDaughters()[0]->GetFinalVtx4D().y() << 
-			  " z: " << primary.GetDaughters()[0]->GetFinalVtx4D().z() << 
-			  " t: " << primary.GetDaughters()[0]->GetFinalVtx4D().GetT() << std::endl;
-			  std::cout << "Initial volume x: " << primary.GetDaughters()[0]->GetInitialVol() << std::endl;
-			  std::cout << "Final volume x: " << primary.GetDaughters()[0]->GetFinalVol() << std::endl;
-			  std::cout << "Path length: " << primary.GetDaughters()[0]->GetPathLength() << std::endl; 
-		  }
-	  }*/
-  }
-
-  fstore("photoCount",countPhoto);
-  fstore("photoCompton",countCompton);
-
-  fstore("photoEGamma",photoEGamma);
-  fstore("photoE",photoE);
-  fstore("photoWall",photoWall);
+	  ->hman()->fill(this->alabel("Error"),error);
 
   return true;
-
 }
 
 //==========================================================================
@@ -180,6 +111,7 @@ bool petAnalysis::finalize(){
   std::cout << "Photoelectric with e- gamma: " << fetch_istore("photoEGamma") << std::endl;
   std::cout << "Photoelectric with e-: " << fetch_istore("photoE") << std::endl;
   std::cout << "Photoelectric in Wall: " << fetch_istore("photoWall") << std::endl;
+  std::cout << "Compton in Wall: " << fetch_istore("comptWall") << std::endl;
 
   // Actual hist name includes algorithm's name
   TH1* hist = gate::Centella::instance()->hman()->operator[]("petAnalysis_Energy");
@@ -276,7 +208,7 @@ void petAnalysis::reconstruction(gate::Event& evt, gate::Point3D& pt){
   x = x / xNorm;
   y = y / yNorm;
   z = z / zNorm;
-  std::cout << "Avg: x = " << x << ";\t y = " << y << ";\t z = " << z << std::endl;
+  //std::cout << "Avg: x = " << x << ";\t y = " << y << ";\t z = " << z << std::endl;
 
   pt.x(x);
   pt.y(y);
@@ -315,4 +247,93 @@ void petAnalysis::findFirstParticle(std::vector<gate::MCParticle*> particles, ga
 			firstTime = particles[i]->GetInitialVtx4D().GetT();
 		}
 	}
+}
+
+void petAnalysis::classifyEvent(gate::MCParticle& primary, gate::MCParticle& firstDaughter){
+	int countPhoto = fetch_istore("photoCount");
+	int countCompton = fetch_istore("photoCompton");
+	int photoEGamma = fetch_istore("photoEGamma");
+	int photoE= fetch_istore("photoE");
+	int photoWall = fetch_istore("photoWall");
+	int comptWall = fetch_istore("comptWall");
+
+	if(firstDaughter.GetCreatorProc() == std::string("compt")){
+		countCompton++;
+//		std::cout << "\t Compton\n";
+		if(primary.GetFinalVol() == "WALL"){
+			comptWall++;
+		}
+/*		std::vector<const gate::MCParticle*> newPart(primary.GetDaughters());
+		std::sort(newPart.begin(), newPart.end(), petAnalysis::timeOrderParticles);
+		for(unsigned int j=0; j<newPart.size();j++){
+		  //std::cout << "\t t: " <<newPart[j]->GetInitialVtx4D().GetT();
+		  std::cout << "\t Vol: " <<newPart[j]->GetInitialVol();
+		}
+		std::cout << std::endl;
+*/
+	}else{
+		countPhoto++;
+		// std::cout << "\t Photo ->";
+		for(unsigned int j=0; j<primary.GetDaughters().size();j++){
+			//	  std::cout << "\t PDG/Proc/Energy: " << primary.GetDaughters()[j]->GetPDG() << "/" << primary.GetDaughters()[j]->GetCreatorProc() << "/" << primary.GetDaughters()[j]->GetInitialMom().GetE();
+
+			//Electron
+			if(primary.GetDaughters()[j]->GetPDG() == 11){
+				gate::Centella::instance()
+					->hman()->fill(this->alabel("PhotEnergy"),primary.GetDaughters()[j]->GetInitialMom().GetE());
+			}else if(primary.GetDaughters()[j]->GetPDG() == 22){ //Photon
+				gate::Centella::instance()
+					->hman()->fill(this->alabel("XeGammaEnergy"),primary.GetDaughters()[j]->GetInitialMom().GetE());
+			}
+		} 
+		if(primary.GetDaughters().size() == 1){
+			photoE++;
+			if(primary.GetFinalVol() == "WALL"){
+				photoWall++;
+			}
+		}else{
+			photoEGamma++;
+		}
+		/*	  std::cout << std::endl;
+		//If only one particle generated then should be energy deposition (due to geant4 IR cut)
+		if(primary.GetDaughters().size() == 1){
+		//Only one track
+		std::cout << "Tracks: " << primary.GetDaughters()[0]->GetTracks().size();
+		if(primary.GetDaughters()[0]->GetTracks().size() > 0){
+		std::cout << "\t Hits: " << primary.GetDaughters()[0]->GetTracks()[0]->GetHits().size();
+		std::cout << "\t HitsEnergy: " << primary.GetDaughters()[0]->GetTracks()[0]->GetHitsEnergy() << std::endl;
+		}else{
+		std::cout << " noTracks" << primary.GetDaughters()[0]->GetCreatorProc() << " - id:" << evt.GetEventID() << std::endl;
+		std::cout << "Initial x: " << primary.GetDaughters()[0]->GetInitialVtx4D().x() << 
+		" y: " << primary.GetDaughters()[0]->GetInitialVtx4D().y() << 
+		" z: " << primary.GetDaughters()[0]->GetInitialVtx4D().z() <<
+		" t: " << primary.GetDaughters()[0]->GetInitialVtx4D().GetT() << std::endl;
+		std::cout << "Final x: " << primary.GetDaughters()[0]->GetFinalVtx4D().x() << 
+		" y: " << primary.GetDaughters()[0]->GetFinalVtx4D().y() << 
+		" z: " << primary.GetDaughters()[0]->GetFinalVtx4D().z() << 
+		" t: " << primary.GetDaughters()[0]->GetFinalVtx4D().GetT() << std::endl;
+		std::cout << "Initial volume x: " << primary.GetDaughters()[0]->GetInitialVol() << std::endl;
+		std::cout << "Final volume x: " << primary.GetDaughters()[0]->GetFinalVol() << std::endl;
+		std::cout << "Path length: " << primary.GetDaughters()[0]->GetPathLength() << std::endl; 
+		}
+		}*/
+	}
+
+	fstore("photoCount",countPhoto);
+	fstore("photoCompton",countCompton);
+	fstore("photoEGamma",photoEGamma);
+	fstore("photoE",photoE);
+	fstore("photoWall",photoWall);
+	fstore("comptWall",comptWall);
+}
+
+bool petAnalysis::timeOrderParticles(const gate::MCParticle* p1, const gate::MCParticle* p2){
+	return (p1->GetInitialVtx4D().GetT() < p2->GetInitialVtx4D().GetT()) ;
+}
+
+double petAnalysis::distance(gate::Point3D& p1, gate::Point3D& p2){
+	double x = (p1.x() - p2.x());
+	double y = (p1.y() - p2.y());
+	double z = (p1.z() - p2.z());
+	return std::sqrt(std::pow(x,2) + std::pow(y,2) + std::pow(z,2));
 }

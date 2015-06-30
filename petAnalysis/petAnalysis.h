@@ -32,6 +32,12 @@ class petAnalysis : public gate::IAlgo {
   //Find first particle in a vector of particles by its creation time
   void findFirstParticle(const std::vector<const gate::MCParticle*> particles, gate::MCParticle& first);
   void findFirstParticle(std::vector<gate::MCParticle*> particles, gate::MCParticle& first);
+  //Classify events as compton or photoelectric
+  void classifyEvent(gate::MCParticle& primary, gate::MCParticle& firstDaughter);
+  //Order particles
+  static bool timeOrderParticles(const gate::MCParticle* p1, const gate::MCParticle* p2);
+  //Compute distance between two Point3D
+  double distance(gate::Point3D& p1, gate::Point3D& p2);
 
   //! finalize algorithm
   bool finalize();          
