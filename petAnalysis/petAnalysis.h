@@ -25,6 +25,10 @@ class petAnalysis : public gate::IAlgo {
   //! execute algorithm: process current event
   bool execute(gate::Event& evt);  
   
+  //Fill energy histogram
+  void energyHist(gate::Event& evt);
+
+
   //! finalize algorithm
   bool finalize();          
   

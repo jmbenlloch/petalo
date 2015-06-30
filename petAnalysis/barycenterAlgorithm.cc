@@ -23,12 +23,14 @@ util::barycenterAlgorithm::computePosition(const vector<gate::Hit*>& sensors)
   }
 
   //double sumE2 = 0.;
+  double x1pos2=0.,x2pos2=0.;
 
   // loop over sensors and calculate position.
   for (unsigned int i=0; i<sensors.size();i++){
 	//  std::cout << "pos: i=" << i << std::endl;
     
 	double x1pos,x2pos;
+
     // Get the sensor position
 	switch(plane_){
 		case 0:
@@ -48,18 +50,14 @@ util::barycenterAlgorithm::computePosition(const vector<gate::Hit*>& sensors)
 	x1Pos_ += x1pos * sensors[i]->GetAmplitude() / sumE;
     x2Pos_ += x2pos * sensors[i]->GetAmplitude() / sumE;
 
-/*    // Error on E taken as sqrt(E)
-	xErr_ += std::pow(sens.second*deltaPos/sumE, 2) +
-		std::pow((sumE-sens.second)*xpos/std::pow(sumE,2), 2)*sens.second;
-    yErr_ += std::pow(sens.second*deltaPos/sumE, 2) +
-      std::pow((sumE-sens.second)*ypos/std::pow(sumE,2), 2)*sens.second;
+    // sigma
+	x1pos2 += std::pow(x1pos * sensors[i]->GetAmplitude(), 2) / sumE;
+	x2pos2 += std::pow(x2pos * sensors[i]->GetAmplitude(), 2) / sumE;
 
-    // For variance calculation.
-    sumE2 += std::pow(sens.second, 2);  */
   }
   // Sqrt to get error.
- // xErr_ = std::sqrt(xErr_);
- // yErr_ = std::sqrt(yErr_);
+  x1Err_ = std::sqrt(x1pos2 - std::pow(x1Pos_,2));
+  x2Err_ = std::sqrt(x2pos2 - std::pow(x2Pos_,2));
 
 //  std::cout << "test\n";
   return true;
