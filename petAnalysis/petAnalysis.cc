@@ -41,30 +41,15 @@ bool petAnalysis::initialize(){
   gate::Centella::instance()
     ->hman()->h1(this->alabel("Error"),"Distance from recons. to truth",30000,0,120);
 
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPM1"),"SiPM (Plane 1) Counts",100,0,100,100,0,100);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPM1_Rel"),"SiPM (Plane 1) Counts",100,0,100,100,0.,1.);
-
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPM2"),"SiPM (Plane 2) Counts",100,0,100,100,0,100);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPM2_Rel"),"SiPM (Plane 2) Counts",100,0,100,100,0.,1.);
-
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPM3"),"SiPM (Plane 3) Counts",100,0,100,100,0,100);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPM3_Rel"),"SiPM (Plane 3) Counts",100,0,100,100,0.,1.);
-
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPM4"),"SiPM (Plane 4) Counts",100,0,100,100,0,100);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPM4_Rel"),"SiPM (Plane 4) Counts",100,0,100,100,0.,1.);
-
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPM5"),"SiPM (Plane 5) Counts",100,0,100,100,0,100);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPM5_Rel"),"SiPM (Plane 5) Counts",100,0,100,100,0.,1.);
+  for(unsigned int i=0;i<6;i++){
+	  string histName = "SiPM" + gate::to_string(i);
+	  string histNameRel = "SiPM_Rel" + gate::to_string(i);
+	  string histTitle = "SiPM Counts (Plane " + gate::to_string(i) + ")";
+	  gate::Centella::instance()
+		  ->hman()->h2(this->alabel(histName),histTitle,100,0,100,100,0,100);
+	  gate::Centella::instance()
+		  ->hman()->h2(this->alabel(histNameRel),histTitle,100,0,100,100,0.,1.);
+  }
  
   //Hist2d events
 /*  store("index",0);
@@ -415,66 +400,40 @@ void petAnalysis::hist2dEvent(gate::Event& evt){
 	fstore("index", fetch_istore("index")+1);
 }
 
-
-void petAnalysis::hist2dHits(gate::Event& evt){
-	std::vector<gate::Hit*> plane0,plane1,plane2,plane3,plane4,plane5;
+void petAnalysis::splitHitsPerPlane(gate::Event& evt, std::vector<std::vector<gate::Hit*> >& planes){
 	for(unsigned int i=0;i<evt.GetMCSensHits().size(); i++){
 		int id = evt.GetMCSensHits()[i]->GetSensorID();
 		if(id < 100){
-			plane0.push_back(evt.GetMCSensHits()[i]);
+			planes[0].push_back(evt.GetMCSensHits()[i]);
 		}else if(id < 2000){
-			plane1.push_back(evt.GetMCSensHits()[i]);
+			planes[1].push_back(evt.GetMCSensHits()[i]);
 		}else if(id < 3000){
-			plane2.push_back(evt.GetMCSensHits()[i]);
+			planes[2].push_back(evt.GetMCSensHits()[i]);
 		}else if(id < 4000){
-			plane3.push_back(evt.GetMCSensHits()[i]);
+			planes[3].push_back(evt.GetMCSensHits()[i]);
 		}else if(id < 5000){
-			plane4.push_back(evt.GetMCSensHits()[i]);
+			planes[4].push_back(evt.GetMCSensHits()[i]);
 		}else if(id < 6000){
-			plane5.push_back(evt.GetMCSensHits()[i]);
+			planes[5].push_back(evt.GetMCSensHits()[i]);
 		}
 	}
-	std::vector<gate::Hit*> plane0Sorted(plane0);
-	std::vector<gate::Hit*> plane1Sorted(plane1);
-	std::vector<gate::Hit*> plane2Sorted(plane2);
-	std::vector<gate::Hit*> plane3Sorted(plane3);
-	std::vector<gate::Hit*> plane4Sorted(plane4);
-	std::vector<gate::Hit*> plane5Sorted(plane5);
-	std::sort(plane0Sorted.begin(), plane0Sorted.end(), petAnalysis::chargeOrderSensors);
-	std::sort(plane1Sorted.begin(), plane1Sorted.end(), petAnalysis::chargeOrderSensors);
-	std::sort(plane2Sorted.begin(), plane2Sorted.end(), petAnalysis::chargeOrderSensors);
-	std::sort(plane3Sorted.begin(), plane3Sorted.end(), petAnalysis::chargeOrderSensors);
-	std::sort(plane4Sorted.begin(), plane4Sorted.end(), petAnalysis::chargeOrderSensors);
-	std::sort(plane5Sorted.begin(), plane5Sorted.end(), petAnalysis::chargeOrderSensors);
+}
 
-	for(unsigned int i=0; i<plane1Sorted.size();i++){
-		gate::Centella::instance()
-			->hman()->fill2d(this->alabel("SiPM1"),i,plane1Sorted[i]->GetAmplitude());
-		gate::Centella::instance()
-			->hman()->fill2d(this->alabel("SiPM1_Rel"),i, plane1Sorted[i]->GetAmplitude() / plane1Sorted[0]->GetAmplitude());
-	}
-	for(unsigned int i=0; i<plane2Sorted.size();i++){
-		gate::Centella::instance()
-			->hman()->fill2d(this->alabel("SiPM2"),i,plane2Sorted[i]->GetAmplitude());
-		gate::Centella::instance()
-			->hman()->fill2d(this->alabel("SiPM2_Rel"),i, plane2Sorted[i]->GetAmplitude() / plane2Sorted[0]->GetAmplitude());
-	}
-	for(unsigned int i=0; i<plane3Sorted.size();i++){
-		gate::Centella::instance()
-			->hman()->fill2d(this->alabel("SiPM3"),i,plane3Sorted[i]->GetAmplitude());
-		gate::Centella::instance()
-			->hman()->fill2d(this->alabel("SiPM3_Rel"),i, plane3Sorted[i]->GetAmplitude() / plane3Sorted[0]->GetAmplitude());
-	}
-	for(unsigned int i=0; i<plane4Sorted.size();i++){
-		gate::Centella::instance()
-			->hman()->fill2d(this->alabel("SiPM4"),i,plane4Sorted[i]->GetAmplitude());
-		gate::Centella::instance()
-			->hman()->fill2d(this->alabel("SiPM4_Rel"),i, plane4Sorted[i]->GetAmplitude() / plane4Sorted[0]->GetAmplitude());
-	}
-	for(unsigned int i=0; i<plane5Sorted.size();i++){
-		gate::Centella::instance()
-			->hman()->fill2d(this->alabel("SiPM5"),i,plane5Sorted[i]->GetAmplitude());
-		gate::Centella::instance()
-			->hman()->fill2d(this->alabel("SiPM5_Rel"),i, plane5Sorted[i]->GetAmplitude() / plane5Sorted[0]->GetAmplitude());
+void petAnalysis::hist2dHits(gate::Event& evt){
+	std::vector<std::vector<gate::Hit*> >  planes(6);
+	splitHitsPerPlane(evt,planes);
+	std::vector<std::vector<gate::Hit*> >  sortedPlanes(planes);
+
+	for(unsigned int i=0; i<6;i++){
+		std::sort(sortedPlanes[i].begin(), sortedPlanes[i].end(), petAnalysis::chargeOrderSensors);
+		for(unsigned int j=0; j<sortedPlanes[i].size();j++){
+			string histName = "SiPM" + gate::to_string(i);
+			gate::Centella::instance()
+				->hman()->fill2d(this->alabel(histName),i,sortedPlanes[i][j]->GetAmplitude());
+
+			string histNameRel = "SiPM_Rel" + gate::to_string(i);
+			gate::Centella::instance()
+				->hman()->fill2d(this->alabel(histNameRel),i, sortedPlanes[i][j]->GetAmplitude() / sortedPlanes[i][0]->GetAmplitude());
+		}
 	}
 }

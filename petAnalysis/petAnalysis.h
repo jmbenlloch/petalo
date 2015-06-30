@@ -42,7 +42,8 @@ class petAnalysis : public gate::IAlgo {
   double distance(gate::Point3D& p1, gate::Point3D& p2);
   void hist2dEvent(gate::Event& evt);
   void hist2dHits(gate::Event& evt);
-  void splitHitsPerPlane(gate::Event& evt);
+  void splitHitsPerPlane(gate::Event& evt, std::vector<std::vector<gate::Hit*> >& planes);
+
 
   //! finalize algorithm
   bool finalize();          
