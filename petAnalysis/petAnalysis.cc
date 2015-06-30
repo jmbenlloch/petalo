@@ -429,11 +429,11 @@ void petAnalysis::hist2dHits(gate::Event& evt){
 		for(unsigned int j=0; j<sortedPlanes[i].size();j++){
 			string histName = "SiPM" + gate::to_string(i);
 			gate::Centella::instance()
-				->hman()->fill2d(this->alabel(histName),i,sortedPlanes[i][j]->GetAmplitude());
+				->hman()->fill2d(this->alabel(histName),j,sortedPlanes[i][j]->GetAmplitude());
 
 			string histNameRel = "SiPM_Rel" + gate::to_string(i);
 			gate::Centella::instance()
-				->hman()->fill2d(this->alabel(histNameRel),i, sortedPlanes[i][j]->GetAmplitude() / sortedPlanes[i][0]->GetAmplitude());
+				->hman()->fill2d(this->alabel(histNameRel),j, sortedPlanes[i][j]->GetAmplitude() / sortedPlanes[i][0]->GetAmplitude());
 		}
 	}
 }
