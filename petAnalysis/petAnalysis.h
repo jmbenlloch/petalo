@@ -36,8 +36,13 @@ class petAnalysis : public gate::IAlgo {
   void classifyEvent(gate::MCParticle& primary, gate::MCParticle& firstDaughter);
   //Order particles
   static bool timeOrderParticles(const gate::MCParticle* p1, const gate::MCParticle* p2);
+  //Order sensors by charge (descending)
+  static bool chargeOrderSensors(const gate::Hit* s1, const gate::Hit* s2);
   //Compute distance between two Point3D
   double distance(gate::Point3D& p1, gate::Point3D& p2);
+  void hist2dEvent(gate::Event& evt);
+  void hist2dHits(gate::Event& evt);
+  void splitHitsPerPlane(gate::Event& evt);
 
   //! finalize algorithm
   bool finalize();          

@@ -41,6 +41,39 @@ bool petAnalysis::initialize(){
   gate::Centella::instance()
     ->hman()->h1(this->alabel("Error"),"Distance from recons. to truth",30000,0,120);
 
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPM1"),"SiPM (Plane 1) Counts",100,0,100,100,0,100);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPM1_Rel"),"SiPM (Plane 1) Counts",100,0,100,100,0.,1.);
+
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPM2"),"SiPM (Plane 2) Counts",100,0,100,100,0,100);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPM2_Rel"),"SiPM (Plane 2) Counts",100,0,100,100,0.,1.);
+
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPM3"),"SiPM (Plane 3) Counts",100,0,100,100,0,100);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPM3_Rel"),"SiPM (Plane 3) Counts",100,0,100,100,0.,1.);
+
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPM4"),"SiPM (Plane 4) Counts",100,0,100,100,0,100);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPM4_Rel"),"SiPM (Plane 4) Counts",100,0,100,100,0.,1.);
+
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPM5"),"SiPM (Plane 5) Counts",100,0,100,100,0,100);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPM5_Rel"),"SiPM (Plane 5) Counts",100,0,100,100,0.,1.);
+ 
+  //Hist2d events
+/*  store("index",0);
+  for(unsigned int i=0;i<100;i++){
+	  string histName = "Event" + gate::to_string(i);
+	  gate::Centella::instance()
+		  ->hman()->h2(this->alabel(histName),histName,40,0,40,20,0,20);
+  }*/
+
   //gate::Run* run = &gate::Centella::instance()->getRun();
   //int nevt = gate::int_from_string(run->fetch_sstore("num_events"));
   //_m.message("Number of generated events in file:",nevt,gate::NORMAL);
@@ -64,13 +97,8 @@ bool petAnalysis::execute(gate::Event& evt){
   
   _m.message("Event number:",evt.GetEventID(),gate::VERBOSE);
 
-  //Reconstruct point
-  gate::Point3D reconsPoint; 
-  reconstruction(evt,reconsPoint);
-
   //Fill energy histogram
   energyHist(evt);
-
 
   // Search primary particle and its first daughter
   gate::MCParticle primary;
@@ -81,17 +109,30 @@ bool petAnalysis::execute(gate::Event& evt){
   // Classify event as compton or photoelectric
   classifyEvent(primary,firstDaughter);
 
-  //Compute distance from reconstructed to true
-  gate::Point3D realVertex = firstDaughter.GetInitialVtx(); 
-  double error = distance(reconsPoint, realVertex); 
+  //Reconstruct point
+  if(firstDaughter.GetCreatorProc() == std::string("phot")){
+	  gate::Point3D reconsPoint; 
+	  reconstruction(evt,reconsPoint);
 
-	//True position of the first interaction
-//  std::cout << "True: x = " << firstDaughter.GetInitialVtx4D().GetX() << 
-//	  ";\t y = " << firstDaughter.GetInitialVtx4D().GetY() << 
-//	  ";\t z = " << firstDaughter.GetInitialVtx4D().GetZ() << std::endl;
+	  //Compute distance from reconstructed to true
+	  gate::Point3D trueVertex = firstDaughter.GetInitialVtx(); 
+	  double error = distance(reconsPoint, trueVertex); 
 
-  gate::Centella::instance()
-	  ->hman()->fill(this->alabel("Error"),error);
+	  //True position of the first interaction
+	  //  std::cout << "True: x = " << firstDaughter.GetInitialVtx4D().GetX() << 
+	  //	  ";\t y = " << firstDaughter.GetInitialVtx4D().GetY() << 
+	  //	  ";\t z = " << firstDaughter.GetInitialVtx4D().GetZ() << std::endl;
+
+	  //Fill error hist
+	  gate::Centella::instance()
+		  ->hman()->fill(this->alabel("Error"),error);
+  }
+
+  //Hist2d to find the cut
+  hist2dHits(evt);
+
+  //Hist2d event
+  //hist2dEvent(evt);
 
   return true;
 }
@@ -208,12 +249,13 @@ void petAnalysis::reconstruction(gate::Event& evt, gate::Point3D& pt){
   x = x / xNorm;
   y = y / yNorm;
   z = z / zNorm;
-  //std::cout << "Avg: x = " << x << ";\t y = " << y << ";\t z = " << z << std::endl;
+//  std::cout << "Avg: x = " << x << ";\t y = " << y << ";\t z = " << z << std::endl;
 
   pt.x(x);
   pt.y(y);
   pt.z(z);
 
+//  std::cout << "Avg: " << pt;
 }
 
 void petAnalysis::energyHist(gate::Event& evt){
@@ -268,6 +310,9 @@ void petAnalysis::classifyEvent(gate::MCParticle& primary, gate::MCParticle& fir
 		for(unsigned int j=0; j<newPart.size();j++){
 		  //std::cout << "\t t: " <<newPart[j]->GetInitialVtx4D().GetT();
 		  std::cout << "\t Vol: " <<newPart[j]->GetInitialVol();
+		  if(newPart[j]->GetInitialVol() ==  std::string("LXE_DICE")){
+			  std::cout << newPart[j]->GetInitialVtx();
+		  }
 		}
 		std::cout << std::endl;
 */
@@ -331,9 +376,105 @@ bool petAnalysis::timeOrderParticles(const gate::MCParticle* p1, const gate::MCP
 	return (p1->GetInitialVtx4D().GetT() < p2->GetInitialVtx4D().GetT()) ;
 }
 
+bool petAnalysis::chargeOrderSensors(const gate::Hit* s1, const gate::Hit* s2){
+	return (s1->GetAmplitude() > s2->GetAmplitude()) ;
+}
+
 double petAnalysis::distance(gate::Point3D& p1, gate::Point3D& p2){
 	double x = (p1.x() - p2.x());
 	double y = (p1.y() - p2.y());
 	double z = (p1.z() - p2.z());
 	return std::sqrt(std::pow(x,2) + std::pow(y,2) + std::pow(z,2));
+}
+
+void petAnalysis::hist2dEvent(gate::Event& evt){
+	std::string histName = "Event" + gate::to_string(fetch_istore("index"));
+	int counts[500];
+	memset(counts, 0, 500*sizeof(int));
+	for(unsigned int i=0;i<evt.GetMCSensHits().size(); i++){
+		int id = evt.GetMCSensHits()[i]->GetSensorID();
+		counts[(id/1000)*100+(id%100)-100] += evt.GetMCSensHits()[i]->GetAmplitude();
+	}
+	for(unsigned int i=0;i<100;i++){
+		//Plane 1
+		gate::Centella::instance()
+			->hman()->fill2d(this->alabel(histName),i/10,10-i%10 -0.5,counts[i]);
+		//Plane 5
+		gate::Centella::instance()
+			->hman()->fill2d(this->alabel(histName),10-i/10 +10 -0.5, i%10,counts[i+400]);
+		//Plane 3
+		gate::Centella::instance()
+			->hman()->fill2d(this->alabel(histName),10-i/10 +20 -0.5, i%10,counts[i+200]);
+		//Plane 4
+		gate::Centella::instance()
+			->hman()->fill2d(this->alabel(histName),10-i/10 +30 -0.5, i%10,counts[i+300]);
+		//Plane 2
+		gate::Centella::instance()
+			->hman()->fill2d(this->alabel(histName),10-i%10 +10, 10 - i/10 + 10 -0.5,counts[i+100]);
+	}
+	fstore("index", fetch_istore("index")+1);
+}
+
+
+void petAnalysis::hist2dHits(gate::Event& evt){
+	std::vector<gate::Hit*> plane0,plane1,plane2,plane3,plane4,plane5;
+	for(unsigned int i=0;i<evt.GetMCSensHits().size(); i++){
+		int id = evt.GetMCSensHits()[i]->GetSensorID();
+		if(id < 100){
+			plane0.push_back(evt.GetMCSensHits()[i]);
+		}else if(id < 2000){
+			plane1.push_back(evt.GetMCSensHits()[i]);
+		}else if(id < 3000){
+			plane2.push_back(evt.GetMCSensHits()[i]);
+		}else if(id < 4000){
+			plane3.push_back(evt.GetMCSensHits()[i]);
+		}else if(id < 5000){
+			plane4.push_back(evt.GetMCSensHits()[i]);
+		}else if(id < 6000){
+			plane5.push_back(evt.GetMCSensHits()[i]);
+		}
+	}
+	std::vector<gate::Hit*> plane0Sorted(plane0);
+	std::vector<gate::Hit*> plane1Sorted(plane1);
+	std::vector<gate::Hit*> plane2Sorted(plane2);
+	std::vector<gate::Hit*> plane3Sorted(plane3);
+	std::vector<gate::Hit*> plane4Sorted(plane4);
+	std::vector<gate::Hit*> plane5Sorted(plane5);
+	std::sort(plane0Sorted.begin(), plane0Sorted.end(), petAnalysis::chargeOrderSensors);
+	std::sort(plane1Sorted.begin(), plane1Sorted.end(), petAnalysis::chargeOrderSensors);
+	std::sort(plane2Sorted.begin(), plane2Sorted.end(), petAnalysis::chargeOrderSensors);
+	std::sort(plane3Sorted.begin(), plane3Sorted.end(), petAnalysis::chargeOrderSensors);
+	std::sort(plane4Sorted.begin(), plane4Sorted.end(), petAnalysis::chargeOrderSensors);
+	std::sort(plane5Sorted.begin(), plane5Sorted.end(), petAnalysis::chargeOrderSensors);
+
+	for(unsigned int i=0; i<plane1Sorted.size();i++){
+		gate::Centella::instance()
+			->hman()->fill2d(this->alabel("SiPM1"),i,plane1Sorted[i]->GetAmplitude());
+		gate::Centella::instance()
+			->hman()->fill2d(this->alabel("SiPM1_Rel"),i, plane1Sorted[i]->GetAmplitude() / plane1Sorted[0]->GetAmplitude());
+	}
+	for(unsigned int i=0; i<plane2Sorted.size();i++){
+		gate::Centella::instance()
+			->hman()->fill2d(this->alabel("SiPM2"),i,plane2Sorted[i]->GetAmplitude());
+		gate::Centella::instance()
+			->hman()->fill2d(this->alabel("SiPM2_Rel"),i, plane2Sorted[i]->GetAmplitude() / plane2Sorted[0]->GetAmplitude());
+	}
+	for(unsigned int i=0; i<plane3Sorted.size();i++){
+		gate::Centella::instance()
+			->hman()->fill2d(this->alabel("SiPM3"),i,plane3Sorted[i]->GetAmplitude());
+		gate::Centella::instance()
+			->hman()->fill2d(this->alabel("SiPM3_Rel"),i, plane3Sorted[i]->GetAmplitude() / plane3Sorted[0]->GetAmplitude());
+	}
+	for(unsigned int i=0; i<plane4Sorted.size();i++){
+		gate::Centella::instance()
+			->hman()->fill2d(this->alabel("SiPM4"),i,plane4Sorted[i]->GetAmplitude());
+		gate::Centella::instance()
+			->hman()->fill2d(this->alabel("SiPM4_Rel"),i, plane4Sorted[i]->GetAmplitude() / plane4Sorted[0]->GetAmplitude());
+	}
+	for(unsigned int i=0; i<plane5Sorted.size();i++){
+		gate::Centella::instance()
+			->hman()->fill2d(this->alabel("SiPM5"),i,plane5Sorted[i]->GetAmplitude());
+		gate::Centella::instance()
+			->hman()->fill2d(this->alabel("SiPM5_Rel"),i, plane5Sorted[i]->GetAmplitude() / plane5Sorted[0]->GetAmplitude());
+	}
 }
