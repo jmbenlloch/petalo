@@ -27,6 +27,7 @@ class petAnalysis : public gate::IAlgo {
   
   //Position reconstruction using barycenter
   void reconstruction(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& pt);
+  void bestPointRecons(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& truePt, gate::Point3D& pt);
   //Fill energy histogram
   void energyHist(gate::Event& evt);
   //Find first particle in a vector of particles by its creation time

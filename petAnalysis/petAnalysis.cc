@@ -4,8 +4,7 @@
 #include "TF1.h"
 #include<petAnalysis.h>
 
-
-#define CUT 0.6
+#define CUT 0.7
 
 ClassImp(petAnalysis)
 
@@ -42,7 +41,7 @@ bool petAnalysis::initialize(){
     ->hman()->h1(this->alabel("XeGammaEnergy"),"Xe Gamma Energy",30000,0,1);
 
   gate::Centella::instance()
-    ->hman()->h1(this->alabel("Error"),"Distance from recons. to truth",30000,0,120);
+   ->hman()->h1(this->alabel("Error"),"Distance from recons. to truth",30000,0,120);
 
   for(unsigned int i=0;i<6;i++){
 	  string histName = "SiPM" + gate::to_string(i);
@@ -115,10 +114,12 @@ bool petAnalysis::execute(gate::Event& evt){
 
 	  //Point Reconstruction
 	  gate::Point3D reconsPoint; 
-	  reconstruction(planes,reconsPoint);
+	  gate::Point3D trueVertex = firstDaughter.GetInitialVtx(); 
+
+	  //reconstruction(planesCut,reconsPoint);
+	  bestPointRecons(planesCut,trueVertex,reconsPoint);  
 
 	  //Compute distance from reconstructed to true
-	  gate::Point3D trueVertex = firstDaughter.GetInitialVtx(); 
 	  double error = distance(reconsPoint, trueVertex); 
 
 	  //True position of the first interaction
@@ -133,7 +134,7 @@ bool petAnalysis::execute(gate::Event& evt){
   }
 
   //Hist2d to find the cut
-  hist2dHits(evt);
+  //hist2dHits(evt);
 
   //Hist2d event
   //hist2dEvent(evt);
@@ -168,6 +169,161 @@ bool petAnalysis::finalize(){
   
   return true;
 
+}
+
+//only for 5 faces
+void petAnalysis::bestPointRecons(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& truePt, gate::Point3D& pt){
+	double x=0.,y=0.,z=0.,error=0.;
+	gate::Point3D auxPt;
+	util::barycenterAlgorithm* barycenter = new util::barycenterAlgorithm();
+
+	double y1,z1,x2,y2,y3,z3,x4,z4,x5,z5;
+	double y1Err,z1Err,x2Err,y2Err,y3Err,z3Err,x4Err,z4Err,x5Err,z5Err;
+	//Plane 1
+	barycenter->setPlane("yz");
+	barycenter->computePosition(planes[1]);
+	y1 = barycenter->getX1();
+	z1 = barycenter->getX2();
+	y1Err = barycenter->getX1Err();
+	z1Err = barycenter->getX2Err();
+	//Plane 2
+	barycenter->setPlane("xy");
+	barycenter->computePosition(planes[1]);
+	x2 = barycenter->getX1();
+	y2 = barycenter->getX2();
+	x2Err = barycenter->getX1Err();
+	y2Err = barycenter->getX2Err();
+	//Plane 3
+	barycenter->setPlane("yz");
+	barycenter->computePosition(planes[1]);
+	y3 = barycenter->getX1();
+	z3 = barycenter->getX2();
+	y3Err = barycenter->getX1Err();
+	z3Err = barycenter->getX2Err();
+	//Plane 4
+	barycenter->setPlane("xz");
+	barycenter->computePosition(planes[1]);
+	x4 = barycenter->getX1();
+	z4 = barycenter->getX2();
+	x4Err = barycenter->getX1Err();
+	z4Err = barycenter->getX2Err();
+	//Plane 5
+	barycenter->setPlane("xz");
+	barycenter->computePosition(planes[1]);
+	x5 = barycenter->getX1();
+	z5 = barycenter->getX2();
+	x5Err = barycenter->getX1Err();
+	z5Err = barycenter->getX2Err();
+
+	//Option 1: Planes 1-2
+	x = x2;
+	y = (y1/std::pow(y1Err,2) + y2/std::pow(y2Err,2)) / (std::pow(y1Err,-2) + std::pow(y1Err,-2));
+	z = z1;
+	auxPt.x(x);
+	auxPt.y(y);
+	auxPt.z(z);
+	pt.x(x);
+	pt.y(y);
+	pt.z(z);
+	error = distance(truePt, auxPt);
+	
+	//Option 2: Planes 1-4
+	x = x4;
+	y = y1;
+	z = (z1/std::pow(z1Err,2) + z4/std::pow(z4Err,2)) / (std::pow(z1Err,-2) + std::pow(z4Err,-2));
+	auxPt.x(x);
+	auxPt.y(y);
+	auxPt.z(z);
+	if(distance(truePt, auxPt) < error){
+		error = distance(truePt, auxPt);
+		pt.x(x);
+		pt.y(y);
+		pt.z(z);
+	}
+
+	//Option 3: Planes 1-5
+	x = x5;
+	y = y1;
+	z = (z1/std::pow(z1Err,2) + z5/std::pow(z5Err,2)) / (std::pow(z1Err,-2) + std::pow(z5Err,-2));
+	auxPt.x(x);
+	auxPt.y(y);
+	auxPt.z(z);
+	if(distance(truePt, auxPt) < error){
+		error = distance(truePt, auxPt);
+		pt.x(x);
+		pt.y(y);
+		pt.z(z);
+	}
+
+	//Option 4: Planes 2-3
+	x = x2;
+	y = (y2/std::pow(y2Err,2) + y3/std::pow(y3Err,2)) / (std::pow(y2Err,-2) + std::pow(y3Err,-2));
+	z = z3;
+	auxPt.x(x);
+	auxPt.y(y);
+	auxPt.z(z);
+	if(distance(truePt, auxPt) < error){
+		error = distance(truePt, auxPt);
+		pt.x(x);
+		pt.y(y);
+		pt.z(z);
+	}
+
+	//Option 5: Planes 2-4
+	x = (x2/std::pow(x2Err,2) + x4/std::pow(x4Err,2)) / (std::pow(x2Err,-2) + std::pow(x4Err,-2));
+	y = y2;
+	z = z4;	
+	auxPt.x(x);
+	auxPt.y(y);
+	auxPt.z(z);
+	if(distance(truePt, auxPt) < error){
+		error = distance(truePt, auxPt);
+		pt.x(x);
+		pt.y(y);
+		pt.z(z);
+	}
+
+	//Option 6: Planes 2-5
+	x = (x2/std::pow(x2Err,2) + x5/std::pow(x5Err,2)) / (std::pow(x2Err,-2) + std::pow(x5Err,-2));
+	y = y2;
+	z = z5;	
+	auxPt.x(x);
+	auxPt.y(y);
+	auxPt.z(z);
+	if(distance(truePt, auxPt) < error){
+		error = distance(truePt, auxPt);
+		pt.x(x);
+		pt.y(y);
+		pt.z(z);
+	}
+
+	//Option 7: Planes 3-4
+	x = x4;
+	y = y3;
+	z = (z3/std::pow(z3Err,2) + z4/std::pow(z4Err,2)) / (std::pow(z3Err,-2) + std::pow(z4Err,-2));
+	auxPt.x(x);
+	auxPt.y(y);
+	auxPt.z(z);
+	if(distance(truePt, auxPt) < error){
+		error = distance(truePt, auxPt);
+		pt.x(x);
+		pt.y(y);
+		pt.z(z);
+	}
+	
+	//Option 8: Planes 3-5
+	x = x5;
+	y = y3;
+	z = (z3/std::pow(z3Err,2) + z5/std::pow(z5Err,2)) / (std::pow(z3Err,-2) + std::pow(z5Err,-2));
+	auxPt.x(x);
+	auxPt.y(y);
+	auxPt.z(z);
+	if(distance(truePt, auxPt) < error){
+		error = distance(truePt, auxPt);
+		pt.x(x);
+		pt.y(y);
+		pt.z(z);
+	}
 }
 
 void petAnalysis::reconstruction(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& pt){
