@@ -35,6 +35,9 @@ bool petAnalysis::initialize(){
     ->hman()->h1(this->alabel("Energy"),"Energy SiPM",30000,0,10000);
 
   gate::Centella::instance()
+    ->hman()->h1(this->alabel("Compton"),"Number of Compton interactions",10,0,10);
+
+  gate::Centella::instance()
     ->hman()->h1(this->alabel("PhotEnergy"),"Photoelectron Energy",30000,0,2);
 
   gate::Centella::instance()
@@ -100,26 +103,40 @@ bool petAnalysis::execute(gate::Event& evt){
   //Fill energy histogram
   energyHist(evt);
 
+
   // Search primary particle and its first daughter
   gate::MCParticle primary;
   gate::MCParticle firstDaughter;
   findFirstParticle(evt.GetMCParticles(),primary);
   findFirstParticle(primary.GetDaughters(),firstDaughter);
 
+  //Fill compton hist
+  fillComptonHist(primary);
+
   // Classify event as compton or photoelectric
  // classifyEvent(primary,firstDaughter);
 
   //Reconstruction only for photoelectric
  // if(firstDaughter.GetCreatorProc() == std::string("phot")){
-  //Try only events with photoelectric and one vertex
+
+ //Try only events with photoelectric and one vertex
+//  if(firstDaughter.GetCreatorProc() == std::string("phot") 
+//		  && firstDaughter.GetDaughters().size()==0){
+	
+
+	  gate::Point3D trueVertex = firstDaughter.GetInitialVtx(); 
+//Only photoelectric with one vertex and near the planes
   if(firstDaughter.GetCreatorProc() == std::string("phot") 
-		  && firstDaughter.GetDaughters().size()==0){
+		  && firstDaughter.GetDaughters().size()==0
+		  && !nearPlane(trueVertex,40)){
 	  //Classify sensor hits per planes
 	  std::vector<std::vector<gate::Hit*> > planes(6);
 	  splitHitsPerPlane(evt,planes);
 
 
-	  gate::Point3D trueVertex = firstDaughter.GetInitialVtx(); 
+	  ////////////////
+//	  std::cout << nearPlane(trueVertex,10) << trueVertex << std::endl;
+	  ////////////////
 
 	  for(unsigned int j=0; j<10;j++){
 		  //Apply cut per plane
@@ -629,3 +646,53 @@ void petAnalysis::applyCut(const std::vector<gate::Hit*>& sensorHits, double cut
 		}
 	}
 }
+
+bool petAnalysis::nearPlane(gate::Point3D& pt, double distance){
+	//Plane 0: z = -50.575
+	//Plane 1: x = -50.575
+	//Plane 2: z = 50.575
+	//Plane 3: x = 50.575
+	//Plane 4: y = 50.575
+	//Plane 5: y = -50.575
+	//Formula: D=(ax_0+by_0+cz_0+d)/(sqrt(a^2+b^2+c^2)), 
+	/*
+	//Planes 1-2
+	bool p12 = ((std::abs(pt.x() + 50.575) <= distance) && (std::abs(pt.z() - 50.575) <= distance));
+	//Planes 1-4
+	bool p14 = ((std::abs(pt.x() + 50.575) <= distance) && (std::abs(pt.y() - 50.575) <= distance));
+	//Planes 1-5
+	bool p15 = ((std::abs(pt.x() + 50.575) <= distance) && (std::abs(pt.y() + 50.575) <= distance));
+	//Planes 2-3
+	bool p23 = ((std::abs(pt.z() - 50.575) <= distance) && (std::abs(pt.x() - 50.575) <= distance));
+	//Planes 2-4
+	bool p24 = ((std::abs(pt.z() - 50.575) <= distance) && (std::abs(pt.y() - 50.575) <= distance));
+	//Planes 2-5
+	bool p25 = ((std::abs(pt.z() - 50.575) <= distance) && (std::abs(pt.y() + 50.575) <= distance));
+	//Planes 3-4
+	bool p34 = ((std::abs(pt.x() - 50.575) <= distance) && (std::abs(pt.y() - 50.575) <= distance));
+	//Planes 3-5
+	bool p35 = ((std::abs(pt.x() - 50.575) <= distance) && (std::abs(pt.y() + 50.575) <= distance));
+*/
+//	std::cout << "p12: " << p12 << "; p14: " << p14 <<  "; p15: " << p15 
+//		<< "; p23: "<< p23 << "; p24: "<< p24 << "; p25: "<< p25
+//		<< "; p34: "<< p34 << "; p35: "<< p35 << std::endl;
+
+	//return p12 || p14 || p15 || p23 || p24 || p25 || p34 || p35;
+
+	return (std::abs(pt.x() - 50.575) <= distance) || (std::abs(pt.x() + 50.575) <= distance) ||
+	(std::abs(pt.y() - 50.575) <= distance) || (std::abs(pt.y() + 50.575) <= distance) ||
+	(std::abs(pt.z() - 50.575) <= distance);
+
+}
+
+void petAnalysis::fillComptonHist(gate::MCParticle& primary){
+	int count = 0;
+	for(unsigned int i=0; i<primary.GetDaughters().size();i++){
+		if(primary.GetDaughters()[i]->GetCreatorProc() == std::string("compt")){
+			count++;
+		}
+	}
+	gate::Centella::instance()
+		->hman()->fill(this->alabel("Compton"),count);
+}
+
