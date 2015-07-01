@@ -48,6 +48,8 @@ class petAnalysis : public gate::IAlgo {
   void applyCut(const std::vector<gate::Hit*>& sensorHits, double cut, std::vector<gate::Hit*>& filtered);
   bool nearPlane(gate::Point3D& pt,double distance);
   void fillComptonHist(gate::MCParticle& primary);
+  void reconsPerPlane(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& truePt, gate::Point3D& pt);
+
 
 
   //! finalize algorithm

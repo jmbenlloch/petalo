@@ -4,7 +4,7 @@
 #include "TF1.h"
 #include<petAnalysis.h>
 
-#define CUT 0.7
+#define CUT 0.2
 
 ClassImp(petAnalysis)
 
@@ -46,16 +46,40 @@ bool petAnalysis::initialize(){
   //gate::Centella::instance()
   // ->hman()->h1(this->alabel("Error"),"Distance from recons. to truth",30000,0,120);
 
-  for(unsigned int i=0;i<10;i++){
-	  string histName2P = "Error2P_0." + gate::to_string(i);
-	  string histTitle2P = "(Alg2) Distance from recons. to truth (cut 0." + gate::to_string(i) + ")";
-	  gate::Centella::instance()
-		  ->hman()->h1(this->alabel(histName2P),histTitle2P,30000,0,120);
-	  string histName = "Error_0." + gate::to_string(i);
-	  string histTitle = "Distance from recons. to truth (cut 0." + gate::to_string(i) + ")";
+  for(unsigned int i=0;i<6;i++){
+	  string histName = "Plane" + gate::to_string(i);
+	  string histTitle = "Plane " + gate::to_string(i);
 	  gate::Centella::instance()
 		  ->hman()->h1(this->alabel(histName),histTitle,30000,0,120);
   }
+
+	  gate::Centella::instance()
+		  ->hman()->h1(this->alabel("y1"),"Plane 1 y-y0",30000,-120,120);
+	  gate::Centella::instance()
+		  ->hman()->h1(this->alabel("z1"),"Plane 1 z-z0",30000,-120,120);
+	  gate::Centella::instance()
+		  ->hman()->h1(this->alabel("x2"),"Plane 2 x-x0",30000,-120,120);
+	  gate::Centella::instance()
+		  ->hman()->h1(this->alabel("y2"),"Plane 2 y-y0",30000,-120,120);
+	  gate::Centella::instance()
+		  ->hman()->h1(this->alabel("y3"),"Plane 3 y-y0",30000,-120,120);
+	  gate::Centella::instance()
+		  ->hman()->h1(this->alabel("z3"),"Plane 3 z-z0",30000,-120,120);
+	  gate::Centella::instance()
+		  ->hman()->h1(this->alabel("x4"),"Plane 4 x-x0",30000,-120,120);
+	  gate::Centella::instance()
+		  ->hman()->h1(this->alabel("z4"),"Plane 4 z-z0",30000,-120,120);
+	  gate::Centella::instance()
+		  ->hman()->h1(this->alabel("x5"),"Plane 5 x-x0",30000,-120,120);
+	  gate::Centella::instance()
+		  ->hman()->h1(this->alabel("z5"),"Plane 5 z-z0",30000,-120,120);
+
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("x"),"x-x0",30000,-120,120);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("y"),"y-y0",30000,-120,120);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("z"),"z-z0",30000,-120,120);
 
   for(unsigned int i=0;i<6;i++){
 	  string histName = "SiPM" + gate::to_string(i);
@@ -103,7 +127,6 @@ bool petAnalysis::execute(gate::Event& evt){
   //Fill energy histogram
   energyHist(evt);
 
-
   // Search primary particle and its first daughter
   gate::MCParticle primary;
   gate::MCParticle firstDaughter;
@@ -116,54 +139,31 @@ bool petAnalysis::execute(gate::Event& evt){
   // Classify event as compton or photoelectric
  // classifyEvent(primary,firstDaughter);
 
-  //Reconstruction only for photoelectric
- // if(firstDaughter.GetCreatorProc() == std::string("phot")){
-
  //Try only events with photoelectric and one vertex
   if(firstDaughter.GetCreatorProc() == std::string("phot") 
 		  && firstDaughter.GetDaughters().size()==0){
-	
-
 	  gate::Point3D trueVertex = firstDaughter.GetInitialVtx(); 
-//Only photoelectric with one vertex and near the planes
- // if(firstDaughter.GetCreatorProc() == std::string("phot") 
-//		  && firstDaughter.GetDaughters().size()==0
-//		  && !nearPlane(trueVertex,40)){
 	  //Classify sensor hits per planes
 	  std::vector<std::vector<gate::Hit*> > planes(6);
 	  splitHitsPerPlane(evt,planes);
 
-
-	  ////////////////
-//	  std::cout << nearPlane(trueVertex,10) << trueVertex << std::endl;
-	  ////////////////
-
-	  for(unsigned int j=0; j<10;j++){
-		  //Apply cut per plane
-		  std::vector<std::vector<gate::Hit*> > planesCut(6);
-		  for(unsigned int i=0; i<6;i++){
-			  applyCut(planes[i],j/10.0,planesCut[i]);
-		  }
-
-		  //Point Reconstruction
-		  gate::Point3D reconsPoint; 
-		  //Algorithm a
-		  bestPointRecons(planesCut,trueVertex,reconsPoint);  
-		  double error = distance(reconsPoint, trueVertex); 
-
-		  //Fill error hist
-		  string histName2P = "Error2P_0." + gate::to_string(j);
-		  gate::Centella::instance()
-			  ->hman()->fill(this->alabel(histName2P),error);
-
-		  //Algorithm b
-		  reconstruction(planesCut,reconsPoint);
-		  error = distance(reconsPoint, trueVertex); 
-		  //Fill error hist
-		  string histName = "Error_0." + gate::to_string(j);
-		  gate::Centella::instance()
-			  ->hman()->fill(this->alabel(histName),error);
+	  //Apply cut per plane
+	  std::vector<std::vector<gate::Hit*> > planesCut(6);
+	  for(unsigned int i=0; i<6;i++){
+		  applyCut(planes[i],CUT,planesCut[i]);
 	  }
+
+	  //Point Reconstruction
+	  gate::Point3D reconsPoint; 
+	  reconsPerPlane(planesCut,trueVertex,reconsPoint);  
+
+	  reconstruction(planesCut,reconsPoint);
+	  gate::Centella::instance()
+		->hman()->fill(this->alabel("x"), reconsPoint.x() - trueVertex.x());
+	  gate::Centella::instance()
+		->hman()->fill(this->alabel("y"), reconsPoint.y() - trueVertex.y());
+	  gate::Centella::instance()
+		->hman()->fill(this->alabel("z"), reconsPoint.z() - trueVertex.z());
   }
 
   //Hist2d to find the cut
@@ -359,6 +359,73 @@ void petAnalysis::bestPointRecons(std::vector<std::vector<gate::Hit*> > planes, 
 	}
 }
 
+void petAnalysis::reconsPerPlane(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& truePt, gate::Point3D& pt){
+	//Calculate barycenter
+	double x=0.,y=0.,z=0.;
+	util::barycenterAlgorithm* barycenter = new util::barycenterAlgorithm();
+
+	// Plane 1
+	barycenter->setPlane("yz");
+	barycenter->computePosition(planes[1]);
+	y = barycenter->getX1();
+	z = barycenter->getX2();
+	gate::Centella::instance()
+		->hman()->fill(this->alabel("Plane1"), std::sqrt(std::pow(y - truePt.y(),2)  + std::pow(z - truePt.z(),2)));
+	gate::Centella::instance()
+		->hman()->fill(this->alabel("y1"), y - truePt.y());
+	gate::Centella::instance()
+		->hman()->fill(this->alabel("z1"), z - truePt.z());
+
+	// Plane 2
+	barycenter->setPlane("xy");
+	barycenter->computePosition(planes[2]);
+	x = barycenter->getX1();
+	y = barycenter->getX2();
+	gate::Centella::instance()
+		->hman()->fill(this->alabel("Plane2"), std::sqrt(std::pow(x - truePt.x(),2)  + std::pow(y - truePt.y(),2)));
+	gate::Centella::instance()
+		->hman()->fill(this->alabel("x2"), x - truePt.x());
+	gate::Centella::instance()
+		->hman()->fill(this->alabel("y2"), y - truePt.y());
+
+	// Plane 3
+	barycenter->setPlane("yz");
+	barycenter->computePosition(planes[3]);
+	y = barycenter->getX1();
+	z = barycenter->getX2();
+	gate::Centella::instance()
+		->hman()->fill(this->alabel("Plane3"), std::sqrt(std::pow(y - truePt.y(),2)  + std::pow(z - truePt.z(),2)));
+	gate::Centella::instance()
+		->hman()->fill(this->alabel("y3"), y - truePt.y());
+	gate::Centella::instance()
+		->hman()->fill(this->alabel("z3"), z - truePt.z());
+	
+	// Plane 4
+	barycenter->setPlane("xz");
+	barycenter->computePosition(planes[4]);
+	x = barycenter->getX1();
+	z = barycenter->getX2();
+	gate::Centella::instance()
+		->hman()->fill(this->alabel("Plane4"), std::sqrt(std::pow(x - truePt.x(),2)  + std::pow(z - truePt.z(),2)));
+	gate::Centella::instance()
+		->hman()->fill(this->alabel("x4"), x - truePt.x(),2);
+	gate::Centella::instance()
+		->hman()->fill(this->alabel("z4"), z - truePt.z());
+
+	// Plane 5
+	barycenter->setPlane("xz");
+	barycenter->computePosition(planes[4]);
+	x = barycenter->getX1();
+	z = barycenter->getX2();
+	gate::Centella::instance()
+		->hman()->fill(this->alabel("Plane5"), std::sqrt(std::pow(x - truePt.x(),2)  + std::pow(z - truePt.z(),2)));
+	gate::Centella::instance()
+		->hman()->fill(this->alabel("x5"), x - truePt.x());
+	gate::Centella::instance()
+		->hman()->fill(this->alabel("z5"), z - truePt.z());
+
+}
+
 void petAnalysis::reconstruction(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& pt){
 	//Calculate barycenter
 	double x=0.,y=0.,z=0.,xNorm=0.,yNorm=0.,zNorm=0.;
@@ -380,12 +447,6 @@ void petAnalysis::reconstruction(std::vector<std::vector<gate::Hit*> > planes, g
 	z += barycenter->getX2() / std::pow(barycenter->getX2Err(),2);
 	yNorm += std::pow(barycenter->getX1Err(),-2);
 	zNorm += std::pow(barycenter->getX2Err(),-2);
-	// Plane 2
-	barycenter->setPlane("xy");
-	barycenter->computePosition(planes[2]);
-	//std::cout << "Plane 2: x = " << barycenter->getX1() << " ; y = " << barycenter->getX2() << std::endl;
-	x += barycenter->getX1() / std::pow(barycenter->getX1Err(),2);
-	y += barycenter->getX2() / std::pow(barycenter->getX2Err(),2);
 	xNorm += std::pow(barycenter->getX1Err(),-2);
 	yNorm += std::pow(barycenter->getX2Err(),-2);
 	// Plane 3
