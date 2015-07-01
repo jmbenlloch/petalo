@@ -120,15 +120,15 @@ bool petAnalysis::execute(gate::Event& evt){
  // if(firstDaughter.GetCreatorProc() == std::string("phot")){
 
  //Try only events with photoelectric and one vertex
-//  if(firstDaughter.GetCreatorProc() == std::string("phot") 
-//		  && firstDaughter.GetDaughters().size()==0){
+  if(firstDaughter.GetCreatorProc() == std::string("phot") 
+		  && firstDaughter.GetDaughters().size()==0){
 	
 
 	  gate::Point3D trueVertex = firstDaughter.GetInitialVtx(); 
 //Only photoelectric with one vertex and near the planes
-  if(firstDaughter.GetCreatorProc() == std::string("phot") 
-		  && firstDaughter.GetDaughters().size()==0
-		  && !nearPlane(trueVertex,40)){
+ // if(firstDaughter.GetCreatorProc() == std::string("phot") 
+//		  && firstDaughter.GetDaughters().size()==0
+//		  && !nearPlane(trueVertex,40)){
 	  //Classify sensor hits per planes
 	  std::vector<std::vector<gate::Hit*> > planes(6);
 	  splitHitsPerPlane(evt,planes);
