@@ -4,6 +4,9 @@
 #include "TF1.h"
 #include<petAnalysis.h>
 
+
+#define CUT 0.6
+
 ClassImp(petAnalysis)
 
 //==========================================================================
@@ -70,6 +73,8 @@ bool petAnalysis::initialize(){
   store("photoWall",0);
   store("comptWall",0);
 
+  store("cut",CUT);
+
   return true;
 
 }
@@ -94,10 +99,23 @@ bool petAnalysis::execute(gate::Event& evt){
   // Classify event as compton or photoelectric
   classifyEvent(primary,firstDaughter);
 
-  //Reconstruct point
+  //Reconstruction only for photoelectric
   if(firstDaughter.GetCreatorProc() == std::string("phot")){
+	  //Classify sensor hits per planes
+	  std::vector<std::vector<gate::Hit*> > planes(6);
+	  splitHitsPerPlane(evt,planes);
+
+	  //Apply cut per plane
+	  std::vector<std::vector<gate::Hit*> > planesCut(6);
+	  for(unsigned int i=0; i<6;i++){
+		  applyCut(planes[i],CUT,planesCut[i]);
+		  //std::cout << "Plane " << i << " Hits size: " << planes[i].size() << std::endl;
+		  //std::cout << "Plane " << i << " Filtered Hits size: " << planesCut[i].size() << std::endl;
+	  }
+
+	  //Point Reconstruction
 	  gate::Point3D reconsPoint; 
-	  reconstruction(evt,reconsPoint);
+	  reconstruction(planes,reconsPoint);
 
 	  //Compute distance from reconstructed to true
 	  gate::Point3D trueVertex = firstDaughter.GetInitialVtx(); 
@@ -111,6 +129,7 @@ bool petAnalysis::execute(gate::Event& evt){
 	  //Fill error hist
 	  gate::Centella::instance()
 		  ->hman()->fill(this->alabel("Error"),error);
+
   }
 
   //Hist2d to find the cut
@@ -151,96 +170,71 @@ bool petAnalysis::finalize(){
 
 }
 
-void petAnalysis::reconstruction(gate::Event& evt, gate::Point3D& pt){
-  // Classify sensor hits per plane
-  std::vector<gate::Hit*> plane0,plane1,plane2,plane3,plane4,plane5;
-  for(unsigned int i=0;i<evt.GetMCSensHits().size(); i++){
-	  int id = evt.GetMCSensHits()[i]->GetSensorID();
+void petAnalysis::reconstruction(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& pt){
+	//Calculate barycenter
+	double x=0.,y=0.,z=0.,xNorm=0.,yNorm=0.,zNorm=0.;
+	util::barycenterAlgorithm* barycenter = new util::barycenterAlgorithm();
 
-	  if(id < 100){
-		  plane0.push_back(evt.GetMCSensHits()[i]);
-		  //std::cout << "Plane 0: " << evt.GetMCSensHits()[i]->GetPosition().x() << ", \t" << evt.GetMCSensHits()[i]->GetPosition().y() << ", \t" << evt.GetMCSensHits()[i]->GetPosition().z() << std::endl;
-	  }else if(id < 2000){
-		  plane1.push_back(evt.GetMCSensHits()[i]);
-		  //std::cout << "Plane 1: " << evt.GetMCSensHits()[i]->GetPosition().x() << ", \t" << evt.GetMCSensHits()[i]->GetPosition().y() << ", \t" << evt.GetMCSensHits()[i]->GetPosition().z() << std::endl;
-	  }else if(id < 3000){
-		  plane2.push_back(evt.GetMCSensHits()[i]);
-		  //std::cout << "Plane 2: " << evt.GetMCSensHits()[i]->GetPosition().x() << ", \t" << evt.GetMCSensHits()[i]->GetPosition().y() << ", \t" << evt.GetMCSensHits()[i]->GetPosition().z() << std::endl;
-	  }else if(id < 4000){
-		  plane3.push_back(evt.GetMCSensHits()[i]);
-		  //std::cout << "Plane 3: " << evt.GetMCSensHits()[i]->GetPosition().x() << ", \t" << evt.GetMCSensHits()[i]->GetPosition().y() << ", \t" << evt.GetMCSensHits()[i]->GetPosition().z() << std::endl;
-	  }else if(id < 5000){
-		  plane4.push_back(evt.GetMCSensHits()[i]);
-		  //std::cout << "Plane 4: " << evt.GetMCSensHits()[i]->GetPosition().x() << ", \t" << evt.GetMCSensHits()[i]->GetPosition().y() << ", \t" << evt.GetMCSensHits()[i]->GetPosition().z() << std::endl;
-	  }else if(id < 6000){
-		  plane5.push_back(evt.GetMCSensHits()[i]);
-		//  std::cout << "Plane 5: " << evt.GetMCSensHits()[i]->GetPosition().x() << ", \t" << evt.GetMCSensHits()[i]->GetPosition().y() << ", \t" << evt.GetMCSensHits()[i]->GetPosition().z() << std::endl;
-	  }
-//	  std::cout << evt.GetMCSensHits()[i]->GetPosition().x() << ", \t" << evt.GetMCSensHits()[i]->GetPosition().y() << std::endl;
-  }
+	// Plane 0
+	/*  barycenter->setPlane("yz");
+		barycenter->computePosition(plane0);
+		std::cout << "Plane 0: y = " << barycenter->getX1() << " ; z = " << barycenter->getX2() << std::endl;
+		y += barycenter->getX1() / std::pow(barycenter->getX1Err(),2);
+		z += barycenter->getX2() / std::pow(barycenter->getX2Err(),2);
+		yNorm += std::pow(barycenter->getX1Err(),-2);
+		zNorm += std::pow(barycenter->getX2Err(),-2);*/
+	// Plane 1
+	barycenter->setPlane("yz");
+	barycenter->computePosition(planes[1]);
+	// std::cout << "Plane 1: y = " << barycenter->getX1() << " ; z = " << barycenter->getX2() << std::endl;
+	y += barycenter->getX1() / std::pow(barycenter->getX1Err(),2);
+	z += barycenter->getX2() / std::pow(barycenter->getX2Err(),2);
+	yNorm += std::pow(barycenter->getX1Err(),-2);
+	zNorm += std::pow(barycenter->getX2Err(),-2);
+	// Plane 2
+	barycenter->setPlane("xy");
+	barycenter->computePosition(planes[2]);
+	//std::cout << "Plane 2: x = " << barycenter->getX1() << " ; y = " << barycenter->getX2() << std::endl;
+	x += barycenter->getX1() / std::pow(barycenter->getX1Err(),2);
+	y += barycenter->getX2() / std::pow(barycenter->getX2Err(),2);
+	xNorm += std::pow(barycenter->getX1Err(),-2);
+	yNorm += std::pow(barycenter->getX2Err(),-2);
+	// Plane 3
+	barycenter->setPlane("yz");
+	barycenter->computePosition(planes[3]);
+	//std::cout << "Plane 3: y = " << barycenter->getX1() << " ; z = " << barycenter->getX2() << std::endl;
+	y += barycenter->getX1() / std::pow(barycenter->getX1Err(),2);
+	z += barycenter->getX2() / std::pow(barycenter->getX2Err(),2);
+	yNorm += std::pow(barycenter->getX1Err(),-2);
+	zNorm += std::pow(barycenter->getX2Err(),-2);
+	// Plane 4
+	barycenter->setPlane("xz");
+	barycenter->computePosition(planes[4]);
+	//std::cout << "Plane 4: x = " << barycenter->getX1() << " ; z = " << barycenter->getX2() << std::endl;
+	x += barycenter->getX1() / std::pow(barycenter->getX1Err(),2);
+	z += barycenter->getX2() / std::pow(barycenter->getX2Err(),2);
+	xNorm += std::pow(barycenter->getX1Err(),-2);
+	zNorm += std::pow(barycenter->getX2Err(),-2);
+	// Plane 5
+	barycenter->setPlane("xz");
+	barycenter->computePosition(planes[4]);
+	//std::cout << "Plane 4: x = " << barycenter->getX1() << " ; z = " << barycenter->getX2() << std::endl;
+	x += barycenter->getX1() / std::pow(barycenter->getX1Err(),2);
+	z += barycenter->getX2() / std::pow(barycenter->getX2Err(),2);
+	xNorm += std::pow(barycenter->getX1Err(),-2);
+	zNorm += std::pow(barycenter->getX2Err(),-2);
 
-  double x=0.,y=0.,z=0.,xNorm=0.,yNorm=0.,zNorm=0.;
-  util::barycenterAlgorithm* barycenter = new util::barycenterAlgorithm();
-  // Plane 0
-/*  barycenter->setPlane("yz");
-  barycenter->computePosition(plane0);
-  std::cout << "Plane 0: y = " << barycenter->getX1() << " ; z = " << barycenter->getX2() << std::endl;
-  y += barycenter->getX1() / std::pow(barycenter->getX1Err(),2);
-  z += barycenter->getX2() / std::pow(barycenter->getX2Err(),2);
-  yNorm += std::pow(barycenter->getX1Err(),-2);
-  zNorm += std::pow(barycenter->getX2Err(),-2);*/
-  // Plane 1
-  barycenter->setPlane("yz");
-  barycenter->computePosition(plane1);
- // std::cout << "Plane 1: y = " << barycenter->getX1() << " ; z = " << barycenter->getX2() << std::endl;
-  y += barycenter->getX1() / std::pow(barycenter->getX1Err(),2);
-  z += barycenter->getX2() / std::pow(barycenter->getX2Err(),2);
-  yNorm += std::pow(barycenter->getX1Err(),-2);
-  zNorm += std::pow(barycenter->getX2Err(),-2);
-  // Plane 2
-  barycenter->setPlane("xy");
-  barycenter->computePosition(plane2);
-  //std::cout << "Plane 2: x = " << barycenter->getX1() << " ; y = " << barycenter->getX2() << std::endl;
-  x += barycenter->getX1() / std::pow(barycenter->getX1Err(),2);
-  y += barycenter->getX2() / std::pow(barycenter->getX2Err(),2);
-  xNorm += std::pow(barycenter->getX1Err(),-2);
-  yNorm += std::pow(barycenter->getX2Err(),-2);
-  // Plane 3
-  barycenter->setPlane("yz");
-  barycenter->computePosition(plane3);
-  //std::cout << "Plane 3: y = " << barycenter->getX1() << " ; z = " << barycenter->getX2() << std::endl;
-  y += barycenter->getX1() / std::pow(barycenter->getX1Err(),2);
-  z += barycenter->getX2() / std::pow(barycenter->getX2Err(),2);
-  yNorm += std::pow(barycenter->getX1Err(),-2);
-  zNorm += std::pow(barycenter->getX2Err(),-2);
-  // Plane 4
-  barycenter->setPlane("xz");
-  barycenter->computePosition(plane4);
-  //std::cout << "Plane 4: x = " << barycenter->getX1() << " ; z = " << barycenter->getX2() << std::endl;
-  x += barycenter->getX1() / std::pow(barycenter->getX1Err(),2);
-  z += barycenter->getX2() / std::pow(barycenter->getX2Err(),2);
-  xNorm += std::pow(barycenter->getX1Err(),-2);
-  zNorm += std::pow(barycenter->getX2Err(),-2);
-  // Plane 5
-  barycenter->setPlane("xz");
-  barycenter->computePosition(plane4);
-  //std::cout << "Plane 4: x = " << barycenter->getX1() << " ; z = " << barycenter->getX2() << std::endl;
-  x += barycenter->getX1() / std::pow(barycenter->getX1Err(),2);
-  z += barycenter->getX2() / std::pow(barycenter->getX2Err(),2);
-  xNorm += std::pow(barycenter->getX1Err(),-2);
-  zNorm += std::pow(barycenter->getX2Err(),-2);
+	// Average
+	x = x / xNorm;
+	y = y / yNorm;
+	z = z / zNorm;
+	//  std::cout << "Avg: x = " << x << ";\t y = " << y << ";\t z = " << z << std::endl;
 
-  // Average
-  x = x / xNorm;
-  y = y / yNorm;
-  z = z / zNorm;
-//  std::cout << "Avg: x = " << x << ";\t y = " << y << ";\t z = " << z << std::endl;
+	pt.x(x);
+	pt.y(y);
+	pt.z(z);
 
-  pt.x(x);
-  pt.y(y);
-  pt.z(z);
-
-//  std::cout << "Avg: " << pt;
+	//  std::cout << "Avg: " << pt;
 }
 
 void petAnalysis::energyHist(gate::Event& evt){
@@ -361,8 +355,12 @@ bool petAnalysis::timeOrderParticles(const gate::MCParticle* p1, const gate::MCP
 	return (p1->GetInitialVtx4D().GetT() < p2->GetInitialVtx4D().GetT()) ;
 }
 
-bool petAnalysis::chargeOrderSensors(const gate::Hit* s1, const gate::Hit* s2){
+bool petAnalysis::chargeOrderSensorsDesc(const gate::Hit* s1, const gate::Hit* s2){
 	return (s1->GetAmplitude() > s2->GetAmplitude()) ;
+}
+
+bool petAnalysis::chargeOrderSensorsAsc(const gate::Hit* s1, const gate::Hit* s2){
+	return (s1->GetAmplitude() < s2->GetAmplitude()) ;
 }
 
 double petAnalysis::distance(gate::Point3D& p1, gate::Point3D& p2){
@@ -425,7 +423,7 @@ void petAnalysis::hist2dHits(gate::Event& evt){
 	std::vector<std::vector<gate::Hit*> >  sortedPlanes(planes);
 
 	for(unsigned int i=0; i<6;i++){
-		std::sort(sortedPlanes[i].begin(), sortedPlanes[i].end(), petAnalysis::chargeOrderSensors);
+		std::sort(sortedPlanes[i].begin(), sortedPlanes[i].end(), petAnalysis::chargeOrderSensorsDesc);
 		for(unsigned int j=0; j<sortedPlanes[i].size();j++){
 			string histName = "SiPM" + gate::to_string(i);
 			gate::Centella::instance()
@@ -434,6 +432,20 @@ void petAnalysis::hist2dHits(gate::Event& evt){
 			string histNameRel = "SiPM_Rel" + gate::to_string(i);
 			gate::Centella::instance()
 				->hman()->fill2d(this->alabel(histNameRel),j, sortedPlanes[i][j]->GetAmplitude() / sortedPlanes[i][0]->GetAmplitude());
+		}
+	}
+}
+
+// Recieve sensor hits and a percentage of the max count.
+// Returns hits with amplitude >= cut*maxAmplitude in filtered
+void petAnalysis::applyCut(const std::vector<gate::Hit*>& sensorHits, double cut, std::vector<gate::Hit*>& filtered){
+	if(sensorHits.size() > 0){
+		gate::Hit* max = *std::max_element(sensorHits.begin(),sensorHits.end(),chargeOrderSensorsAsc);
+
+		for(unsigned int i=0; i<sensorHits.size(); i++){
+			if(sensorHits[i]->GetAmplitude() >= cut*max->GetAmplitude()){
+				filtered.push_back(sensorHits[i]);
+			}
 		}
 	}
 }

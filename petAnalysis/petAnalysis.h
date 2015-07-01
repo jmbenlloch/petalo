@@ -26,7 +26,7 @@ class petAnalysis : public gate::IAlgo {
   bool execute(gate::Event& evt);  
   
   //Position reconstruction using barycenter
-  void reconstruction(gate::Event& evt, gate::Point3D& pt);
+  void reconstruction(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& pt);
   //Fill energy histogram
   void energyHist(gate::Event& evt);
   //Find first particle in a vector of particles by its creation time
@@ -37,12 +37,14 @@ class petAnalysis : public gate::IAlgo {
   //Order particles
   static bool timeOrderParticles(const gate::MCParticle* p1, const gate::MCParticle* p2);
   //Order sensors by charge (descending)
-  static bool chargeOrderSensors(const gate::Hit* s1, const gate::Hit* s2);
+  static bool chargeOrderSensorsDesc(const gate::Hit* s1, const gate::Hit* s2);
+  static bool chargeOrderSensorsAsc(const gate::Hit* s1, const gate::Hit* s2);
   //Compute distance between two Point3D
   double distance(gate::Point3D& p1, gate::Point3D& p2);
   void hist2dEvent(gate::Event& evt);
   void hist2dHits(gate::Event& evt);
   void splitHitsPerPlane(gate::Event& evt, std::vector<std::vector<gate::Hit*> >& planes);
+  void applyCut(const std::vector<gate::Hit*>& sensorHits, double cut, std::vector<gate::Hit*>& filtered);
 
 
   //! finalize algorithm
