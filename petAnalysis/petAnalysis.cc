@@ -40,8 +40,19 @@ bool petAnalysis::initialize(){
   gate::Centella::instance()
     ->hman()->h1(this->alabel("XeGammaEnergy"),"Xe Gamma Energy",30000,0,1);
 
-  gate::Centella::instance()
-   ->hman()->h1(this->alabel("Error"),"Distance from recons. to truth",30000,0,120);
+  //gate::Centella::instance()
+  // ->hman()->h1(this->alabel("Error"),"Distance from recons. to truth",30000,0,120);
+
+  for(unsigned int i=0;i<10;i++){
+	  string histName2P = "Error2P_0." + gate::to_string(i);
+	  string histTitle2P = "(Alg2) Distance from recons. to truth (cut 0." + gate::to_string(i) + ")";
+	  gate::Centella::instance()
+		  ->hman()->h1(this->alabel(histName2P),histTitle2P,30000,0,120);
+	  string histName = "Error_0." + gate::to_string(i);
+	  string histTitle = "Distance from recons. to truth (cut 0." + gate::to_string(i) + ")";
+	  gate::Centella::instance()
+		  ->hman()->h1(this->alabel(histName),histTitle,30000,0,120);
+  }
 
   for(unsigned int i=0;i<6;i++){
 	  string histName = "SiPM" + gate::to_string(i);
@@ -96,41 +107,46 @@ bool petAnalysis::execute(gate::Event& evt){
   findFirstParticle(primary.GetDaughters(),firstDaughter);
 
   // Classify event as compton or photoelectric
-  classifyEvent(primary,firstDaughter);
+ // classifyEvent(primary,firstDaughter);
 
   //Reconstruction only for photoelectric
-  if(firstDaughter.GetCreatorProc() == std::string("phot")){
+ // if(firstDaughter.GetCreatorProc() == std::string("phot")){
+  //Try only events with photoelectric and one vertex
+  if(firstDaughter.GetCreatorProc() == std::string("phot") 
+		  && firstDaughter.GetDaughters().size()==0){
 	  //Classify sensor hits per planes
 	  std::vector<std::vector<gate::Hit*> > planes(6);
 	  splitHitsPerPlane(evt,planes);
 
-	  //Apply cut per plane
-	  std::vector<std::vector<gate::Hit*> > planesCut(6);
-	  for(unsigned int i=0; i<6;i++){
-		  applyCut(planes[i],CUT,planesCut[i]);
-		  //std::cout << "Plane " << i << " Hits size: " << planes[i].size() << std::endl;
-		  //std::cout << "Plane " << i << " Filtered Hits size: " << planesCut[i].size() << std::endl;
-	  }
 
-	  //Point Reconstruction
-	  gate::Point3D reconsPoint; 
 	  gate::Point3D trueVertex = firstDaughter.GetInitialVtx(); 
 
-	  //reconstruction(planesCut,reconsPoint);
-	  bestPointRecons(planesCut,trueVertex,reconsPoint);  
+	  for(unsigned int j=0; j<10;j++){
+		  //Apply cut per plane
+		  std::vector<std::vector<gate::Hit*> > planesCut(6);
+		  for(unsigned int i=0; i<6;i++){
+			  applyCut(planes[i],j/10.0,planesCut[i]);
+		  }
 
-	  //Compute distance from reconstructed to true
-	  double error = distance(reconsPoint, trueVertex); 
+		  //Point Reconstruction
+		  gate::Point3D reconsPoint; 
+		  //Algorithm a
+		  bestPointRecons(planesCut,trueVertex,reconsPoint);  
+		  double error = distance(reconsPoint, trueVertex); 
 
-	  //True position of the first interaction
-	  //  std::cout << "True: x = " << firstDaughter.GetInitialVtx4D().GetX() << 
-	  //	  ";\t y = " << firstDaughter.GetInitialVtx4D().GetY() << 
-	  //	  ";\t z = " << firstDaughter.GetInitialVtx4D().GetZ() << std::endl;
+		  //Fill error hist
+		  string histName2P = "Error2P_0." + gate::to_string(j);
+		  gate::Centella::instance()
+			  ->hman()->fill(this->alabel(histName2P),error);
 
-	  //Fill error hist
-	  gate::Centella::instance()
-		  ->hman()->fill(this->alabel("Error"),error);
-
+		  //Algorithm b
+		  reconstruction(planesCut,reconsPoint);
+		  error = distance(reconsPoint, trueVertex); 
+		  //Fill error hist
+		  string histName = "Error_0." + gate::to_string(j);
+		  gate::Centella::instance()
+			  ->hman()->fill(this->alabel(histName),error);
+	  }
   }
 
   //Hist2d to find the cut
@@ -455,7 +471,7 @@ void petAnalysis::classifyEvent(gate::MCParticle& primary, gate::MCParticle& fir
 		countPhoto++;
 		// std::cout << "\t Photo ->";
 		for(unsigned int j=0; j<primary.GetDaughters().size();j++){
-			//	  std::cout << "\t PDG/Proc/Energy: " << primary.GetDaughters()[j]->GetPDG() << "/" << primary.GetDaughters()[j]->GetCreatorProc() << "/" << primary.GetDaughters()[j]->GetInitialMom().GetE();
+				  std::cout << "\t PDG/Proc/Energy: " << primary.GetDaughters()[j]->GetPDG() << "/" << primary.GetDaughters()[j]->GetCreatorProc() << "/" << primary.GetDaughters()[j]->GetInitialMom().GetE();
 
 			//Electron
 			if(primary.GetDaughters()[j]->GetPDG() == 11){
@@ -474,29 +490,37 @@ void petAnalysis::classifyEvent(gate::MCParticle& primary, gate::MCParticle& fir
 		}else{
 			photoEGamma++;
 		}
-		/*	  std::cout << std::endl;
+		std::cout << std::endl;
 		//If only one particle generated then should be energy deposition (due to geant4 IR cut)
 		if(primary.GetDaughters().size() == 1){
-		//Only one track
-		std::cout << "Tracks: " << primary.GetDaughters()[0]->GetTracks().size();
-		if(primary.GetDaughters()[0]->GetTracks().size() > 0){
-		std::cout << "\t Hits: " << primary.GetDaughters()[0]->GetTracks()[0]->GetHits().size();
-		std::cout << "\t HitsEnergy: " << primary.GetDaughters()[0]->GetTracks()[0]->GetHitsEnergy() << std::endl;
-		}else{
-		std::cout << " noTracks" << primary.GetDaughters()[0]->GetCreatorProc() << " - id:" << evt.GetEventID() << std::endl;
-		std::cout << "Initial x: " << primary.GetDaughters()[0]->GetInitialVtx4D().x() << 
-		" y: " << primary.GetDaughters()[0]->GetInitialVtx4D().y() << 
-		" z: " << primary.GetDaughters()[0]->GetInitialVtx4D().z() <<
-		" t: " << primary.GetDaughters()[0]->GetInitialVtx4D().GetT() << std::endl;
-		std::cout << "Final x: " << primary.GetDaughters()[0]->GetFinalVtx4D().x() << 
-		" y: " << primary.GetDaughters()[0]->GetFinalVtx4D().y() << 
-		" z: " << primary.GetDaughters()[0]->GetFinalVtx4D().z() << 
-		" t: " << primary.GetDaughters()[0]->GetFinalVtx4D().GetT() << std::endl;
-		std::cout << "Initial volume x: " << primary.GetDaughters()[0]->GetInitialVol() << std::endl;
-		std::cout << "Final volume x: " << primary.GetDaughters()[0]->GetFinalVol() << std::endl;
-		std::cout << "Path length: " << primary.GetDaughters()[0]->GetPathLength() << std::endl; 
+			//Only one track
+			std::cout << "Tracks: " << primary.GetDaughters()[0]->GetTracks().size();
+			if(primary.GetDaughters()[0]->GetTracks().size() > 0){
+				std::cout << "\t Hits: " << primary.GetDaughters()[0]->GetTracks()[0]->GetHits().size();
+				std::cout << "\t HitsEnergy: " << primary.GetDaughters()[0]->GetTracks()[0]->GetHitsEnergy() << std::endl;
+			}else{
+				std::cout << " noTracks" << primary.GetDaughters()[0]->GetCreatorProc() << std::endl;
+				std::cout << "Initial x: " << primary.GetDaughters()[0]->GetInitialVtx4D().x() << 
+					" y: " << primary.GetDaughters()[0]->GetInitialVtx4D().y() << 
+					" z: " << primary.GetDaughters()[0]->GetInitialVtx4D().z() <<
+					" t: " << primary.GetDaughters()[0]->GetInitialVtx4D().GetT() << std::endl;
+				std::cout << "Final x: " << primary.GetDaughters()[0]->GetFinalVtx4D().x() << 
+					" y: " << primary.GetDaughters()[0]->GetFinalVtx4D().y() << 
+					" z: " << primary.GetDaughters()[0]->GetFinalVtx4D().z() << 
+					" t: " << primary.GetDaughters()[0]->GetFinalVtx4D().GetT() << std::endl;
+				std::cout << "Initial volume x: " << primary.GetDaughters()[0]->GetInitialVol() << std::endl;
+				std::cout << "Final volume x: " << primary.GetDaughters()[0]->GetFinalVol() << std::endl;
+				std::cout << "Path length: " << primary.GetDaughters()[0]->GetPathLength() << std::endl; 
+			}
 		}
-		}*/
+		//Look for bremsstrahlung
+		std::cout << primary.GetDaughters()[0]->GetPDG() << "e- daughters: " << primary.GetDaughters()[0]->GetDaughters().size();
+		for(unsigned int k=0; k < primary.GetDaughters()[0]->GetDaughters().size() ; k++){
+			std::cout << "\t" << primary.GetDaughters()[0]->GetDaughters()[0]->GetPDG();
+			std::cout << "/" << primary.GetDaughters()[0]->GetDaughters()[0]->GetCreatorProc();
+			std::cout << "/" << primary.GetDaughters()[0]->GetDaughters()[0]->GetPathLength();
+		}
+		std::cout << std::endl;
 	}
 
 	fstore("photoCount",countPhoto);
