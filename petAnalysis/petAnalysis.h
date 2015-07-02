@@ -49,7 +49,9 @@ class petAnalysis : public gate::IAlgo {
   bool nearPlane(gate::Point3D& pt,double distance);
   void fillComptonHist(gate::MCParticle& primary);
   void reconsPerPlane(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& truePt, gate::Point3D& pt);
-
+  void printSensors(std::vector<std::vector<gate::Hit*> >& planes);
+  double findSensors(std::vector<gate::Hit*>& plane, int id);
+ // gate::Hit* findSensors(std::vector<gate::Hit*>& plane, int id);
 
 
   //! finalize algorithm

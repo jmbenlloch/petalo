@@ -142,7 +142,11 @@ bool petAnalysis::execute(gate::Event& evt){
  //Try only events with photoelectric and one vertex
   if(firstDaughter.GetCreatorProc() == std::string("phot") 
 		  && firstDaughter.GetDaughters().size()==0){
+
 	  gate::Point3D trueVertex = firstDaughter.GetInitialVtx(); 
+
+      std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
+
 	  //Classify sensor hits per planes
 	  std::vector<std::vector<gate::Hit*> > planes(6);
 	  splitHitsPerPlane(evt,planes);
@@ -164,6 +168,12 @@ bool petAnalysis::execute(gate::Event& evt){
 		->hman()->fill(this->alabel("y"), reconsPoint.y() - trueVertex.y());
 	  gate::Centella::instance()
 		->hman()->fill(this->alabel("z"), reconsPoint.z() - trueVertex.z());
+
+	  std::cout << "x-x0 = " << reconsPoint.x() - trueVertex.x() << "\t y-y0 = " 
+		  << reconsPoint.y() - trueVertex.y() << "\t z-z0 = " << reconsPoint.z() - trueVertex.z() << std::endl;
+
+	  printSensors(planesCut);
+
   }
 
   //Hist2d to find the cut
@@ -376,6 +386,9 @@ void petAnalysis::reconsPerPlane(std::vector<std::vector<gate::Hit*> > planes, g
 	gate::Centella::instance()
 		->hman()->fill(this->alabel("z1"), z - truePt.z());
 
+	std::cout << "y1: " << y << "\ty1-y = " << y - truePt.y() << "\t Var = " << barycenter->getX1Err() << std::endl;
+	std::cout << "z1: " << z << "\tz1-z = " << z - truePt.z() << "\t Var = " << barycenter->getX2Err() << std::endl;
+
 	// Plane 2
 	barycenter->setPlane("xy");
 	barycenter->computePosition(planes[2]);
@@ -388,6 +401,9 @@ void petAnalysis::reconsPerPlane(std::vector<std::vector<gate::Hit*> > planes, g
 	gate::Centella::instance()
 		->hman()->fill(this->alabel("y2"), y - truePt.y());
 
+	std::cout << "x2: " << x << "\tx2-x = " << x - truePt.x() << "\t Var = " << barycenter->getX1Err() << std::endl;
+	std::cout << "y2: " << y << "\ty2-y = " << y - truePt.y() << "\t Var = " << barycenter->getX2Err() << std::endl;
+
 	// Plane 3
 	barycenter->setPlane("yz");
 	barycenter->computePosition(planes[3]);
@@ -399,6 +415,9 @@ void petAnalysis::reconsPerPlane(std::vector<std::vector<gate::Hit*> > planes, g
 		->hman()->fill(this->alabel("y3"), y - truePt.y());
 	gate::Centella::instance()
 		->hman()->fill(this->alabel("z3"), z - truePt.z());
+
+	std::cout << "y3: " << y << "\ty3-y = " << y - truePt.y() << "\t Var = " << barycenter->getX1Err() << std::endl;
+	std::cout << "z3: " << z << "\tz3-z = " << z - truePt.z() << "\t Var = " << barycenter->getX2Err() << std::endl;
 	
 	// Plane 4
 	barycenter->setPlane("xz");
@@ -408,9 +427,12 @@ void petAnalysis::reconsPerPlane(std::vector<std::vector<gate::Hit*> > planes, g
 	gate::Centella::instance()
 		->hman()->fill(this->alabel("Plane4"), std::sqrt(std::pow(x - truePt.x(),2)  + std::pow(z - truePt.z(),2)));
 	gate::Centella::instance()
-		->hman()->fill(this->alabel("x4"), x - truePt.x(),2);
+		->hman()->fill(this->alabel("x4"), x - truePt.x());
 	gate::Centella::instance()
 		->hman()->fill(this->alabel("z4"), z - truePt.z());
+
+	std::cout << "x4: " << x << "\tx4-x = " << x - truePt.x() << "\t Var = " << barycenter->getX1Err() << std::endl;
+	std::cout << "z4: " << z << "\tz4-z = " << z - truePt.z() << "\t Var = " << barycenter->getX2Err() << std::endl;
 
 	// Plane 5
 	barycenter->setPlane("xz");
@@ -423,6 +445,9 @@ void petAnalysis::reconsPerPlane(std::vector<std::vector<gate::Hit*> > planes, g
 		->hman()->fill(this->alabel("x5"), x - truePt.x());
 	gate::Centella::instance()
 		->hman()->fill(this->alabel("z5"), z - truePt.z());
+
+	std::cout << "x5: " << x << "\tx5-x = " << x - truePt.x() << "\t Var = " << barycenter->getX1Err() << std::endl;
+	std::cout << "z5: " << z << "\tz5-z = " << z - truePt.z() << "\t Var = " << barycenter->getX2Err() << std::endl;
 
 }
 
@@ -757,3 +782,78 @@ void petAnalysis::fillComptonHist(gate::MCParticle& primary){
 		->hman()->fill(this->alabel("Compton"),count);
 }
 
+void petAnalysis::printSensors(std::vector<std::vector<gate::Hit*> >& planes){
+	std::cout << "---------- Sensors -----------\n";
+	//for(unsigned int i=0;i<6;i++){
+	//	for(unsigned int j=0;j<planes[i].size();j++){
+	//		std::cout << "SensorID: " << planes[i][j]->GetSensorID() << "\tAmplitude: " << planes[i][j]->GetAmplitude() << std::endl;
+	//	}
+	//}
+	int id;
+	std::cout << "---------- Plane 1 -----------\n";
+	std::cout << "\t-45\t\t-35\t\t-25\t\t-15\t\t-05\t\t+05\t\t+15\t\t+25\t\t+35\t\t+45" << std::endl;
+	for(int i=0;i<10;i++){
+		std::cout << (-45+i*10);
+		for(int j=0;j<10;j++){
+			id = 1000 + i + (9-j)*10;
+			std::cout << "\tid" << id << ": " << findSensors(planes[1],id);
+		}
+		std::cout << std::endl;
+	}
+	std::cout << "---------- Plane 2 -----------\n";
+	std::cout << "\t-45\t\t-35\t\t-25\t\t-15\t\t-05\t\t+05\t\t+15\t\t+25\t\t+35\t\t+45" << std::endl;
+	for(int i=0;i<10;i++){
+		std::cout << (-45+i*10);
+		for(int j=0;j<10;j++){
+			id = 2000 + i*10 + (9-j);
+			std::cout << "\tid" << id << ": " << findSensors(planes[2],id);
+		}
+		std::cout << std::endl;
+	}
+	std::cout << "---------- Plane 3 -----------\n";
+	std::cout << "\t-45\t\t-35\t\t-25\t\t-15\t\t-05\t\t+05\t\t+15\t\t+25\t\t+35\t\t+45" << std::endl;
+	for(int i=0;i<10;i++){
+		std::cout << (-45+i*10);
+		for(int j=0;j<10;j++){
+			id = 3000 + (9-i) + (9-j)*10;
+			std::cout << "\tid" << id << ": " << findSensors(planes[3],id);
+		}
+		std::cout << std::endl;
+	}
+	std::cout << "---------- Plane 4 -----------\n";
+	std::cout << "\t-45\t\t-35\t\t-25\t\t-15\t\t-05\t\t+05\t\t+15\t\t+25\t\t+35\t\t+45" << std::endl;
+	for(int i=0;i<10;i++){
+		std::cout << (-45+i*10);
+		for(int j=0;j<10;j++){
+			id = 4000 + (9-i) + j*10;
+			std::cout << "\tid" << id << ": " << findSensors(planes[4],id);
+		}
+		std::cout << std::endl;
+	}
+	std::cout << "---------- Plane 5 -----------\n";
+	std::cout << "\t-45\t\t-35\t\t-25\t\t-15\t\t-05\t\t+05\t\t+15\t\t+25\t\t+35\t\t+45" << std::endl;
+	for(int i=0;i<10;i++){
+		std::cout << (-45+i*10);
+		for(int j=0;j<10;j++){
+			id = 5000 + (9-i) + (9-j)*10;
+			std::cout << "\tid" << id << ": " << findSensors(planes[5],id);
+		}
+		std::cout << std::endl;
+	}
+}
+
+double petAnalysis::findSensors(std::vector<gate::Hit*>& plane, int id){
+//gate::Hit* petAnalysis::findSensors(std::vector<gate::Hit*>& plane, int id){
+	double amplitude = 0;
+//    gate::Hit* hit;
+	for(unsigned int i=0;i<plane.size();i++){
+		if(plane[i]->GetSensorID() == id){
+			amplitude = plane[i]->GetAmplitude();
+			//hit = plane[i];
+	//		std::cout << "(" << plane[i]->GetPosition().x() << "," << plane[i]->GetPosition().y() << "," << plane[i]->GetPosition().z() << ")";
+			break;
+		}
+	}
+	return amplitude;
+//	return hit;
+}
