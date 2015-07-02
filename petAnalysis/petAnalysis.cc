@@ -4,7 +4,7 @@
 #include "TF1.h"
 #include<petAnalysis.h>
 
-#define CUT 0.2
+#define CUT 0.7
 
 ClassImp(petAnalysis)
 
@@ -50,36 +50,44 @@ bool petAnalysis::initialize(){
 	  string histName = "Plane" + gate::to_string(i);
 	  string histTitle = "Plane " + gate::to_string(i);
 	  gate::Centella::instance()
-		  ->hman()->h1(this->alabel(histName),histTitle,30000,0,120);
+		  ->hman()->h1(this->alabel(histName),histTitle,100,0,120);
   }
 
 	  gate::Centella::instance()
-		  ->hman()->h1(this->alabel("y1"),"Plane 1 y-y0",30000,-120,120);
+		  ->hman()->h1(this->alabel("y1"),"Plane 1 y-y0",100,-120,120);
 	  gate::Centella::instance()
-		  ->hman()->h1(this->alabel("z1"),"Plane 1 z-z0",30000,-120,120);
+		  ->hman()->h1(this->alabel("z1"),"Plane 1 z-z0",100,-120,120);
 	  gate::Centella::instance()
-		  ->hman()->h1(this->alabel("x2"),"Plane 2 x-x0",30000,-120,120);
+		  ->hman()->h1(this->alabel("x2"),"Plane 2 x-x0",100,-120,120);
 	  gate::Centella::instance()
-		  ->hman()->h1(this->alabel("y2"),"Plane 2 y-y0",30000,-120,120);
+		  ->hman()->h1(this->alabel("y2"),"Plane 2 y-y0",100,-120,120);
 	  gate::Centella::instance()
-		  ->hman()->h1(this->alabel("y3"),"Plane 3 y-y0",30000,-120,120);
+		  ->hman()->h1(this->alabel("y3"),"Plane 3 y-y0",100,-120,120);
 	  gate::Centella::instance()
-		  ->hman()->h1(this->alabel("z3"),"Plane 3 z-z0",30000,-120,120);
+		  ->hman()->h1(this->alabel("z3"),"Plane 3 z-z0",100,-120,120);
 	  gate::Centella::instance()
-		  ->hman()->h1(this->alabel("x4"),"Plane 4 x-x0",30000,-120,120);
+		  ->hman()->h1(this->alabel("x4"),"Plane 4 x-x0",100,-120,120);
 	  gate::Centella::instance()
-		  ->hman()->h1(this->alabel("z4"),"Plane 4 z-z0",30000,-120,120);
+		  ->hman()->h1(this->alabel("z4"),"Plane 4 z-z0",100,-120,120);
 	  gate::Centella::instance()
-		  ->hman()->h1(this->alabel("x5"),"Plane 5 x-x0",30000,-120,120);
+		  ->hman()->h1(this->alabel("x5"),"Plane 5 x-x0",100,-120,120);
 	  gate::Centella::instance()
-		  ->hman()->h1(this->alabel("z5"),"Plane 5 z-z0",30000,-120,120);
+		  ->hman()->h1(this->alabel("z5"),"Plane 5 z-z0",100,-120,120);
 
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("x"),"x-x0",30000,-120,120);
+	  ->hman()->h1(this->alabel("x"),"x-x0",100,-120,120);
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("y"),"y-y0",30000,-120,120);
+	  ->hman()->h1(this->alabel("y"),"y-y0",100,-120,120);
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("z"),"z-z0",30000,-120,120);
+	  ->hman()->h1(this->alabel("z"),"z-z0",100,-120,120);
+
+  //best
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("xbest"),"x-x0",100,-120,120);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("ybest"),"y-y0",100,-120,120);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("zbest"),"z-z0",100,-120,120);
 
   for(unsigned int i=0;i<6;i++){
 	  string histName = "SiPM" + gate::to_string(i);
@@ -159,9 +167,13 @@ bool petAnalysis::execute(gate::Event& evt){
 
 	  //Point Reconstruction
 	  gate::Point3D reconsPoint; 
+	  gate::Point3D reconsPoint2; 
+	  gate::Point3D reconsPoint3; 
 	  reconsPerPlane(planesCut,trueVertex,reconsPoint);  
 
 	  reconstruction(planesCut,reconsPoint);
+	  reconstructionNoNorm(planesCut,reconsPoint2);
+	  bestPointReconsNoNorm(planesCut,trueVertex,reconsPoint3);
 	  gate::Centella::instance()
 		->hman()->fill(this->alabel("x"), reconsPoint.x() - trueVertex.x());
 	  gate::Centella::instance()
@@ -169,10 +181,14 @@ bool petAnalysis::execute(gate::Event& evt){
 	  gate::Centella::instance()
 		->hman()->fill(this->alabel("z"), reconsPoint.z() - trueVertex.z());
 
-	  std::cout << "x-x0 = " << reconsPoint.x() - trueVertex.x() << "\t y-y0 = " 
+	  std::cout << "Norm: x-x0 = " << reconsPoint.x() - trueVertex.x() << "\t y-y0 = " 
 		  << reconsPoint.y() - trueVertex.y() << "\t z-z0 = " << reconsPoint.z() - trueVertex.z() << std::endl;
+	  std::cout << "NoNorm: x-x0 = " << reconsPoint2.x() - trueVertex.x() << "\t y-y0 = " 
+		  << reconsPoint2.y() - trueVertex.y() << "\t z-z0 = " << reconsPoint2.z() - trueVertex.z() << std::endl;
+	  std::cout << "Best: x-x0 = " << reconsPoint3.x() - trueVertex.x() << "\t y-y0 = " 
+		  << reconsPoint3.y() - trueVertex.y() << "\t z-z0 = " << reconsPoint3.z() - trueVertex.z() << std::endl;
 
-	  printSensors(planesCut);
+//	  printSensors(planesCut);
 
   }
 
@@ -231,28 +247,28 @@ void petAnalysis::bestPointRecons(std::vector<std::vector<gate::Hit*> > planes, 
 	z1Err = barycenter->getX2Err();
 	//Plane 2
 	barycenter->setPlane("xy");
-	barycenter->computePosition(planes[1]);
+	barycenter->computePosition(planes[2]);
 	x2 = barycenter->getX1();
 	y2 = barycenter->getX2();
 	x2Err = barycenter->getX1Err();
 	y2Err = barycenter->getX2Err();
 	//Plane 3
 	barycenter->setPlane("yz");
-	barycenter->computePosition(planes[1]);
+	barycenter->computePosition(planes[3]);
 	y3 = barycenter->getX1();
 	z3 = barycenter->getX2();
 	y3Err = barycenter->getX1Err();
 	z3Err = barycenter->getX2Err();
 	//Plane 4
 	barycenter->setPlane("xz");
-	barycenter->computePosition(planes[1]);
+	barycenter->computePosition(planes[4]);
 	x4 = barycenter->getX1();
 	z4 = barycenter->getX2();
 	x4Err = barycenter->getX1Err();
 	z4Err = barycenter->getX2Err();
 	//Plane 5
 	barycenter->setPlane("xz");
-	barycenter->computePosition(planes[1]);
+	barycenter->computePosition(planes[5]);
 	x5 = barycenter->getX1();
 	z5 = barycenter->getX2();
 	x5Err = barycenter->getX1Err();
@@ -472,6 +488,12 @@ void petAnalysis::reconstruction(std::vector<std::vector<gate::Hit*> > planes, g
 	z += barycenter->getX2() / std::pow(barycenter->getX2Err(),2);
 	yNorm += std::pow(barycenter->getX1Err(),-2);
 	zNorm += std::pow(barycenter->getX2Err(),-2);
+	// Plane 2
+	barycenter->setPlane("xy");
+	barycenter->computePosition(planes[2]);
+	//std::cout << "Plane 2: x = " << barycenter->getX1() << " ; y = " << barycenter->getX2() << std::endl;
+	x += barycenter->getX1() / std::pow(barycenter->getX1Err(),2);
+	y += barycenter->getX2() / std::pow(barycenter->getX2Err(),2);
 	xNorm += std::pow(barycenter->getX1Err(),-2);
 	yNorm += std::pow(barycenter->getX2Err(),-2);
 	// Plane 3
@@ -797,14 +819,14 @@ void petAnalysis::printSensors(std::vector<std::vector<gate::Hit*> >& planes){
 	std::cout << "---------- Plane 1 (y,z) -----------\n";
 	std::cout << "\t-45\t\t-35\t\t-25\t\t-15\t\t-05\t\t+05\t\t+15\t\t+25\t\t+35\t\t+45" << std::endl;
 	for(int i=0;i<10;i++){
-		std::cout << (-45+i*10);
+		std::cout << (45-i*10);
 		for(int j=0;j<10;j++){
 			id = 1000 + i + (9-j)*10;
 			count = findSensors(planes[1],id);
 			std::cout << "\tid" << id << ": " << count;
 			total += count;
 			row += (-45+j*10) * count;
-			colSum[j] += (-45+i*10)*count;
+			colSum[j] += (45-i*10)*count;
 		}
 		std::cout << "\t " << row << std::endl;
 		rowTotal += row;
@@ -812,6 +834,7 @@ void petAnalysis::printSensors(std::vector<std::vector<gate::Hit*> >& planes){
 	}
 	std::cout << "Col: ";
 	for(int i=0;i<10;i++){
+		colTotal += colSum[i];
 		std::cout << "\t\t" << colSum[i];
 	}
 	std::cout << std::endl;
@@ -825,14 +848,14 @@ void petAnalysis::printSensors(std::vector<std::vector<gate::Hit*> >& planes){
 	std::cout << "---------- Plane 2 (x,y) -----------\n";
 	std::cout << "\t-45\t\t-35\t\t-25\t\t-15\t\t-05\t\t+05\t\t+15\t\t+25\t\t+35\t\t+45" << std::endl;
 	for(int i=0;i<10;i++){
-		std::cout << (-45+i*10);
+		std::cout << (45-i*10);
 		for(int j=0;j<10;j++){
 			id = 2000 + i*10 + (9-j);
 			count = findSensors(planes[2],id);
 			std::cout << "\tid" << id << ": " << count;
 			total += count;
 			row += (-45+j*10) * count;
-			colSum[j] += (-45+i*10)*count;
+			colSum[j] += (45-i*10)*count;
 		}
 		std::cout << "\t " << row << std::endl;
 		rowTotal += row;
@@ -840,6 +863,7 @@ void petAnalysis::printSensors(std::vector<std::vector<gate::Hit*> >& planes){
 	}
 	std::cout << "Col: ";
 	for(int i=0;i<10;i++){
+		colTotal += colSum[i];
 		std::cout << "\t\t" << colSum[i];
 	}
 	std::cout << std::endl;
@@ -853,14 +877,14 @@ void petAnalysis::printSensors(std::vector<std::vector<gate::Hit*> >& planes){
 	std::cout << "---------- Plane 3 (y,z) -----------\n";
 	std::cout << "\t-45\t\t-35\t\t-25\t\t-15\t\t-05\t\t+05\t\t+15\t\t+25\t\t+35\t\t+45" << std::endl;
 	for(int i=0;i<10;i++){
-		std::cout << (-45+i*10);
+		std::cout << (45-i*10);
 		for(int j=0;j<10;j++){
 			id = 3000 + (9-i) + (9-j)*10;
 			count = findSensors(planes[3],id);
 			std::cout << "\tid" << id << ": " << count;
 			total += count;
 			row += (-45+j*10) * count;
-			colSum[j] += (-45+i*10)*count;
+			colSum[j] += (45-i*10)*count;
 		}
 		std::cout << "\t " << row << std::endl;
 		rowTotal += row;
@@ -868,6 +892,7 @@ void petAnalysis::printSensors(std::vector<std::vector<gate::Hit*> >& planes){
 	}
 	std::cout << "Col: ";
 	for(int i=0;i<10;i++){
+		colTotal += colSum[i];
 		std::cout << "\t\t" << colSum[i];
 	}
 	std::cout << std::endl;
@@ -881,14 +906,14 @@ void petAnalysis::printSensors(std::vector<std::vector<gate::Hit*> >& planes){
 	std::cout << "---------- Plane 4 (x,z) -----------\n";
 	std::cout << "\t-45\t\t-35\t\t-25\t\t-15\t\t-05\t\t+05\t\t+15\t\t+25\t\t+35\t\t+45" << std::endl;
 	for(int i=0;i<10;i++){
-		std::cout << (-45+i*10);
+		std::cout << (45-i*10);
 		for(int j=0;j<10;j++){
 			id = 4000 + (9-i) + j*10;
 			count = findSensors(planes[4],id);
 			std::cout << "\tid" << id << ": " << count;
 			total += count;
 			row += (-45+j*10) * count;
-			colSum[j] += (-45+i*10)*count;
+			colSum[j] += (45-i*10)*count;
 		}
 		std::cout << "\t " << row << std::endl;
 		rowTotal += row;
@@ -896,6 +921,7 @@ void petAnalysis::printSensors(std::vector<std::vector<gate::Hit*> >& planes){
 	}
 	std::cout << "Col: ";
 	for(int i=0;i<10;i++){
+		colTotal += colSum[i];
 		std::cout << "\t\t" << colSum[i];
 	}
 	std::cout << std::endl;
@@ -909,14 +935,14 @@ void petAnalysis::printSensors(std::vector<std::vector<gate::Hit*> >& planes){
 	std::cout << "---------- Plane 5 (x,z) -----------\n";
 	std::cout << "\t-45\t\t-35\t\t-25\t\t-15\t\t-05\t\t+05\t\t+15\t\t+25\t\t+35\t\t+45\t\tsum" << std::endl;
 	for(int i=0;i<10;i++){
-		std::cout << (-45+i*10);
+		std::cout << (45-i*10);
 		for(int j=0;j<10;j++){
 			id = 5000 + (9-i) + (9-j)*10;
 			count = findSensors(planes[5],id);
 			std::cout << "\tid" << id << ": " << count;
 			total += count;
 			row += (-45+j*10) * count;
-			colSum[j] += (-45+i*10)*count;
+			colSum[j] += (45-i*10)*count;
 		}
 		std::cout << "\t " << row << std::endl;
 		rowTotal += row;
@@ -946,4 +972,136 @@ double petAnalysis::findSensors(std::vector<gate::Hit*>& plane, int id){
 	}
 	return amplitude;
 //	return hit;
+}
+
+void petAnalysis::reconstructionNoNorm(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& pt){
+	//Calculate barycenter
+	double x=0.,y=0.,z=0.;
+	util::barycenterAlgorithm* barycenter = new util::barycenterAlgorithm();
+
+	// Plane 0
+	/*  barycenter->setPlane("yz");
+		barycenter->computePosition(plane0);
+		std::cout << "Plane 0: y = " << barycenter->getX1() << " ; z = " << barycenter->getX2() << std::endl;
+		y += barycenter->getX1() / std::pow(barycenter->getX1Err(),2);
+		z += barycenter->getX2() / std::pow(barycenter->getX2Err(),2);
+		yNorm += std::pow(barycenter->getX1Err(),-2);
+		zNorm += std::pow(barycenter->getX2Err(),-2);*/
+	// Plane 1
+	barycenter->setPlane("yz");
+	barycenter->computePosition(planes[1]);
+	y += barycenter->getX1();
+	z += barycenter->getX2();
+	// Plane 2
+	barycenter->setPlane("xy");
+	barycenter->computePosition(planes[2]);
+	x += barycenter->getX1();
+	y += barycenter->getX2();
+	// Plane 3
+	barycenter->setPlane("yz");
+	barycenter->computePosition(planes[3]);
+	y += barycenter->getX1();
+	z += barycenter->getX2();
+	// Plane 4
+	barycenter->setPlane("xz");
+	barycenter->computePosition(planes[4]);
+	x += barycenter->getX1();
+	z += barycenter->getX2();
+	// Plane 5
+	barycenter->setPlane("xz");
+	barycenter->computePosition(planes[4]);
+	x += barycenter->getX1();
+	z += barycenter->getX2();
+
+	// Average
+	x = x / 3.0;
+	y = y / 3.0;
+	z = z / 3.0;
+
+	pt.x(x);
+	pt.y(y);
+	pt.z(z);
+}
+
+//only for 5 faces
+void petAnalysis::bestPointReconsNoNorm(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& truePt, gate::Point3D& pt){
+	double error=0.;
+	gate::Point3D auxPt;
+	util::barycenterAlgorithm* barycenter = new util::barycenterAlgorithm();
+
+	double y1,z1,x2,y2,y3,z3,x4,z4,x5,z5;
+	//Plane 1
+	barycenter->setPlane("yz");
+	barycenter->computePosition(planes[1]);
+	y1 = barycenter->getX1();
+	z1 = barycenter->getX2();
+	//Plane 2
+	barycenter->setPlane("xy");
+	barycenter->computePosition(planes[2]);
+	x2 = barycenter->getX1();
+	y2 = barycenter->getX2();
+	//Plane 3
+	barycenter->setPlane("yz");
+	barycenter->computePosition(planes[3]);
+	y3 = barycenter->getX1();
+	z3 = barycenter->getX2();
+	//Plane 4
+	barycenter->setPlane("xz");
+	barycenter->computePosition(planes[4]);
+	x4 = barycenter->getX1();
+	z4 = barycenter->getX2();
+	//Plane 5
+	barycenter->setPlane("xz");
+	barycenter->computePosition(planes[5]);
+	x5 = barycenter->getX1();
+	z5 = barycenter->getX2();
+
+	std::cout << "x2 " << x2 << " x4: " << x4 << " x5: "<< x5 << std::endl;
+	//Select best x
+	error = std::abs(x2 - truePt.x());
+	pt.x(x2);
+	if(std::abs(x4 - truePt.x()) < error){
+		pt.x(x4);
+		error = std::abs(x4 - truePt.x());
+	}
+	if(std::abs(x5 - truePt.x()) < error){
+		pt.x(x5);
+		error = std::abs(x5 - truePt.x());
+	}
+
+	//Select best y
+	error = std::abs(y1 - truePt.y());
+	pt.y(y1);
+	if(std::abs(y2 - truePt.y()) < error){
+		pt.y(y2);
+		error = std::abs(y2 - truePt.y());
+	}
+	if(std::abs(y3 - truePt.y()) < error){
+		pt.y(y3);
+		error = std::abs(y3 - truePt.y());
+	}
+
+	//Select best z
+	error = std::abs(z1 - truePt.z());
+	pt.z(z1);
+	if(std::abs(z3 - truePt.z()) < error){
+		pt.z(z3);
+		error = std::abs(z3 - truePt.z());
+	}
+	if(std::abs(z4 - truePt.z()) < error){
+		pt.z(z4);
+		error = std::abs(z4 - truePt.z());
+	}
+	if(std::abs(z5 - truePt.z()) < error){
+		pt.z(z5);
+		error = std::abs(z5 - truePt.z());
+	}
+	std::cout << std::endl;
+
+	gate::Centella::instance()
+		->hman()->fill(this->alabel("xbest"), pt.x() - truePt.x());
+	gate::Centella::instance()
+		->hman()->fill(this->alabel("ybest"), pt.y() - truePt.y());
+	gate::Centella::instance()
+		->hman()->fill(this->alabel("zbest"), pt.z() - truePt.z());
 }

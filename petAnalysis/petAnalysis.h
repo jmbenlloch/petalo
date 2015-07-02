@@ -27,7 +27,9 @@ class petAnalysis : public gate::IAlgo {
   
   //Position reconstruction using barycenter
   void reconstruction(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& pt);
+  void reconstructionNoNorm(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& pt);
   void bestPointRecons(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& truePt, gate::Point3D& pt);
+  void bestPointReconsNoNorm(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& truePt, gate::Point3D& pt);
   //Fill energy histogram
   void energyHist(gate::Event& evt);
   //Find first particle in a vector of particles by its creation time
@@ -51,7 +53,6 @@ class petAnalysis : public gate::IAlgo {
   void reconsPerPlane(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& truePt, gate::Point3D& pt);
   void printSensors(std::vector<std::vector<gate::Hit*> >& planes);
   double findSensors(std::vector<gate::Hit*>& plane, int id);
- // gate::Hit* findSensors(std::vector<gate::Hit*>& plane, int id);
 
 
   //! finalize algorithm
