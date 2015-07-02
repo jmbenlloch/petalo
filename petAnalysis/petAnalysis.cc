@@ -1,4 +1,3 @@
-
 #include <algorithm> 
 #include "barycenterAlgorithm.hh"
 #include "TF1.h"
@@ -53,6 +52,10 @@ bool petAnalysis::initialize(){
 		  ->hman()->h1(this->alabel(histName),histTitle,100,0,120);
   }
 
+	  gate::Centella::instance()
+		  ->hman()->h1(this->alabel("x0"),"Plane 0 x-x0",100,-120,120);
+	  gate::Centella::instance()
+		  ->hman()->h1(this->alabel("y0"),"Plane 0 y-y0",100,-120,120);
 	  gate::Centella::instance()
 		  ->hman()->h1(this->alabel("y1"),"Plane 1 y-y0",100,-120,120);
 	  gate::Centella::instance()
@@ -175,11 +178,11 @@ bool petAnalysis::execute(gate::Event& evt){
 	  reconstructionNoNorm(planesCut,reconsPoint2);
 	  bestPointReconsNoNorm(planesCut,trueVertex,reconsPoint3);
 	  gate::Centella::instance()
-		->hman()->fill(this->alabel("x"), reconsPoint.x() - trueVertex.x());
+		->hman()->fill(this->alabel("x"), reconsPoint2.x() - trueVertex.x());
 	  gate::Centella::instance()
-		->hman()->fill(this->alabel("y"), reconsPoint.y() - trueVertex.y());
+		->hman()->fill(this->alabel("y"), reconsPoint2.y() - trueVertex.y());
 	  gate::Centella::instance()
-		->hman()->fill(this->alabel("z"), reconsPoint.z() - trueVertex.z());
+		->hman()->fill(this->alabel("z"), reconsPoint2.z() - trueVertex.z());
 
 	  std::cout << "Norm: x-x0 = " << reconsPoint.x() - trueVertex.x() << "\t y-y0 = " 
 		  << reconsPoint.y() - trueVertex.y() << "\t z-z0 = " << reconsPoint.z() - trueVertex.z() << std::endl;
@@ -236,8 +239,15 @@ void petAnalysis::bestPointRecons(std::vector<std::vector<gate::Hit*> > planes, 
 	gate::Point3D auxPt;
 	util::barycenterAlgorithm* barycenter = new util::barycenterAlgorithm();
 
-	double y1,z1,x2,y2,y3,z3,x4,z4,x5,z5;
-	double y1Err,z1Err,x2Err,y2Err,y3Err,z3Err,x4Err,z4Err,x5Err,z5Err;
+	double x0,y0,y1,z1,x2,y2,y3,z3,x4,z4,x5,z5;
+	double x0Err,y0Err,y1Err,z1Err,x2Err,y2Err,y3Err,z3Err,x4Err,z4Err,x5Err,z5Err;
+	//Plane 0
+	barycenter->setPlane("xy");
+	barycenter->computePosition(planes[0]);
+	x0 = barycenter->getX1();
+	y0 = barycenter->getX2();
+	x0Err = barycenter->getX1Err();
+	y0Err = barycenter->getX2Err();
 	//Plane 1
 	barycenter->setPlane("yz");
 	barycenter->computePosition(planes[1]);
@@ -390,6 +400,21 @@ void petAnalysis::reconsPerPlane(std::vector<std::vector<gate::Hit*> > planes, g
 	double x=0.,y=0.,z=0.;
 	util::barycenterAlgorithm* barycenter = new util::barycenterAlgorithm();
 
+	// Plane 0
+	barycenter->setPlane("xy");
+	barycenter->computePosition(planes[0]);
+	x = barycenter->getX1();
+	y = barycenter->getX2();
+	gate::Centella::instance()
+		->hman()->fill(this->alabel("Plane0"), std::sqrt(std::pow(x - truePt.x(),2)  + std::pow(y - truePt.y(),2)));
+	gate::Centella::instance()
+		->hman()->fill(this->alabel("x0"), x - truePt.x());
+	gate::Centella::instance()
+		->hman()->fill(this->alabel("y0"), y - truePt.y());
+
+	std::cout << "x0: " << x << "\tx0-x = " << x - truePt.x() << "\t Var = " << barycenter->getX1Err() << std::endl;
+	std::cout << "y0: " << y << "\ty0-y = " << y - truePt.y() << "\t Var = " << barycenter->getX2Err() << std::endl;
+
 	// Plane 1
 	barycenter->setPlane("yz");
 	barycenter->computePosition(planes[1]);
@@ -473,13 +498,13 @@ void petAnalysis::reconstruction(std::vector<std::vector<gate::Hit*> > planes, g
 	util::barycenterAlgorithm* barycenter = new util::barycenterAlgorithm();
 
 	// Plane 0
-	/*  barycenter->setPlane("yz");
-		barycenter->computePosition(plane0);
-		std::cout << "Plane 0: y = " << barycenter->getX1() << " ; z = " << barycenter->getX2() << std::endl;
-		y += barycenter->getX1() / std::pow(barycenter->getX1Err(),2);
-		z += barycenter->getX2() / std::pow(barycenter->getX2Err(),2);
-		yNorm += std::pow(barycenter->getX1Err(),-2);
-		zNorm += std::pow(barycenter->getX2Err(),-2);*/
+	barycenter->setPlane("xy");
+	barycenter->computePosition(planes[0]);
+	// std::cout << "Plane 1: y = " << barycenter->getX1() << " ; z = " << barycenter->getX2() << std::endl;
+	x += barycenter->getX1() / std::pow(barycenter->getX1Err(),2);
+	y += barycenter->getX2() / std::pow(barycenter->getX2Err(),2);
+	xNorm += std::pow(barycenter->getX1Err(),-2);
+	yNorm += std::pow(barycenter->getX2Err(),-2);
 	// Plane 1
 	barycenter->setPlane("yz");
 	barycenter->computePosition(planes[1]);
@@ -980,13 +1005,10 @@ void petAnalysis::reconstructionNoNorm(std::vector<std::vector<gate::Hit*> > pla
 	util::barycenterAlgorithm* barycenter = new util::barycenterAlgorithm();
 
 	// Plane 0
-	/*  barycenter->setPlane("yz");
-		barycenter->computePosition(plane0);
-		std::cout << "Plane 0: y = " << barycenter->getX1() << " ; z = " << barycenter->getX2() << std::endl;
-		y += barycenter->getX1() / std::pow(barycenter->getX1Err(),2);
-		z += barycenter->getX2() / std::pow(barycenter->getX2Err(),2);
-		yNorm += std::pow(barycenter->getX1Err(),-2);
-		zNorm += std::pow(barycenter->getX2Err(),-2);*/
+	barycenter->setPlane("xy");
+	barycenter->computePosition(planes[0]);
+	x += barycenter->getX1();
+	y += barycenter->getX2();
 	// Plane 1
 	barycenter->setPlane("yz");
 	barycenter->computePosition(planes[1]);
@@ -1014,22 +1036,27 @@ void petAnalysis::reconstructionNoNorm(std::vector<std::vector<gate::Hit*> > pla
 	z += barycenter->getX2();
 
 	// Average
-	x = x / 3.0;
-	y = y / 3.0;
-	z = z / 3.0;
+	// TODO: Adapt to the number of planes
+	x = x / 4.0;
+	y = y / 4.0;
+	z = z / 4.0;
 
 	pt.x(x);
 	pt.y(y);
 	pt.z(z);
 }
 
-//only for 5 faces
 void petAnalysis::bestPointReconsNoNorm(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& truePt, gate::Point3D& pt){
 	double error=0.;
 	gate::Point3D auxPt;
 	util::barycenterAlgorithm* barycenter = new util::barycenterAlgorithm();
 
-	double y1,z1,x2,y2,y3,z3,x4,z4,x5,z5;
+	double x0,y0,y1,z1,x2,y2,y3,z3,x4,z4,x5,z5;
+	//Plane 0
+	barycenter->setPlane("xy");
+	barycenter->computePosition(planes[0]);
+	x0 = barycenter->getX1();
+	y0 = barycenter->getX2();
 	//Plane 1
 	barycenter->setPlane("yz");
 	barycenter->computePosition(planes[1]);
@@ -1058,8 +1085,12 @@ void petAnalysis::bestPointReconsNoNorm(std::vector<std::vector<gate::Hit*> > pl
 
 	std::cout << "x2 " << x2 << " x4: " << x4 << " x5: "<< x5 << std::endl;
 	//Select best x
-	error = std::abs(x2 - truePt.x());
-	pt.x(x2);
+	error = std::abs(x0 - truePt.x());
+	pt.x(x0);
+	if(std::abs(x2 - truePt.x()) < error){
+		pt.x(x2);
+		error = std::abs(x2 - truePt.x());
+	}
 	if(std::abs(x4 - truePt.x()) < error){
 		pt.x(x4);
 		error = std::abs(x4 - truePt.x());
@@ -1070,8 +1101,12 @@ void petAnalysis::bestPointReconsNoNorm(std::vector<std::vector<gate::Hit*> > pl
 	}
 
 	//Select best y
-	error = std::abs(y1 - truePt.y());
-	pt.y(y1);
+	error = std::abs(y0 - truePt.y());
+	pt.y(y0);
+	if(std::abs(y1 - truePt.y()) < error){
+		pt.y(y1);
+		error = std::abs(y1 - truePt.y());
+	}
 	if(std::abs(y2 - truePt.y()) < error){
 		pt.y(y2);
 		error = std::abs(y2 - truePt.y());
