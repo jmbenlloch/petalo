@@ -51,8 +51,8 @@ util::barycenterAlgorithm::computePosition(const vector<gate::Hit*>& sensors)
     x2Pos_ += x2pos * sensors[i]->GetAmplitude() / sumE;
 
     // sigma
-	x1pos2 += std::pow(x1pos * sensors[i]->GetAmplitude(), 2) / sumE;
-	x2pos2 += std::pow(x2pos * sensors[i]->GetAmplitude(), 2) / sumE;
+	x1pos2 += sensors[i]->GetAmplitude() * std::pow(x1pos, 2) / sumE;
+	x2pos2 += sensors[i]->GetAmplitude() * std::pow(x2pos, 2) / sumE;
 
   }
   // Sqrt to get error.

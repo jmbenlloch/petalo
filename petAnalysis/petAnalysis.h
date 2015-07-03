@@ -31,6 +31,8 @@ class petAnalysis : public gate::IAlgo {
   void reconstructionNoNorm(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& pt);
   void bestPointRecons(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& truePt, gate::Point3D& pt);
   void bestPointReconsNoNorm(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& truePt, gate::Point3D& pt);
+  void reconstruc2NearestPlanes(std::vector<std::vector<gate::Hit*> > planes, std::vector<std::vector<gate::Hit*> > planesNoCut, gate::Point3D& pt);
+  void reconstruc2NearestPlanesByMaxSiPM(std::vector<std::vector<gate::Hit*> > planes, std::vector<std::vector<gate::Hit*> > planesNoCut, gate::Point3D& pt);
   //Fill energy histogram
   void energyHist(gate::Event& evt);
   //Find first particle in a vector of particles by its creation time
@@ -55,9 +57,10 @@ class petAnalysis : public gate::IAlgo {
   void reconsPerPlane(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& truePt, gate::Point3D& pt);
   void printSensors(std::vector<std::vector<gate::Hit*> >& planes);
   double findSensors(std::vector<gate::Hit*>& plane, int id);
-
-  void reconstruc2NearestPlanes(std::vector<std::vector<gate::Hit*> > planes, std::vector<std::vector<gate::Hit*> > planesNoCut, gate::Point3D& pt);
   double totalCharge(std::vector<gate::Hit*> plane);
+
+  void computeBarycenters(std::vector<std::vector<gate::Hit*> > planes, std::vector<std::vector<double> >& points, std::vector<std::vector<double> >& errors);
+
 
 
   //! finalize algorithm
