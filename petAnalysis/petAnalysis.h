@@ -56,7 +56,7 @@ class petAnalysis : public gate::IAlgo {
   void printSensors(std::vector<std::vector<gate::Hit*> >& planes);
   double findSensors(std::vector<gate::Hit*>& plane, int id);
 
-  void reconstruc2NearestPlanes(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& pt);
+  void reconstruc2NearestPlanes(std::vector<std::vector<gate::Hit*> > planes, std::vector<std::vector<gate::Hit*> > planesNoCut, gate::Point3D& pt);
   double totalCharge(std::vector<gate::Hit*> plane);
 
 

@@ -187,7 +187,7 @@ bool petAnalysis::execute(gate::Event& evt){
 	  reconsPerPlane(planesCut,trueVertex,reconsPoint);  
 
 
-	  reconstruc2NearestPlanes(planesCut, reconsPoint4);
+	  reconstruc2NearestPlanes(planesCut, planes, reconsPoint4);
 
 
 	  reconstruction(planesCut,reconsPoint);
@@ -1166,10 +1166,10 @@ void petAnalysis::bestPointReconsNoNorm(std::vector<std::vector<gate::Hit*> > pl
 		->hman()->fill(this->alabel("zbest"), pt.z() - truePt.z());
 }
 
-void petAnalysis::reconstruc2NearestPlanes(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& pt){
+void petAnalysis::reconstruc2NearestPlanes(std::vector<std::vector<gate::Hit*> > planes, std::vector<std::vector<gate::Hit*> > planesNoCut, gate::Point3D& pt){
 	//int orthogonal[6][4] = {{1,3,4,5},{0,2,4,5},{1,3,4,5},{0,2,4,5},{0,1,2,3},{0,1,2,3}};
 	int nonOrthogonal[6] = {2,3,0,1,5,4};
-	int planesCoord[6][2] = {{0,1},{1,2},{0,1},{1,2},{1,3},{1,3}};
+	int planesCoord[6][2] = {{0,1},{1,2},{0,1},{1,2},{0,2},{0,2}};
 	std::string planesDirections[6] = {"xy","yz","xy","yz","xz","xz"};
 	double pointsRecons[6][2];
 	double point[3] = {0.,0.,0.};
@@ -1188,15 +1188,22 @@ void petAnalysis::reconstruc2NearestPlanes(std::vector<std::vector<gate::Hit*> >
 	std::vector<std::vector<gate::Hit*> >  sortedPlanes(planes);
 	std::vector<std::pair<int, double> > planesOrder(6);
 	for(unsigned int i=0; i<6; i++){
-		planesOrder[i] = std::pair<int, double>(i,totalCharge(planes[i]));
+		//TODO Choose to use cut or not
+		//planesOrder[i] = std::pair<int, double>(i,totalCharge(planes[i]));
+		planesOrder[i] = std::pair<int, double>(i,totalCharge(planesNoCut[i]));
 	//	std::cout << "Plane " << planesOrder[i].first << " - charge: " << planesOrder[i].second << std::endl;
 	}
 	std::sort(planesOrder.begin(), planesOrder.end(), petAnalysis::chargeOrderPlanesDesc);
 
-//	std::cout << "Ordering... " << std::endl;
-//	for(unsigned int i=0; i<6; i++){
-//		std::cout << "Plane " << planesOrder[i].first << " - charge: " << planesOrder[i].second << std::endl;
-//	}
+	//max charge
+	std::vector<std::vector<gate::Hit*> >  sortedSiPM(planes);
+
+	std::cout << "Ordering... " << std::endl;
+	for(unsigned int i=0; i<6; i++){
+		std::sort(sortedSiPM[i].begin(), sortedSiPM[i].end(), petAnalysis::chargeOrderSensorsDesc);
+		std::cout << "Plane " << planesOrder[i].first << " - charge: " << planesOrder[i].second << " max charge: " 
+		   << sortedSiPM[i][0]->GetAmplitude() << std::endl;
+	}
 
 	int fstPlane = planesOrder[0].first;
 	int sndPlane = planesOrder[1].first;
@@ -1208,7 +1215,7 @@ void petAnalysis::reconstruc2NearestPlanes(std::vector<std::vector<gate::Hit*> >
 	point[planesCoord[fstPlane][1]] = pointsRecons[fstPlane][1];
 
 	if(planesCoord[sndPlane][0] != planesCoord[fstPlane][0] && planesCoord[sndPlane][0] != planesCoord[fstPlane][1]){
-		point[planesCoord[sndPlane][0]] = pointsRecons[sndPlane][1];
+		point[planesCoord[sndPlane][0]] = pointsRecons[sndPlane][0];
 	}else{
 		point[planesCoord[sndPlane][1]] = pointsRecons[sndPlane][1];
 	}
@@ -1217,7 +1224,7 @@ void petAnalysis::reconstruc2NearestPlanes(std::vector<std::vector<gate::Hit*> >
 	pt.y(point[1]);
 	pt.z(point[2]);
 
-	std::cout << "Best planes: " << planesOrder[0].first << ", " << planesOrder[sndPlane].first << std::endl;
+	std::cout << "Best planes: " << fstPlane << ", " << sndPlane << std::endl;
 }
 
 double petAnalysis::totalCharge(std::vector<gate::Hit*> plane){
