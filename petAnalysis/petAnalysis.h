@@ -2,6 +2,7 @@
 #define _petAnalysis__
 
 #include <GATE/Centella.h>
+#include <utility>
 
 class petAnalysis : public gate::IAlgo {
 
@@ -42,6 +43,7 @@ class petAnalysis : public gate::IAlgo {
   //Order sensors by charge (descending)
   static bool chargeOrderSensorsDesc(const gate::Hit* s1, const gate::Hit* s2);
   static bool chargeOrderSensorsAsc(const gate::Hit* s1, const gate::Hit* s2);
+  static bool chargeOrderPlanesDesc(std::pair<int,double> s1, std::pair<int,double> s2);
   //Compute distance between two Point3D
   double distance(gate::Point3D& p1, gate::Point3D& p2);
   void hist2dEvent(gate::Event& evt);
@@ -53,6 +55,9 @@ class petAnalysis : public gate::IAlgo {
   void reconsPerPlane(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& truePt, gate::Point3D& pt);
   void printSensors(std::vector<std::vector<gate::Hit*> >& planes);
   double findSensors(std::vector<gate::Hit*>& plane, int id);
+
+  void reconstruc2NearestPlanes(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& pt);
+  double totalCharge(std::vector<gate::Hit*> plane);
 
 
   //! finalize algorithm
