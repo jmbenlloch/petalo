@@ -85,33 +85,33 @@ bool petAnalysis::initialize(){
 	  ->hman()->h1(this->alabel("zNorm"),"z-z0",100,-120,120);
 
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("x"),"x-x0",100,-120,120);
+	  ->hman()->h1(this->alabel("xNoNorm"),"x-x0",100,-120,120);
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("y"),"y-y0",100,-120,120);
+	  ->hman()->h1(this->alabel("yNoNorm"),"y-y0",100,-120,120);
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("z"),"z-z0",100,-120,120);
+	  ->hman()->h1(this->alabel("zNoNorm"),"z-z0",100,-120,120);
 
   //best
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("xbest"),"x-x0",100,-120,120);
+	  ->hman()->h1(this->alabel("xbestTrue"),"x-x0",100,-120,120);
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("ybest"),"y-y0",100,-120,120);
+	  ->hman()->h1(this->alabel("ybestTrue"),"y-y0",100,-120,120);
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("zbest"),"z-z0",100,-120,120);
+	  ->hman()->h1(this->alabel("zbestTrue"),"z-z0",100,-120,120);
 
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("xbest2Near"),"x-x0",100,-120,120);
+	  ->hman()->h1(this->alabel("x2Near"),"x-x0",100,-120,120);
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("ybest2Near"),"y-y0",100,-120,120);
+	  ->hman()->h1(this->alabel("y2Near"),"y-y0",100,-120,120);
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("zbest2Near"),"z-z0",100,-120,120);
+	  ->hman()->h1(this->alabel("z2Near"),"z-z0",100,-120,120);
 
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("xbest2NearBySiPM"),"x-x0",100,-120,120);
+	  ->hman()->h1(this->alabel("x2NearBySiPM"),"x-x0",100,-120,120);
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("ybest2NearBySiPM"),"y-y0",100,-120,120);
+	  ->hman()->h1(this->alabel("y2NearBySiPM"),"y-y0",100,-120,120);
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("zbest2NearBySiPM"),"z-z0",100,-120,120);
+	  ->hman()->h1(this->alabel("z2NearBySiPM"),"z-z0",100,-120,120);
 
   for(unsigned int i=0;i<6;i++){
 	  string histName = "SiPM" + gate::to_string(i);
@@ -179,7 +179,7 @@ bool petAnalysis::execute(gate::Event& evt){
   if(firstDaughter.GetCreatorProc() == std::string("phot") 
 		  && firstDaughter.GetDaughters().size()==0){
 
-      std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
+   //   std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
 
 	  //Classify sensor hits per planes
 	  std::vector<std::vector<gate::Hit*> > planes(6);
@@ -197,24 +197,23 @@ bool petAnalysis::execute(gate::Event& evt){
 	  gate::Point3D reconsPoint3; 
 	  gate::Point3D reconsPoint4; 
 	  gate::Point3D reconsPoint5; 
-	  reconsPerPlane(planesCut,trueVertex,reconsPoint);  
 
-
-	  reconstruc2NearestPlanes(planesCut, planes, reconsPoint4);
-	  reconstruc2NearestPlanesByMaxSiPM(planesCut, planes, reconsPoint5);
-
+	  reconsPerPlane(planesCut,trueVertex);  
 
 	  reconstruction(planesCut,reconsPoint);
 	  reconstructionNoNorm(planesCut,reconsPoint2);
-	  bestPointReconsNoNorm(planesCut,trueVertex,reconsPoint3);
-	  gate::Centella::instance()
-		->hman()->fill(this->alabel("x"), reconsPoint2.x() - trueVertex.x());
-	  gate::Centella::instance()
-		->hman()->fill(this->alabel("y"), reconsPoint2.y() - trueVertex.y());
-	  gate::Centella::instance()
-		->hman()->fill(this->alabel("z"), reconsPoint2.z() - trueVertex.z());
+	  bestPointRecons(planesCut,trueVertex,reconsPoint3);
+	  reconstruct2NearestPlanes(planesCut, planes, reconsPoint4);
+	  reconstruct2NearestPlanesByMaxSiPM(planesCut, planes, reconsPoint5);
 
-	  std::cout << "Norm: x-x0 = " << reconsPoint.x() - trueVertex.x() << "\t y-y0 = " 
+	  gate::Centella::instance()
+		->hman()->fill(this->alabel("xNorm"), reconsPoint.x() - trueVertex.x());
+	  gate::Centella::instance()
+		->hman()->fill(this->alabel("yNorm"), reconsPoint.y() - trueVertex.y());
+	  gate::Centella::instance()
+		->hman()->fill(this->alabel("zNorm"), reconsPoint.z() - trueVertex.z());
+
+/*	  std::cout << "Norm: x-x0 = " << reconsPoint.x() - trueVertex.x() << "\t y-y0 = " 
 		  << reconsPoint.y() - trueVertex.y() << "\t z-z0 = " << reconsPoint.z() - trueVertex.z() << std::endl;
 	  std::cout << "NoNorm: x-x0 = " << reconsPoint2.x() - trueVertex.x() << "\t y-y0 = " 
 		  << reconsPoint2.y() - trueVertex.y() << "\t z-z0 = " << reconsPoint2.z() - trueVertex.z() << std::endl;
@@ -225,28 +224,35 @@ bool petAnalysis::execute(gate::Event& evt){
 	  std::cout << "Best2Near: x = " << reconsPoint4.x() << "\t y = " << reconsPoint4.y() << "\t z = " << reconsPoint4.z() << std::endl;
 	  std::cout << "Best2NearBySiPM: x-x0 = " << reconsPoint5.x() - trueVertex.x() << "\t y-y0 = " 
 		  << reconsPoint5.y() - trueVertex.y() << "\t z-z0 = " << reconsPoint5.z() - trueVertex.z() << std::endl;
-	  std::cout << "Best2NearBySiPM: x = " << reconsPoint5.x() << "\t y = " << reconsPoint5.y() << "\t z = " << reconsPoint5.z() << std::endl;
+	  std::cout << "Best2NearBySiPM: x = " << reconsPoint5.x() << "\t y = " << reconsPoint5.y() << "\t z = " << reconsPoint5.z() << std::endl;*/
 
 	  gate::Centella::instance()
-		->hman()->fill(this->alabel("xNorm"), reconsPoint.x() - trueVertex.x());
+		->hman()->fill(this->alabel("xNoNorm"), reconsPoint2.x() - trueVertex.x());
 	  gate::Centella::instance()
-		->hman()->fill(this->alabel("yNorm"), reconsPoint.y() - trueVertex.y());
+		->hman()->fill(this->alabel("yNoNorm"), reconsPoint2.y() - trueVertex.y());
 	  gate::Centella::instance()
-		->hman()->fill(this->alabel("zNorm"), reconsPoint.z() - trueVertex.z());
+		->hman()->fill(this->alabel("zNoNorm"), reconsPoint2.z() - trueVertex.z());
 
 	  gate::Centella::instance()
-		->hman()->fill(this->alabel("xbest2Near"), reconsPoint4.x() - trueVertex.x());
+		->hman()->fill(this->alabel("xbestTrue"), reconsPoint3.x() - trueVertex.x());
 	  gate::Centella::instance()
-		->hman()->fill(this->alabel("ybest2Near"), reconsPoint4.y() - trueVertex.y());
+		->hman()->fill(this->alabel("ybestTrue"), reconsPoint3.y() - trueVertex.y());
 	  gate::Centella::instance()
-		->hman()->fill(this->alabel("zbest2Near"), reconsPoint4.z() - trueVertex.z());
+		->hman()->fill(this->alabel("zbestTrue"), reconsPoint3.z() - trueVertex.z());
 
 	  gate::Centella::instance()
-		->hman()->fill(this->alabel("xbest2NearBySiPM"), reconsPoint5.x() - trueVertex.x());
+		->hman()->fill(this->alabel("x2Near"), reconsPoint4.x() - trueVertex.x());
 	  gate::Centella::instance()
-		->hman()->fill(this->alabel("ybest2NearBySiPM"), reconsPoint5.y() - trueVertex.y());
+		->hman()->fill(this->alabel("y2Near"), reconsPoint4.y() - trueVertex.y());
 	  gate::Centella::instance()
-		->hman()->fill(this->alabel("zbest2NearBySiPM"), reconsPoint5.z() - trueVertex.z());
+		->hman()->fill(this->alabel("z2Near"), reconsPoint4.z() - trueVertex.z());
+
+	  gate::Centella::instance()
+		->hman()->fill(this->alabel("x2NearBySiPM"), reconsPoint5.x() - trueVertex.x());
+	  gate::Centella::instance()
+		->hman()->fill(this->alabel("y2NearBySiPM"), reconsPoint5.y() - trueVertex.y());
+	  gate::Centella::instance()
+		->hman()->fill(this->alabel("z2NearBySiPM"), reconsPoint5.z() - trueVertex.z());
 
 //	  printSensors(planesCut);
 
@@ -290,12 +296,12 @@ bool petAnalysis::finalize(){
 
 }
 
-void petAnalysis::reconsPerPlane(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& truePt, gate::Point3D& pt){
+void petAnalysis::reconsPerPlane(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& truePt){
 	std::vector<std::vector<double> > pointsRecons(6,std::vector<double>(2));
 	std::vector<std::vector<double> > errors(6,std::vector<double>(2));
 	computeBarycenters(planes,pointsRecons,errors);
 
-	std::cout << "x0: " << pointsRecons[0][0] << "\tx0-x = " 
+/*	std::cout << "x0: " << pointsRecons[0][0] << "\tx0-x = " 
 		<< pointsRecons[0][0] - truePt.x() << "\t Var = " << errors[0][0] << std::endl;
 	std::cout << "y0: " << pointsRecons[0][1] << "\ty0-y = "
 	   	<< pointsRecons[0][1] - truePt.y() << "\t Var = " << errors[0][1] << std::endl;
@@ -318,7 +324,7 @@ void petAnalysis::reconsPerPlane(std::vector<std::vector<gate::Hit*> > planes, g
 	std::cout << "x5: " << pointsRecons[5][0] << "\tx5-x = "
 	   	<< pointsRecons[5][0] - truePt.x() << "\t Var = " << errors[5][0] << std::endl;
 	std::cout << "z5: " << pointsRecons[5][1] << "\tz5-z = "
-	   	<< pointsRecons[5][1] - truePt.z() << "\t Var = " << errors[5][1] << std::endl;
+	   	<< pointsRecons[5][1] - truePt.z() << "\t Var = " << errors[5][1] << std::endl;*/
 
 	gate::Centella::instance()
 		->hman()->fill(this->alabel("Plane0"), std::sqrt(std::pow(pointsRecons[0][0]-truePt.x(),2) + std::pow(pointsRecons[0][1]-truePt.y(),2)));
@@ -816,7 +822,7 @@ void petAnalysis::reconstructionNoNorm(std::vector<std::vector<gate::Hit*> > pla
 	pt.z(z);
 }
 
-void petAnalysis::bestPointReconsNoNorm(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& truePt, gate::Point3D& pt){
+void petAnalysis::bestPointRecons(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& truePt, gate::Point3D& pt){
 	double error=0.;
 	gate::Point3D auxPt;
 
@@ -871,17 +877,9 @@ void petAnalysis::bestPointReconsNoNorm(std::vector<std::vector<gate::Hit*> > pl
 		pt.z(pointsRecons[5][1]);
 		error = std::abs(pointsRecons[5][1] - truePt.z());
 	}
-	std::cout << std::endl;
-
-	gate::Centella::instance()
-		->hman()->fill(this->alabel("xbest"), pt.x() - truePt.x());
-	gate::Centella::instance()
-		->hman()->fill(this->alabel("ybest"), pt.y() - truePt.y());
-	gate::Centella::instance()
-		->hman()->fill(this->alabel("zbest"), pt.z() - truePt.z());
 }
 
-void petAnalysis::reconstruc2NearestPlanes(std::vector<std::vector<gate::Hit*> > planes, std::vector<std::vector<gate::Hit*> > planesNoCut, gate::Point3D& pt){
+void petAnalysis::reconstruct2NearestPlanes(std::vector<std::vector<gate::Hit*> > planes, std::vector<std::vector<gate::Hit*> > planesNoCut, gate::Point3D& pt){
 	int nonOrthogonal[6] = {2,3,0,1,5,4};
 	int planesCoord[6][2] = {{0,1},{1,2},{0,1},{1,2},{0,2},{0,2}};
 	double point[3] = {0.,0.,0.};
@@ -902,10 +900,10 @@ void petAnalysis::reconstruc2NearestPlanes(std::vector<std::vector<gate::Hit*> >
 	}
 	std::sort(planesOrder.begin(), planesOrder.end(), petAnalysis::chargeOrderPlanesDesc);
 
-	std::cout << "Ordering... " << std::endl;
-	for(unsigned int i=0; i<6; i++){
-		std::cout << "Plane " << planesOrder[i].first << " - charge: " << planesOrder[i].second << std::endl;
-	}
+//	std::cout << "Ordering... " << std::endl;
+//	for(unsigned int i=0; i<6; i++){
+//		std::cout << "Plane " << planesOrder[i].first << " - charge: " << planesOrder[i].second << std::endl;
+//	}
 
 	int fstPlane = planesOrder[0].first;
 	int sndPlane = planesOrder[1].first;
@@ -926,7 +924,7 @@ void petAnalysis::reconstruc2NearestPlanes(std::vector<std::vector<gate::Hit*> >
 	pt.y(point[1]);
 	pt.z(point[2]);
 
-	std::cout << "Best planes: " << fstPlane << ", " << sndPlane << std::endl;
+//	std::cout << "Best planes: " << fstPlane << ", " << sndPlane << std::endl;
 }
 
 double petAnalysis::totalCharge(std::vector<gate::Hit*> plane){
@@ -941,7 +939,7 @@ bool petAnalysis::chargeOrderPlanesDesc(std::pair<int,double> s1, std::pair<int,
 	return (s1.second > s2.second);
 }
 
-void petAnalysis::reconstruc2NearestPlanesByMaxSiPM(std::vector<std::vector<gate::Hit*> > planes, std::vector<std::vector<gate::Hit*> > planesNoCut, gate::Point3D& pt){
+void petAnalysis::reconstruct2NearestPlanesByMaxSiPM(std::vector<std::vector<gate::Hit*> > planes, std::vector<std::vector<gate::Hit*> > planesNoCut, gate::Point3D& pt){
 	int nonOrthogonal[6] = {2,3,0,1,5,4};
 	int planesCoord[6][2] = {{0,1},{1,2},{0,1},{1,2},{0,2},{0,2}};
 	double point[3] = {0.,0.,0.};
@@ -963,14 +961,14 @@ void petAnalysis::reconstruc2NearestPlanesByMaxSiPM(std::vector<std::vector<gate
 	std::vector<std::pair<int, double> > planesOrder(6);
 	for(unsigned int i=0; i<6; i++){
 		planesOrder[i] = std::pair<int, double>(i,sortedSiPM[i][0]->GetAmplitude());
-		std::cout << "Plane " << planesOrder[i].first << " - charge: " << planesOrder[i].second << " - total: " << totalCharge(planesNoCut[i]) << std::endl;
+//		std::cout << "Plane " << planesOrder[i].first << " - charge: " << planesOrder[i].second << " - total: " << totalCharge(planesNoCut[i]) << std::endl;
 	}
 	std::sort(planesOrder.begin(), planesOrder.end(), petAnalysis::chargeOrderPlanesDesc);
 
-	std::cout << "Ordering... " << std::endl;
-	for(unsigned int i=0; i<6; i++){
-		std::cout << "Plane " << planesOrder[i].first << " - charge: " << planesOrder[i].second << std::endl;
-	}
+//	std::cout << "Ordering... " << std::endl;
+//	for(unsigned int i=0; i<6; i++){
+//		std::cout << "Plane " << planesOrder[i].first << " - charge: " << planesOrder[i].second << std::endl;
+//	}
 
 	int fstPlane = planesOrder[0].first;
 	int sndPlane = planesOrder[1].first;
@@ -991,7 +989,7 @@ void petAnalysis::reconstruc2NearestPlanesByMaxSiPM(std::vector<std::vector<gate
 	pt.y(point[1]);
 	pt.z(point[2]);
 
-	std::cout << "Best planes: " << fstPlane << ", " << sndPlane << std::endl;
+//	std::cout << "Best planes: " << fstPlane << ", " << sndPlane << std::endl;
 }
 
 void petAnalysis::computeBarycenters(std::vector<std::vector<gate::Hit*> > planes, std::vector<std::vector<double> >& points, std::vector<std::vector<double> >& errors){

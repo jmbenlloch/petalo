@@ -29,9 +29,9 @@ class petAnalysis : public gate::IAlgo {
   //Position reconstruction using barycenter
   void reconstruction(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& pt);
   void reconstructionNoNorm(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& pt);
-  void bestPointReconsNoNorm(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& truePt, gate::Point3D& pt);
-  void reconstruc2NearestPlanes(std::vector<std::vector<gate::Hit*> > planes, std::vector<std::vector<gate::Hit*> > planesNoCut, gate::Point3D& pt);
-  void reconstruc2NearestPlanesByMaxSiPM(std::vector<std::vector<gate::Hit*> > planes, std::vector<std::vector<gate::Hit*> > planesNoCut, gate::Point3D& pt);
+  void bestPointRecons(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& truePt, gate::Point3D& pt);
+  void reconstruct2NearestPlanes(std::vector<std::vector<gate::Hit*> > planes, std::vector<std::vector<gate::Hit*> > planesNoCut, gate::Point3D& pt);
+  void reconstruct2NearestPlanesByMaxSiPM(std::vector<std::vector<gate::Hit*> > planes, std::vector<std::vector<gate::Hit*> > planesNoCut, gate::Point3D& pt);
   //Fill energy histogram
   void energyHist(gate::Event& evt);
   //Find first particle in a vector of particles by its creation time
@@ -53,7 +53,7 @@ class petAnalysis : public gate::IAlgo {
   void applyCut(const std::vector<gate::Hit*>& sensorHits, double cut, std::vector<gate::Hit*>& filtered);
   bool nearPlane(gate::Point3D& pt,double distance);
   void fillComptonHist(gate::MCParticle& primary);
-  void reconsPerPlane(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& truePt, gate::Point3D& pt);
+  void reconsPerPlane(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& truePt);
   void printSensors(std::vector<std::vector<gate::Hit*> >& planes);
   double findSensors(std::vector<gate::Hit*>& plane, int id);
   double totalCharge(std::vector<gate::Hit*> plane);
