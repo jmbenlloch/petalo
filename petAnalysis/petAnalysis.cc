@@ -4,6 +4,7 @@
 #include<petAnalysis.h>
 
 #define CUT 0.7
+#define STEP 5
 
 ClassImp(petAnalysis)
 
@@ -77,41 +78,58 @@ bool petAnalysis::initialize(){
 	  gate::Centella::instance()
 		  ->hman()->h1(this->alabel("z5"),"Plane 5 z-z0",100,-120,120);
 
-  gate::Centella::instance()
-	  ->hman()->h1(this->alabel("xNorm"),"x-x0",100,-120,120);
-  gate::Centella::instance()
-	  ->hman()->h1(this->alabel("yNorm"),"y-y0",100,-120,120);
-  gate::Centella::instance()
-	  ->hman()->h1(this->alabel("zNorm"),"z-z0",100,-120,120);
 
-  gate::Centella::instance()
-	  ->hman()->h1(this->alabel("xNoNorm"),"x-x0",100,-120,120);
-  gate::Centella::instance()
-	  ->hman()->h1(this->alabel("yNoNorm"),"y-y0",100,-120,120);
-  gate::Centella::instance()
-	  ->hman()->h1(this->alabel("zNoNorm"),"z-z0",100,-120,120);
+  for(unsigned int i=0;i<20;i++){
+	  string namexNorm = "xNorm_" + gate::to_string(5*i);
+	  string nameyNorm = "yNorm_" + gate::to_string(5*i);
+	  string namezNorm = "zNorm_" + gate::to_string(5*i);
+	  gate::Centella::instance()
+		  ->hman()->h1(this->alabel(namexNorm),"x-x0",100,-120,120);
+	  gate::Centella::instance()
+		  ->hman()->h1(this->alabel(nameyNorm),"y-y0",100,-120,120);
+	  gate::Centella::instance()
+		  ->hman()->h1(this->alabel(namezNorm),"z-z0",100,-120,120);
 
-  //best
-  gate::Centella::instance()
-	  ->hman()->h1(this->alabel("xbestTrue"),"x-x0",100,-120,120);
-  gate::Centella::instance()
-	  ->hman()->h1(this->alabel("ybestTrue"),"y-y0",100,-120,120);
-  gate::Centella::instance()
-	  ->hman()->h1(this->alabel("zbestTrue"),"z-z0",100,-120,120);
+	  string namexNoNorm = "xNoNorm_" + gate::to_string(5*i);
+	  string nameyNoNorm = "yNoNorm_" + gate::to_string(5*i);
+	  string namezNoNorm = "zNoNorm_" + gate::to_string(5*i);
+	  gate::Centella::instance()
+		  ->hman()->h1(this->alabel(namexNoNorm),"x-x0",100,-120,120);
+	  gate::Centella::instance()
+		  ->hman()->h1(this->alabel(nameyNoNorm),"y-y0",100,-120,120);
+	  gate::Centella::instance()
+		  ->hman()->h1(this->alabel(namezNoNorm),"z-z0",100,-120,120);
 
-  gate::Centella::instance()
-	  ->hman()->h1(this->alabel("x2Near"),"x-x0",100,-120,120);
-  gate::Centella::instance()
-	  ->hman()->h1(this->alabel("y2Near"),"y-y0",100,-120,120);
-  gate::Centella::instance()
-	  ->hman()->h1(this->alabel("z2Near"),"z-z0",100,-120,120);
+	  string namexbestTrue = "xbestTrue_" + gate::to_string(5*i);
+	  string nameybestTrue = "ybestTrue_" + gate::to_string(5*i);
+	  string namezbestTrue = "zbestTrue_" + gate::to_string(5*i);
+	  gate::Centella::instance()
+		  ->hman()->h1(this->alabel(namexbestTrue),"x-x0",100,-120,120);
+	  gate::Centella::instance()
+		  ->hman()->h1(this->alabel(nameybestTrue),"y-y0",100,-120,120);
+	  gate::Centella::instance()
+		  ->hman()->h1(this->alabel(namezbestTrue),"z-z0",100,-120,120);
 
-  gate::Centella::instance()
-	  ->hman()->h1(this->alabel("x2NearBySiPM"),"x-x0",100,-120,120);
-  gate::Centella::instance()
-	  ->hman()->h1(this->alabel("y2NearBySiPM"),"y-y0",100,-120,120);
-  gate::Centella::instance()
-	  ->hman()->h1(this->alabel("z2NearBySiPM"),"z-z0",100,-120,120);
+	  string namex2Near = "x2Near_" + gate::to_string(5*i);
+	  string namey2Near = "y2Near_" + gate::to_string(5*i);
+	  string namez2Near = "z2Near_" + gate::to_string(5*i);
+	  gate::Centella::instance()
+		  ->hman()->h1(this->alabel(namex2Near),"x-x0",100,-120,120);
+	  gate::Centella::instance()
+		  ->hman()->h1(this->alabel(namey2Near),"y-y0",100,-120,120);
+	  gate::Centella::instance()
+		  ->hman()->h1(this->alabel(namez2Near),"z-z0",100,-120,120);
+
+	  string namex2NearBySiPM = "x2NearBySiPM_" + gate::to_string(5*i);
+	  string namey2NearBySiPM = "y2NearBySiPM_" + gate::to_string(5*i);
+	  string namez2NearBySiPM = "z2NearBySiPM_" + gate::to_string(5*i);
+	  gate::Centella::instance()
+		  ->hman()->h1(this->alabel(namex2NearBySiPM),"x-x0",100,-120,120);
+	  gate::Centella::instance()
+		  ->hman()->h1(this->alabel(namey2NearBySiPM),"y-y0",100,-120,120);
+	  gate::Centella::instance()
+		  ->hman()->h1(this->alabel(namez2NearBySiPM),"z-z0",100,-120,120);
+  }
 
   for(unsigned int i=0;i<6;i++){
 	  string histName = "SiPM" + gate::to_string(i);
@@ -185,77 +203,98 @@ bool petAnalysis::execute(gate::Event& evt){
 	  std::vector<std::vector<gate::Hit*> > planes(6);
 	  splitHitsPerPlane(evt,planes);
 
-	  //Apply cut per plane
-	  std::vector<std::vector<gate::Hit*> > planesCut(6);
-	  for(unsigned int i=0; i<6;i++){
-		  applyCut(planes[i],CUT,planesCut[i]);
+	  //Find best cut
+	  for(unsigned int k=0;k<(100/STEP);k++){
+
+		  //Apply cut per plane
+		  std::vector<std::vector<gate::Hit*> > planesCut(6);
+		  for(unsigned int i=0; i<6;i++){
+			  applyCut(planes[i], 0.01*STEP*k ,planesCut[i]);
+		  }
+		  //std::cout << "cut: " << 0.01*STEP*k << std::endl;
+
+		  //Point Reconstruction
+		  gate::Point3D reconsPoint; 
+		  gate::Point3D reconsPoint2; 
+		  gate::Point3D reconsPoint3; 
+		  gate::Point3D reconsPoint4; 
+		  gate::Point3D reconsPoint5; 
+
+		  reconsPerPlane(planesCut,trueVertex);  
+
+		  reconstruction(planesCut,reconsPoint);
+		  reconstructionNoNorm(planesCut,reconsPoint2);
+		  bestPointRecons(planesCut,trueVertex,reconsPoint3);
+		  reconstruct2NearestPlanes(planesCut, planes, reconsPoint4);
+		  reconstruct2NearestPlanesByMaxSiPM(planesCut, planes, reconsPoint5);
+
+		  string namexNorm = "xNorm_" + gate::to_string(5*k);
+		  string nameyNorm = "yNorm_" + gate::to_string(5*k);
+		  string namezNorm = "zNorm_" + gate::to_string(5*k);
+		  gate::Centella::instance()
+			  ->hman()->fill(this->alabel(namexNorm), reconsPoint.x() - trueVertex.x());
+		  gate::Centella::instance()
+			  ->hman()->fill(this->alabel(nameyNorm), reconsPoint.y() - trueVertex.y());
+		  gate::Centella::instance()
+			  ->hman()->fill(this->alabel(namezNorm), reconsPoint.z() - trueVertex.z());
+
+		  /*	  std::cout << "Norm: x-x0 = " << reconsPoint.x() - trueVertex.x() << "\t y-y0 = " 
+				  << reconsPoint.y() - trueVertex.y() << "\t z-z0 = " << reconsPoint.z() - trueVertex.z() << std::endl;
+				  std::cout << "NoNorm: x-x0 = " << reconsPoint2.x() - trueVertex.x() << "\t y-y0 = " 
+				  << reconsPoint2.y() - trueVertex.y() << "\t z-z0 = " << reconsPoint2.z() - trueVertex.z() << std::endl;
+				  std::cout << "Best: x-x0 = " << reconsPoint3.x() - trueVertex.x() << "\t y-y0 = " 
+				  << reconsPoint3.y() - trueVertex.y() << "\t z-z0 = " << reconsPoint3.z() - trueVertex.z() << std::endl;
+				  std::cout << "Best2Near: x-x0 = " << reconsPoint4.x() - trueVertex.x() << "\t y-y0 = " 
+				  << reconsPoint4.y() - trueVertex.y() << "\t z-z0 = " << reconsPoint4.z() - trueVertex.z() << std::endl;
+				  std::cout << "Best2Near: x = " << reconsPoint4.x() << "\t y = " << reconsPoint4.y() << "\t z = " << reconsPoint4.z() << std::endl;
+				  std::cout << "Best2NearBySiPM: x-x0 = " << reconsPoint5.x() - trueVertex.x() << "\t y-y0 = " 
+				  << reconsPoint5.y() - trueVertex.y() << "\t z-z0 = " << reconsPoint5.z() - trueVertex.z() << std::endl;
+				  std::cout << "Best2NearBySiPM: x = " << reconsPoint5.x() << "\t y = " << reconsPoint5.y() << "\t z = " << reconsPoint5.z() << std::endl;*/
+
+		  string namexNoNorm = "xNoNorm_" + gate::to_string(5*k);
+		  string nameyNoNorm = "yNoNorm_" + gate::to_string(5*k);
+		  string namezNoNorm = "zNoNorm_" + gate::to_string(5*k);
+		  gate::Centella::instance()
+			  ->hman()->fill(this->alabel(namexNoNorm), reconsPoint2.x() - trueVertex.x());
+		  gate::Centella::instance()
+			  ->hman()->fill(this->alabel(nameyNoNorm), reconsPoint2.y() - trueVertex.y());
+		  gate::Centella::instance()
+			  ->hman()->fill(this->alabel(namezNoNorm), reconsPoint2.z() - trueVertex.z());
+
+		  string namexbestTrue = "xbestTrue_" + gate::to_string(5*k);
+		  string nameybestTrue = "ybestTrue_" + gate::to_string(5*k);
+		  string namezbestTrue = "zbestTrue_" + gate::to_string(5*k);
+		  gate::Centella::instance()
+			  ->hman()->fill(this->alabel(namexbestTrue), reconsPoint3.x() - trueVertex.x());
+		  gate::Centella::instance()
+			  ->hman()->fill(this->alabel(nameybestTrue), reconsPoint3.y() - trueVertex.y());
+		  gate::Centella::instance()
+			  ->hman()->fill(this->alabel(namezbestTrue), reconsPoint3.z() - trueVertex.z());
+
+		  string namex2Near = "x2Near_" + gate::to_string(5*k);
+		  string namey2Near = "y2Near_" + gate::to_string(5*k);
+		  string namez2Near = "z2Near_" + gate::to_string(5*k);
+		  gate::Centella::instance()
+			  ->hman()->fill(this->alabel(namex2Near), reconsPoint4.x() - trueVertex.x());
+		  gate::Centella::instance()
+			  ->hman()->fill(this->alabel(namey2Near), reconsPoint4.y() - trueVertex.y());
+		  gate::Centella::instance()
+			  ->hman()->fill(this->alabel(namez2Near), reconsPoint4.z() - trueVertex.z());
+
+		  string namex2NearBySiPM = "x2NearBySiPM_" + gate::to_string(5*k);
+		  string namey2NearBySiPM = "y2NearBySiPM_" + gate::to_string(5*k);
+		  string namez2NearBySiPM = "z2NearBySiPM_" + gate::to_string(5*k);
+		  //std::cout << namez2NearBySiPM << std::endl;
+		  //std::cout << reconsPoint5.z() - trueVertex.z() << std::endl;
+		  gate::Centella::instance()
+			  ->hman()->fill(this->alabel(namex2NearBySiPM), reconsPoint5.x() - trueVertex.x());
+		  gate::Centella::instance()
+			  ->hman()->fill(this->alabel(namey2NearBySiPM), reconsPoint5.y() - trueVertex.y());
+		  gate::Centella::instance()
+			  ->hman()->fill(this->alabel(namez2NearBySiPM), reconsPoint5.z() - trueVertex.z());
+
+		  //	  printSensors(planesCut);
 	  }
-
-	  //Point Reconstruction
-	  gate::Point3D reconsPoint; 
-	  gate::Point3D reconsPoint2; 
-	  gate::Point3D reconsPoint3; 
-	  gate::Point3D reconsPoint4; 
-	  gate::Point3D reconsPoint5; 
-
-	  reconsPerPlane(planesCut,trueVertex);  
-
-	  reconstruction(planesCut,reconsPoint);
-	  reconstructionNoNorm(planesCut,reconsPoint2);
-	  bestPointRecons(planesCut,trueVertex,reconsPoint3);
-	  reconstruct2NearestPlanes(planesCut, planes, reconsPoint4);
-	  reconstruct2NearestPlanesByMaxSiPM(planesCut, planes, reconsPoint5);
-
-	  gate::Centella::instance()
-		->hman()->fill(this->alabel("xNorm"), reconsPoint.x() - trueVertex.x());
-	  gate::Centella::instance()
-		->hman()->fill(this->alabel("yNorm"), reconsPoint.y() - trueVertex.y());
-	  gate::Centella::instance()
-		->hman()->fill(this->alabel("zNorm"), reconsPoint.z() - trueVertex.z());
-
-/*	  std::cout << "Norm: x-x0 = " << reconsPoint.x() - trueVertex.x() << "\t y-y0 = " 
-		  << reconsPoint.y() - trueVertex.y() << "\t z-z0 = " << reconsPoint.z() - trueVertex.z() << std::endl;
-	  std::cout << "NoNorm: x-x0 = " << reconsPoint2.x() - trueVertex.x() << "\t y-y0 = " 
-		  << reconsPoint2.y() - trueVertex.y() << "\t z-z0 = " << reconsPoint2.z() - trueVertex.z() << std::endl;
-	  std::cout << "Best: x-x0 = " << reconsPoint3.x() - trueVertex.x() << "\t y-y0 = " 
-		  << reconsPoint3.y() - trueVertex.y() << "\t z-z0 = " << reconsPoint3.z() - trueVertex.z() << std::endl;
-	  std::cout << "Best2Near: x-x0 = " << reconsPoint4.x() - trueVertex.x() << "\t y-y0 = " 
-		  << reconsPoint4.y() - trueVertex.y() << "\t z-z0 = " << reconsPoint4.z() - trueVertex.z() << std::endl;
-	  std::cout << "Best2Near: x = " << reconsPoint4.x() << "\t y = " << reconsPoint4.y() << "\t z = " << reconsPoint4.z() << std::endl;
-	  std::cout << "Best2NearBySiPM: x-x0 = " << reconsPoint5.x() - trueVertex.x() << "\t y-y0 = " 
-		  << reconsPoint5.y() - trueVertex.y() << "\t z-z0 = " << reconsPoint5.z() - trueVertex.z() << std::endl;
-	  std::cout << "Best2NearBySiPM: x = " << reconsPoint5.x() << "\t y = " << reconsPoint5.y() << "\t z = " << reconsPoint5.z() << std::endl;*/
-
-	  gate::Centella::instance()
-		->hman()->fill(this->alabel("xNoNorm"), reconsPoint2.x() - trueVertex.x());
-	  gate::Centella::instance()
-		->hman()->fill(this->alabel("yNoNorm"), reconsPoint2.y() - trueVertex.y());
-	  gate::Centella::instance()
-		->hman()->fill(this->alabel("zNoNorm"), reconsPoint2.z() - trueVertex.z());
-
-	  gate::Centella::instance()
-		->hman()->fill(this->alabel("xbestTrue"), reconsPoint3.x() - trueVertex.x());
-	  gate::Centella::instance()
-		->hman()->fill(this->alabel("ybestTrue"), reconsPoint3.y() - trueVertex.y());
-	  gate::Centella::instance()
-		->hman()->fill(this->alabel("zbestTrue"), reconsPoint3.z() - trueVertex.z());
-
-	  gate::Centella::instance()
-		->hman()->fill(this->alabel("x2Near"), reconsPoint4.x() - trueVertex.x());
-	  gate::Centella::instance()
-		->hman()->fill(this->alabel("y2Near"), reconsPoint4.y() - trueVertex.y());
-	  gate::Centella::instance()
-		->hman()->fill(this->alabel("z2Near"), reconsPoint4.z() - trueVertex.z());
-
-	  gate::Centella::instance()
-		->hman()->fill(this->alabel("x2NearBySiPM"), reconsPoint5.x() - trueVertex.x());
-	  gate::Centella::instance()
-		->hman()->fill(this->alabel("y2NearBySiPM"), reconsPoint5.y() - trueVertex.y());
-	  gate::Centella::instance()
-		->hman()->fill(this->alabel("z2NearBySiPM"), reconsPoint5.z() - trueVertex.z());
-
-//	  printSensors(planesCut);
-
   }
 
   //Hist2d to find the cut
@@ -269,9 +308,9 @@ bool petAnalysis::execute(gate::Event& evt){
 
 //==========================================================================
 bool petAnalysis::finalize(){
-//==========================================================================
+	//==========================================================================
 
-  _m.message("Finalising algorithm",this->getAlgoLabel(),gate::NORMAL);
+	_m.message("Finalising algorithm",this->getAlgoLabel(),gate::NORMAL);
 
   gate::Run* run = &gate::Centella::instance()->getRun();
   int nevt = gate::int_from_string(run->fetch_sstore("num_events"));
@@ -291,7 +330,96 @@ bool petAnalysis::finalize(){
   TF1* gauF = new TF1("gauF","gaus",0,10000);
   hist->Fit("gauF","","e",5000,6000);
   std::cout << "FWHM res = " << 2.35*gauF->GetParameter(2)/gauF->GetParameter(1) << std::endl;
-  
+
+  std::vector<double> xNormSD(100/STEP), xNoNormSD(100/STEP), xNearSD(100/STEP), xNearBySiPMSD(100/STEP),xBestSD(100/STEP);
+  std::vector<double> yNormSD(100/STEP), yNoNormSD(100/STEP), yNearSD(100/STEP), yNearBySiPMSD(100/STEP),yBestSD(100/STEP);
+  std::vector<double> zNormSD(100/STEP), zNoNormSD(100/STEP), zNearSD(100/STEP), zNearBySiPMSD(100/STEP),zBestSD(100/STEP);
+  for(unsigned int i=0;i<(100/STEP);i++){
+	  string namexNorm = "petAnalysis_xNorm_" + gate::to_string(5*i);
+	  string nameyNorm = "petAnalysis_yNorm_" + gate::to_string(5*i);
+	  string namezNorm = "petAnalysis_zNorm_" + gate::to_string(5*i);
+	  string namexNoNorm = "petAnalysis_xNoNorm_" + gate::to_string(5*i);
+	  string nameyNoNorm = "petAnalysis_yNoNorm_" + gate::to_string(5*i);
+	  string namezNoNorm = "petAnalysis_zNoNorm_" + gate::to_string(5*i);
+	  string namexbestTrue = "petAnalysis_xbestTrue_" + gate::to_string(5*i);
+	  string nameybestTrue = "petAnalysis_ybestTrue_" + gate::to_string(5*i);
+	  string namezbestTrue = "petAnalysis_zbestTrue_" + gate::to_string(5*i);
+	  string namex2Near = "petAnalysis_x2Near_" + gate::to_string(5*i);
+	  string namey2Near = "petAnalysis_y2Near_" + gate::to_string(5*i);
+	  string namez2Near = "petAnalysis_z2Near_" + gate::to_string(5*i);
+	  string namex2NearBySiPM = "petAnalysis_x2NearBySiPM_" + gate::to_string(5*i);
+	  string namey2NearBySiPM = "petAnalysis_y2NearBySiPM_" + gate::to_string(5*i);
+	  string namez2NearBySiPM = "petAnalysis_z2NearBySiPM_" + gate::to_string(5*i);
+
+	  xNormSD[i] = gate::Centella::instance()->hman()->fetch(namexNorm)->GetStdDev();
+	  yNormSD[i] = gate::Centella::instance()->hman()->fetch(nameyNorm)->GetStdDev();
+	  zNormSD[i] = gate::Centella::instance()->hman()->fetch(namezNorm)->GetStdDev();
+	  xNoNormSD[i] = gate::Centella::instance()->hman()->fetch(namexNoNorm)->GetStdDev();
+	  yNoNormSD[i] = gate::Centella::instance()->hman()->fetch(nameyNoNorm)->GetStdDev();
+	  zNoNormSD[i] = gate::Centella::instance()->hman()->fetch(namezNoNorm)->GetStdDev();
+	  xBestSD[i] = gate::Centella::instance()->hman()->fetch(namexbestTrue)->GetStdDev();
+	  yBestSD[i] = gate::Centella::instance()->hman()->fetch(nameybestTrue)->GetStdDev();
+	  zBestSD[i] = gate::Centella::instance()->hman()->fetch(namezbestTrue)->GetStdDev();
+	  xNearSD[i] = gate::Centella::instance()->hman()->fetch(namex2Near)->GetStdDev();
+	  yNearSD[i] = gate::Centella::instance()->hman()->fetch(namey2Near)->GetStdDev();
+	  zNearSD[i] = gate::Centella::instance()->hman()->fetch(namez2Near)->GetStdDev();
+	  xNearBySiPMSD[i] = gate::Centella::instance()->hman()->fetch(namex2NearBySiPM)->GetStdDev();
+	  yNearBySiPMSD[i] = gate::Centella::instance()->hman()->fetch(namey2NearBySiPM)->GetStdDev();
+	  zNearBySiPMSD[i] = gate::Centella::instance()->hman()->fetch(namez2NearBySiPM)->GetStdDev();
+
+	  std::cout << "xNorm stddev " << i << ": " << xNormSD[i] << std::endl;
+	  std::cout << "yNorm stddev "<< i << ": " << yNoNormSD[i] << std::endl;
+	  std::cout << "zNorm stddev "<< i << ": " << zNoNormSD[i] << std::endl;
+	  std::cout << "xNoNorm stddev "<< i << ": " << xNoNormSD[i] << std::endl;
+	  std::cout << "yNoNorm stddev "<< i << ": " << yNoNormSD[i]<< std::endl;
+	  std::cout << "zNoNorm stddev "<< i << ": " << zNoNormSD[i]<< std::endl;
+	  std::cout << "xBest stddev "<< i << ": " << xBestSD[i] << std::endl;
+	  std::cout << "yBest stddev "<< i << ": " << yBestSD[i] << std::endl;
+	  std::cout << "zBest stddev "<< i << ": " << zBestSD[i] << std::endl;
+	  std::cout << "x2Near stddev "<< i << ": " << xNearSD[i] << std::endl;
+	  std::cout << "y2Near stddev "<< i << ": " << yNearSD[i] << std::endl;
+	  std::cout << "z2Near stddev " << i << ": "<< zNearSD[i] << std::endl;
+	  std::cout << "x2NearBySiPM stddev "<< i << ": " << xNearBySiPMSD[i] << std::endl;
+	  std::cout << "y2NearBySiPM stddev "<< i << ": " << yNearBySiPMSD[i] << std::endl;
+	  std::cout << "z2NearBySiPM stddev "<< i << ": " << zNearBySiPMSD[i] << std::endl;
+  }
+  std::cout << "---------------------------------" << std::endl;
+  std::cout << "xNormSD min value at " << std::min_element(xNormSD.begin(), xNormSD.end()) - xNormSD.begin() << 
+	" val = " <<  xNormSD[std::min_element(xNormSD.begin(), xNormSD.end()) - xNormSD.begin()] << std::endl;
+  std::cout << "yNormSD min value at " << std::min_element(yNormSD.begin(), yNormSD.end()) - yNormSD.begin() <<
+	" val = " <<  yNormSD[std::min_element(yNormSD.begin(), yNormSD.end()) - yNormSD.begin()] << std::endl;
+  std::cout << "zNormSD min value at " << std::min_element(zNormSD.begin(), zNormSD.end()) - zNormSD.begin() << 
+	 " val = " << zNormSD[std::min_element(zNormSD.begin(), zNormSD.end()) - zNormSD.begin()] << std::endl;
+  std::cout << std::endl;
+  std::cout << "xNoNormSD min value at " << std::min_element(xNoNormSD.begin(), xNoNormSD.end()) - xNoNormSD.begin() << 
+	 " val = " << xNoNormSD[std::min_element(xNoNormSD.begin(), xNoNormSD.end()) - xNoNormSD.begin()] << std::endl;
+  std::cout << "yNoNormSD min value at " << std::min_element(yNoNormSD.begin(), yNoNormSD.end()) - yNoNormSD.begin() <<
+    " val = " << yNoNormSD[std::min_element(yNoNormSD.begin(), yNoNormSD.end()) - yNoNormSD.begin()] << std::endl;
+  std::cout << "zNoNormSD min value at " << std::min_element(zNoNormSD.begin(), zNoNormSD.end()) - zNoNormSD.begin() << 
+	 " val = " << zNoNormSD[std::min_element(zNoNormSD.begin(), zNoNormSD.end()) - zNoNormSD.begin()] << std::endl;
+  std::cout << std::endl;
+  std::cout << "xBestSD min value at " << std::min_element(xBestSD.begin(), xBestSD.end()) - xBestSD.begin() << 
+	  " val = " << xBestSD[std::min_element(xBestSD.begin(), xBestSD.end()) - xBestSD.begin()] << std::endl;
+  std::cout << "yBestSD min value at " << std::min_element(yBestSD.begin(), yBestSD.end()) - yBestSD.begin() << 
+	  " val = " << yBestSD[std::min_element(yBestSD.begin(), yBestSD.end()) - yBestSD.begin()] << std::endl;
+  std::cout << "zBestSD min value at " << std::min_element(zBestSD.begin(), zBestSD.end()) - zBestSD.begin() << 
+	  " val = " << zBestSD[std::min_element(zBestSD.begin(), zBestSD.end()) - zBestSD.begin()] << std::endl;
+  std::cout << std::endl;
+  std::cout << "xNearSD min value at " << std::min_element(xNearSD.begin(), xNearSD.end()) - xNearSD.begin() << 
+	  " val = " << xNearSD[std::min_element(xNearSD.begin(), xNearSD.end()) - xNearSD.begin()] << std::endl;
+  std::cout << "yNearSD min value at " << std::min_element(yNearSD.begin(), yNearSD.end()) - yNearSD.begin() << 
+	  " val = " << yNearSD[std::min_element(yNearSD.begin(), yNearSD.end()) - yNearSD.begin()] <<std::endl;
+  std::cout << "zNearSD min value at " << std::min_element(zNearSD.begin(), zNearSD.end()) - zNearSD.begin() << 
+	  " val = " << zNearSD[std::min_element(zNearSD.begin(), zNearSD.end()) - zNearSD.begin()] << std::endl;
+  std::cout << std::endl;
+  std::cout << "xNearBySiPMSD min value at " << std::min_element(xNearBySiPMSD.begin(), xNearBySiPMSD.end()) - xNearBySiPMSD.begin() << 
+	  " val = " << xNearBySiPMSD[std::min_element(xNearBySiPMSD.begin(), xNearBySiPMSD.end()) - xNearBySiPMSD.begin()] << std::endl;
+  std::cout << "yNearBySiPMSD min value at " << std::min_element(yNearBySiPMSD.begin(), yNearBySiPMSD.end()) - yNearBySiPMSD.begin() <<
+	 " val = " << yNearBySiPMSD[std::min_element(yNearBySiPMSD.begin(), yNearBySiPMSD.end()) - yNearBySiPMSD.begin()] << std::endl;
+  std::cout << "zNearBySiPMSD min value at " << std::min_element(zNearBySiPMSD.begin(), zNearBySiPMSD.end()) - zNearBySiPMSD.begin() <<
+	 " val = " << zNearBySiPMSD[std::min_element(zNearBySiPMSD.begin(), zNearBySiPMSD.end()) - zNearBySiPMSD.begin()] << std::endl;
+  std::cout << "---------------------------------" << std::endl;
+
   return true;
 
 }
