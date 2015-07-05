@@ -33,10 +33,10 @@ prod2.pet.root
 CNTJob SAVE I 0
 
 #---------- NUMBER OF EVENTS TO ANALYZE ----------#
-CNTJob NEVENTS I 30000
+CNTJob NEVENTS I 100
 
 #---------- FIRST EVENT TO ANALYZE ----------#
-CNTJob FEVENT I 0
+CNTJob FEVENT I 12443
 
 #---------- Print status messages after NDEBUG events ----------#
 CNTJob NDEBUG I 100

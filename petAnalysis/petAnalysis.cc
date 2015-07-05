@@ -142,12 +142,12 @@ bool petAnalysis::initialize(){
   }
  
   //Hist2d events
-/*  store("index",0);
+  store("index",0);
   for(unsigned int i=0;i<100;i++){
 	  string histName = "Event" + gate::to_string(i);
 	  gate::Centella::instance()
 		  ->hman()->h2(this->alabel(histName),histName,40,0,40,20,0,20);
-  }*/
+  }
 
   //gate::Run* run = &gate::Centella::instance()->getRun();
   //int nevt = gate::int_from_string(run->fetch_sstore("num_events"));
@@ -209,7 +209,8 @@ bool petAnalysis::execute(gate::Event& evt){
 		  //Apply cut per plane
 		  std::vector<std::vector<gate::Hit*> > planesCut(6);
 		  for(unsigned int i=0; i<6;i++){
-			  applyCut(planes[i], 0.01*STEP*k ,planesCut[i]);
+			  //applyCut(planes[i], 0.01*STEP*k ,planesCut[i]);
+			  applyCut(planes[i], 0.75 ,planesCut[i]);
 		  }
 		  //std::cout << "cut: " << 0.01*STEP*k << std::endl;
 
@@ -301,7 +302,7 @@ bool petAnalysis::execute(gate::Event& evt){
   hist2dHits(evt);
 
   //Hist2d event
-  //hist2dEvent(evt);
+  hist2dEvent(evt);
 
   return true;
 }
