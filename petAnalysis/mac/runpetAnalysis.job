@@ -27,7 +27,7 @@ CNTJob LIBS SV 1
 
 #--------- DATA -------#
 CNTJob INPUT_DATA SV 1
-prod2.allfaces.pet.root
+prod2.pet.root
 
 #------ SAVE EVENTS IN OUTPUT FILE ----------# 
 CNTJob SAVE I 0

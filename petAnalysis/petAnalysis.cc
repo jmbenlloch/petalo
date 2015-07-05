@@ -188,7 +188,7 @@ bool petAnalysis::execute(gate::Event& evt){
   fillComptonHist(primary);
 
   // Classify event as compton or photoelectric
- // classifyEvent(primary,firstDaughter);
+  classifyEvent(primary,firstDaughter);
 
   //True Vertex
   gate::Point3D trueVertex = firstDaughter.GetInitialVtx(); 
@@ -298,7 +298,7 @@ bool petAnalysis::execute(gate::Event& evt){
   }
 
   //Hist2d to find the cut
-  //hist2dHits(evt);
+  hist2dHits(evt);
 
   //Hist2d event
   //hist2dEvent(evt);
@@ -367,7 +367,7 @@ bool petAnalysis::finalize(){
 	  yNearBySiPMSD[i] = gate::Centella::instance()->hman()->fetch(namey2NearBySiPM)->GetStdDev();
 	  zNearBySiPMSD[i] = gate::Centella::instance()->hman()->fetch(namez2NearBySiPM)->GetStdDev();
 
-	  std::cout << "xNorm stddev " << i << ": " << xNormSD[i] << std::endl;
+/*	  std::cout << "xNorm stddev " << i << ": " << xNormSD[i] << std::endl;
 	  std::cout << "yNorm stddev "<< i << ": " << yNoNormSD[i] << std::endl;
 	  std::cout << "zNorm stddev "<< i << ": " << zNoNormSD[i] << std::endl;
 	  std::cout << "xNoNorm stddev "<< i << ": " << xNoNormSD[i] << std::endl;
@@ -381,7 +381,7 @@ bool petAnalysis::finalize(){
 	  std::cout << "z2Near stddev " << i << ": "<< zNearSD[i] << std::endl;
 	  std::cout << "x2NearBySiPM stddev "<< i << ": " << xNearBySiPMSD[i] << std::endl;
 	  std::cout << "y2NearBySiPM stddev "<< i << ": " << yNearBySiPMSD[i] << std::endl;
-	  std::cout << "z2NearBySiPM stddev "<< i << ": " << zNearBySiPMSD[i] << std::endl;
+	  std::cout << "z2NearBySiPM stddev "<< i << ": " << zNearBySiPMSD[i] << std::endl;*/
   }
   std::cout << "---------------------------------" << std::endl;
   std::cout << "xNormSD min value at " << std::min_element(xNormSD.begin(), xNormSD.end()) - xNormSD.begin() << 
@@ -501,12 +501,12 @@ void petAnalysis::reconstruction(std::vector<std::vector<gate::Hit*> > planes, g
 	computeBarycenters(planes,pointsRecons,errors);
 
 	// Average
-	x += pointsRecons[0][0] / std::pow(errors[0][0],2);
+//	x += pointsRecons[0][0] / std::pow(errors[0][0],2);
 	x += pointsRecons[2][0] / std::pow(errors[2][0],2); 
 	x += pointsRecons[4][0] / std::pow(errors[4][0],2);
 	x += pointsRecons[5][0] / std::pow(errors[5][0],2);
 	
-	y += pointsRecons[0][1] / std::pow(errors[0][1],2); 
+//	y += pointsRecons[0][1] / std::pow(errors[0][1],2); 
 	y += pointsRecons[1][0] / std::pow(errors[1][0],2);
 	y += pointsRecons[2][1] / std::pow(errors[2][1],2);
 	y += pointsRecons[3][0] / std::pow(errors[3][0],2);
@@ -516,8 +516,8 @@ void petAnalysis::reconstruction(std::vector<std::vector<gate::Hit*> > planes, g
 	z += pointsRecons[4][1] / std::pow(errors[4][1],2);
 	z += pointsRecons[5][1] / std::pow(errors[5][1],2);
 
-	xNorm = std::pow(errors[0][0],-2) + std::pow(errors[2][0],-2) + std::pow(errors[4][0],-2) + std::pow(errors[5][0],-2);
-	yNorm = std::pow(errors[0][1],-2) + std::pow(errors[1][0],-2) + std::pow(errors[2][1],-2) + std::pow(errors[3][0],-2);
+	xNorm = std::pow(errors[2][0],-2) + std::pow(errors[4][0],-2) + std::pow(errors[5][0],-2);
+	yNorm = std::pow(errors[1][0],-2) + std::pow(errors[2][1],-2) + std::pow(errors[3][0],-2);
 	zNorm = std::pow(errors[1][1],-2) + std::pow(errors[3][1],-2) + std::pow(errors[4][1],-2) + std::pow(errors[5][1],-2);
 
 	pt.x(x/xNorm);
@@ -587,7 +587,7 @@ void petAnalysis::classifyEvent(gate::MCParticle& primary, gate::MCParticle& fir
 		countPhoto++;
 		// std::cout << "\t Photo ->";
 		for(unsigned int j=0; j<primary.GetDaughters().size();j++){
-				  std::cout << "\t PDG/Proc/Energy: " << primary.GetDaughters()[j]->GetPDG() << "/" << primary.GetDaughters()[j]->GetCreatorProc() << "/" << primary.GetDaughters()[j]->GetInitialMom().GetE();
+	//			  std::cout << "\t PDG/Proc/Energy: " << primary.GetDaughters()[j]->GetPDG() << "/" << primary.GetDaughters()[j]->GetCreatorProc() << "/" << primary.GetDaughters()[j]->GetInitialMom().GetE();
 
 			//Electron
 			if(primary.GetDaughters()[j]->GetPDG() == 11){
@@ -606,9 +606,9 @@ void petAnalysis::classifyEvent(gate::MCParticle& primary, gate::MCParticle& fir
 		}else{
 			photoEGamma++;
 		}
-		std::cout << std::endl;
+	//	std::cout << std::endl;
 		//If only one particle generated then should be energy deposition (due to geant4 IR cut)
-		if(primary.GetDaughters().size() == 1){
+	/*	if(primary.GetDaughters().size() == 1){
 			//Only one track
 			std::cout << "Tracks: " << primary.GetDaughters()[0]->GetTracks().size();
 			if(primary.GetDaughters()[0]->GetTracks().size() > 0){
@@ -636,7 +636,7 @@ void petAnalysis::classifyEvent(gate::MCParticle& primary, gate::MCParticle& fir
 			std::cout << "/" << primary.GetDaughters()[0]->GetDaughters()[0]->GetCreatorProc();
 			std::cout << "/" << primary.GetDaughters()[0]->GetDaughters()[0]->GetPathLength();
 		}
-		std::cout << std::endl;
+		std::cout << std::endl;*/
 	}
 
 	fstore("photoCount",countPhoto);
@@ -941,8 +941,8 @@ void petAnalysis::reconstructionNoNorm(std::vector<std::vector<gate::Hit*> > pla
 
 	// Average
 	// TODO: Adapt to the number of planes
-	x = (pointsRecons[0][0] + pointsRecons[2][0] + pointsRecons[4][0] + pointsRecons[5][0]) / 4.0;
-	y = (pointsRecons[0][1] + pointsRecons[1][0] + pointsRecons[2][1] + pointsRecons[3][0]) / 4.0;
+	x = (pointsRecons[0][0] + pointsRecons[2][0] + pointsRecons[4][0] + pointsRecons[5][0]) / 3.0;
+	y = (pointsRecons[0][1] + pointsRecons[1][0] + pointsRecons[2][1] + pointsRecons[3][0]) / 3.0;
 	z = (pointsRecons[1][1] + pointsRecons[3][1] + pointsRecons[4][1] + pointsRecons[5][1]) / 4.0;
 
 	pt.x(x);
@@ -959,12 +959,8 @@ void petAnalysis::bestPointRecons(std::vector<std::vector<gate::Hit*> > planes, 
 	computeBarycenters(planes,pointsRecons,errors);
 
 	//Select best x
-	error = std::abs(pointsRecons[0][0] - truePt.x());
-	pt.x(pointsRecons[0][0]);
-	if(std::abs(pointsRecons[2][0] - truePt.x()) < error){
-		pt.x(pointsRecons[2][0]);
-		error = std::abs(pointsRecons[2][0] - truePt.x());
-	}
+	error = std::abs(pointsRecons[2][0] - truePt.x());
+	pt.x(pointsRecons[2][0]);
 	if(std::abs(pointsRecons[4][0] - truePt.x()) < error){
 		pt.x(pointsRecons[4][0]);
 		error = std::abs(pointsRecons[4][0] - truePt.x());
@@ -975,12 +971,8 @@ void petAnalysis::bestPointRecons(std::vector<std::vector<gate::Hit*> > planes, 
 	}
 
 	//Select best y
-	error = std::abs(pointsRecons[0][1] - truePt.y());
-	pt.y(pointsRecons[0][1]);
-	if(std::abs(pointsRecons[1][0] - truePt.y()) < error){
-		pt.y(pointsRecons[1][0]);
-		error = std::abs(pointsRecons[1][0] - truePt.y());
-	}
+	error = std::abs(pointsRecons[1][0] - truePt.y());
+	pt.y(pointsRecons[1][0]);
 	if(std::abs(pointsRecons[2][1] - truePt.y()) < error){
 		pt.y(pointsRecons[2][1]);
 		error = std::abs(pointsRecons[2][1] - truePt.y());
@@ -1021,9 +1013,9 @@ void petAnalysis::reconstruct2NearestPlanes(std::vector<std::vector<gate::Hit*> 
 //	}
 
 	std::vector<std::vector<gate::Hit*> >  sortedPlanes(planes);
-	std::vector<std::pair<int, double> > planesOrder(6);
-	for(unsigned int i=0; i<6; i++){
-		planesOrder[i] = std::pair<int, double>(i,totalCharge(planesNoCut[i]));
+	std::vector<std::pair<int, double> > planesOrder(5);
+	for(unsigned int i=0; i<5; i++){
+		planesOrder[i] = std::pair<int, double>(i+1,totalCharge(planesNoCut[i+1]));
 	//	std::cout << "Plane " << planesOrder[i].first << " - charge: " << planesOrder[i].second << std::endl;
 	}
 	std::sort(planesOrder.begin(), planesOrder.end(), petAnalysis::chargeOrderPlanesDesc);
@@ -1081,14 +1073,14 @@ void petAnalysis::reconstruct2NearestPlanesByMaxSiPM(std::vector<std::vector<gat
 
 	//max charge
 	std::vector<std::vector<gate::Hit*> >  sortedSiPM(planes);
-	for(unsigned int i=0; i<6; i++){
+	for(unsigned int i=1; i<6; i++){
 		std::sort(sortedSiPM[i].begin(), sortedSiPM[i].end(), petAnalysis::chargeOrderSensorsDesc);
 	}
 
 	std::vector<std::vector<gate::Hit*> >  sortedPlanes(planes);
-	std::vector<std::pair<int, double> > planesOrder(6);
-	for(unsigned int i=0; i<6; i++){
-		planesOrder[i] = std::pair<int, double>(i,sortedSiPM[i][0]->GetAmplitude());
+	std::vector<std::pair<int, double> > planesOrder(5);
+	for(unsigned int i=0; i<5; i++){
+		planesOrder[i] = std::pair<int, double>(i+1,sortedSiPM[i+1][0]->GetAmplitude());
 //		std::cout << "Plane " << planesOrder[i].first << " - charge: " << planesOrder[i].second << " - total: " << totalCharge(planesNoCut[i]) << std::endl;
 	}
 	std::sort(planesOrder.begin(), planesOrder.end(), petAnalysis::chargeOrderPlanesDesc);
