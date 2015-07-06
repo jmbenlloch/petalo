@@ -142,12 +142,12 @@ bool petAnalysis::initialize(){
   }
  
   //Hist2d events
-  store("index",0);
+/*  store("index",0);
   for(unsigned int i=0;i<100;i++){
 	  string histName = "Event" + gate::to_string(i);
 	  gate::Centella::instance()
 		  ->hman()->h2(this->alabel(histName),histName,40,0,40,30,0,30);
-  }
+  }*/
 
   //gate::Run* run = &gate::Centella::instance()->getRun();
   //int nevt = gate::int_from_string(run->fetch_sstore("num_events"));
@@ -197,19 +197,23 @@ bool petAnalysis::execute(gate::Event& evt){
   if(firstDaughter.GetCreatorProc() == std::string("phot") 
 		  && firstDaughter.GetDaughters().size()==0){
 
-   //   std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
+	  std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
 
 	  //Classify sensor hits per planes
 	  std::vector<std::vector<gate::Hit*> > planes(6);
 	  splitHitsPerPlane(evt,planes);
 
 	  //Find best cut
-	  for(unsigned int k=0;k<(100/STEP);k++){
+	  //TODO: Uncomment to find best value
+	  //for(unsigned int k=0;k<(100/STEP);k++){
+	  for(unsigned int k=0;k<1;k++){
 
 		  //Apply cut per plane
 		  std::vector<std::vector<gate::Hit*> > planesCut(6);
 		  for(unsigned int i=0; i<6;i++){
-			  applyCut(planes[i], 0.01*STEP*k ,planesCut[i]);
+			  //TODO: Uncomment to find best value
+			  //applyCut(planes[i], 0.01*STEP*k ,planesCut[i]);
+			  applyCut(planes[i], 0,planesCut[i]);
 		  }
 		  //std::cout << "cut: " << 0.01*STEP*k << std::endl;
 
@@ -293,7 +297,7 @@ bool petAnalysis::execute(gate::Event& evt){
 		  gate::Centella::instance()
 			  ->hman()->fill(this->alabel(namez2NearBySiPM), reconsPoint5.z() - trueVertex.z());
 
-		  //	  printSensors(planesCut);
+		  printSensors(planesCut);
 	  }
   }
 
@@ -301,7 +305,7 @@ bool petAnalysis::execute(gate::Event& evt){
   //hist2dHits(evt);
 
   //Hist2d event
-  hist2dEvent(evt);
+ // hist2dEvent(evt);
 
   return true;
 }
@@ -367,7 +371,7 @@ bool petAnalysis::finalize(){
 	  yNearBySiPMSD[i] = gate::Centella::instance()->hman()->fetch(namey2NearBySiPM)->GetStdDev();
 	  zNearBySiPMSD[i] = gate::Centella::instance()->hman()->fetch(namez2NearBySiPM)->GetStdDev();
 
-	  std::cout << "xNorm stddev " << i << ": " << xNormSD[i] << std::endl;
+/*	  std::cout << "xNorm stddev " << i << ": " << xNormSD[i] << std::endl;
 	  std::cout << "yNorm stddev "<< i << ": " << yNoNormSD[i] << std::endl;
 	  std::cout << "zNorm stddev "<< i << ": " << zNoNormSD[i] << std::endl;
 	  std::cout << "xNoNorm stddev "<< i << ": " << xNoNormSD[i] << std::endl;
@@ -381,7 +385,7 @@ bool petAnalysis::finalize(){
 	  std::cout << "z2Near stddev " << i << ": "<< zNearSD[i] << std::endl;
 	  std::cout << "x2NearBySiPM stddev "<< i << ": " << xNearBySiPMSD[i] << std::endl;
 	  std::cout << "y2NearBySiPM stddev "<< i << ": " << yNearBySiPMSD[i] << std::endl;
-	  std::cout << "z2NearBySiPM stddev "<< i << ": " << zNearBySiPMSD[i] << std::endl;
+	  std::cout << "z2NearBySiPM stddev "<< i << ": " << zNearBySiPMSD[i] << std::endl;*/
   }
   std::cout << "---------------------------------" << std::endl;
   std::cout << "xNormSD min value at " << std::min_element(xNormSD.begin(), xNormSD.end()) - xNormSD.begin() << 
@@ -781,6 +785,35 @@ void petAnalysis::printSensors(std::vector<std::vector<gate::Hit*> >& planes){
 	double colSum[10];
 	memset(colSum, 0, 10*sizeof(double));
 
+	std::cout << "---------- Plane 0 (x,y) -----------\n";
+	std::cout << "\t-45\t\t-35\t\t-25\t\t-15\t\t-05\t\t+05\t\t+15\t\t+25\t\t+35\t\t+45" << std::endl;
+	for(int i=0;i<10;i++){
+		std::cout << (45-i*10);
+		for(int j=0;j<10;j++){
+			id = i*10 + j;
+			count = findSensors(planes[0],id);
+			std::cout << "\tid00" << id << ": " << count;
+			total += count;
+			row += (-45+j*10) * count;
+			colSum[j] += (45-i*10)*count;
+		}
+		std::cout << "\t " << row << std::endl;
+		rowTotal += row;
+		row=0.;
+	}
+	std::cout << "Col: ";
+	for(int i=0;i<10;i++){
+		colTotal += colSum[i];
+		std::cout << "\t\t" << colSum[i];
+	}
+	std::cout << std::endl;
+	std::cout << "Total sum: " << total << "\t Total Row: " << rowTotal << "\t Total Col: " << colTotal << std::endl;
+	std::cout << "Row/Sum: " << rowTotal/total << "\t Col/Sum: " << colTotal/total << std::endl;
+	total=0;
+	rowTotal=0.;
+	colTotal=0.;
+	memset(colSum, 0, 10*sizeof(double));
+
 	std::cout << "---------- Plane 1 (y,z) -----------\n";
 	std::cout << "\t-45\t\t-35\t\t-25\t\t-15\t\t-05\t\t+05\t\t+15\t\t+25\t\t+35\t\t+45" << std::endl;
 	for(int i=0;i<10;i++){
@@ -1086,7 +1119,10 @@ void petAnalysis::reconstruct2NearestPlanesByMaxSiPM(std::vector<std::vector<gat
 	std::vector<std::vector<gate::Hit*> >  sortedSiPM(planes);
 	for(unsigned int i=0; i<6; i++){
 		std::sort(sortedSiPM[i].begin(), sortedSiPM[i].end(), petAnalysis::chargeOrderSensorsDesc);
+
+		std::cout << "Plane " <<i<< " max: x=" << sortedSiPM[i][0]->GetPosition().x() << ", y=" << sortedSiPM[i][0]->GetPosition().y() << ", z=" << sortedSiPM[i][0]->GetPosition().z() << "; id " << sortedSiPM[i][0]->GetSensorID() << "; Value: " << sortedSiPM[i][0]->GetAmplitude() << std::endl;
 	}
+
 
 	std::vector<std::vector<gate::Hit*> >  sortedPlanes(planes);
 	std::vector<std::pair<int, double> > planesOrder(6);
@@ -1137,3 +1173,4 @@ void petAnalysis::computeBarycenters(std::vector<std::vector<gate::Hit*> > plane
 	}
 
 }
+
