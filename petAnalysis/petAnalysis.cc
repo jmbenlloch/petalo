@@ -140,7 +140,14 @@ bool petAnalysis::initialize(){
 	  gate::Centella::instance()
 		  ->hman()->h2(this->alabel(histNameRel),histTitle,100,0,100,100,0.,1.);
   }
- 
+
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("xy"),"xy",100,-50,50,100,-50,50);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("xz"),"xz",100,-50,50,100,-50,50);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("yz"),"yz",100,-50,50,100,-50,50);
+
   //Hist2d events
 /*  store("index",0);
   for(unsigned int i=0;i<100;i++){
@@ -165,6 +172,7 @@ bool petAnalysis::initialize(){
   return true;
 
 }
+
 
 //==========================================================================
 bool petAnalysis::execute(gate::Event& evt){
@@ -193,11 +201,19 @@ bool petAnalysis::execute(gate::Event& evt){
   //True Vertex
   gate::Point3D trueVertex = firstDaughter.GetInitialVtx(); 
 
+  //Fill position histograms
+  gate::Centella::instance()
+	  ->hman()->fill2d(this->alabel("xy"),trueVertex.x(),trueVertex.y());
+  gate::Centella::instance()
+	  ->hman()->fill2d(this->alabel("xz"),trueVertex.x(),trueVertex.z());
+  gate::Centella::instance()
+	  ->hman()->fill2d(this->alabel("yz"),trueVertex.y(),trueVertex.z());
+
  //Try only events with photoelectric and one vertex
   if(firstDaughter.GetCreatorProc() == std::string("phot") 
 		  && firstDaughter.GetDaughters().size()==0){
 
-	  std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
+//	  std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
 
 	  //Classify sensor hits per planes
 	  std::vector<std::vector<gate::Hit*> > planes(6);
@@ -297,7 +313,7 @@ bool petAnalysis::execute(gate::Event& evt){
 		  gate::Centella::instance()
 			  ->hman()->fill(this->alabel(namez2NearBySiPM), reconsPoint5.z() - trueVertex.z());
 
-		  printSensors(planesCut);
+//		  printSensors(planesCut);
 	  }
   }
 
@@ -1120,7 +1136,8 @@ void petAnalysis::reconstruct2NearestPlanesByMaxSiPM(std::vector<std::vector<gat
 	for(unsigned int i=0; i<6; i++){
 		std::sort(sortedSiPM[i].begin(), sortedSiPM[i].end(), petAnalysis::chargeOrderSensorsDesc);
 
-		std::cout << "Plane " <<i<< " max: x=" << sortedSiPM[i][0]->GetPosition().x() << ", y=" << sortedSiPM[i][0]->GetPosition().y() << ", z=" << sortedSiPM[i][0]->GetPosition().z() << "; id " << sortedSiPM[i][0]->GetSensorID() << "; Value: " << sortedSiPM[i][0]->GetAmplitude() << std::endl;
+	//TODO: check position of max sipm
+	//	std::cout << "Plane " <<i<< " max: x=" << sortedSiPM[i][0]->GetPosition().x() << ", y=" << sortedSiPM[i][0]->GetPosition().y() << ", z=" << sortedSiPM[i][0]->GetPosition().z() << "; id " << sortedSiPM[i][0]->GetSensorID() << "; Value: " << sortedSiPM[i][0]->GetAmplitude() << std::endl;
 	}
 
 
