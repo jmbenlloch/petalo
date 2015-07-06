@@ -142,12 +142,12 @@ bool petAnalysis::initialize(){
   }
  
   //Hist2d events
-/*  store("index",0);
+  store("index",0);
   for(unsigned int i=0;i<100;i++){
 	  string histName = "Event" + gate::to_string(i);
 	  gate::Centella::instance()
-		  ->hman()->h2(this->alabel(histName),histName,40,0,40,20,0,20);
-  }*/
+		  ->hman()->h2(this->alabel(histName),histName,40,0,40,30,0,30);
+  }
 
   //gate::Run* run = &gate::Centella::instance()->getRun();
   //int nevt = gate::int_from_string(run->fetch_sstore("num_events"));
@@ -301,7 +301,7 @@ bool petAnalysis::execute(gate::Event& evt){
   //hist2dHits(evt);
 
   //Hist2d event
-  //hist2dEvent(evt);
+  hist2dEvent(evt);
 
   return true;
 }
@@ -668,28 +668,31 @@ double petAnalysis::distance(gate::Point3D& p1, gate::Point3D& p2){
 
 void petAnalysis::hist2dEvent(gate::Event& evt){
 	std::string histName = "Event" + gate::to_string(fetch_istore("index"));
-	int counts[500];
-	memset(counts, 0, 500*sizeof(int));
+	int counts[600];
+	memset(counts, 0, 600*sizeof(int));
 	for(unsigned int i=0;i<evt.GetMCSensHits().size(); i++){
 		int id = evt.GetMCSensHits()[i]->GetSensorID();
-		counts[(id/1000)*100+(id%100)-100] += evt.GetMCSensHits()[i]->GetAmplitude();
+		counts[(id/1000)*100+(id%100)] += evt.GetMCSensHits()[i]->GetAmplitude();
 	}
 	for(unsigned int i=0;i<100;i++){
 		//Plane 1
 		gate::Centella::instance()
-			->hman()->fill2d(this->alabel(histName),i/10,10-i%10 -0.5,counts[i]);
+			->hman()->fill2d(this->alabel(histName),i/10,10 +10-i%10 -0.5,counts[100+i]);
 		//Plane 5
 		gate::Centella::instance()
-			->hman()->fill2d(this->alabel(histName),10-i/10 +10 -0.5, i%10,counts[i+400]);
+			->hman()->fill2d(this->alabel(histName),10-i/10 +10 -0.5,10+ i%10,counts[i+500]);
 		//Plane 3
 		gate::Centella::instance()
-			->hman()->fill2d(this->alabel(histName),10-i/10 +20 -0.5, i%10,counts[i+200]);
+			->hman()->fill2d(this->alabel(histName),10-i/10 +20 -0.5, 10+i%10,counts[i+300]);
 		//Plane 4
 		gate::Centella::instance()
-			->hman()->fill2d(this->alabel(histName),10-i/10 +30 -0.5, i%10,counts[i+300]);
+			->hman()->fill2d(this->alabel(histName),10-i/10 +30 -0.5, 10+i%10,counts[i+400]);
 		//Plane 2
 		gate::Centella::instance()
-			->hman()->fill2d(this->alabel(histName),10-i%10 +10, 10 - i/10 + 10 -0.5,counts[i+100]);
+			->hman()->fill2d(this->alabel(histName),10-i%10 +10, 10 + 10 - i/10 + 10 -0.5,counts[i+200]);
+		//Plane 0
+		gate::Centella::instance()
+			->hman()->fill2d(this->alabel(histName),i%10+10, i/10,counts[i]);
 	}
 	fstore("index", fetch_istore("index")+1);
 }
