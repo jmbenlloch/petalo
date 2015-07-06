@@ -33,7 +33,7 @@ prod2.allfaces.pet.root
 CNTJob SAVE I 0
 
 #---------- NUMBER OF EVENTS TO ANALYZE ----------#
-CNTJob NEVENTS I 7
+CNTJob NEVENTS I 30000
 
 #---------- FIRST EVENT TO ANALYZE ----------#
 CNTJob FEVENT I 0

@@ -38,6 +38,15 @@ bool petAnalysis::initialize(){
     ->hman()->h1(this->alabel("Compton"),"Number of Compton interactions",10,0,10);
 
   gate::Centella::instance()
+    ->hman()->h1(this->alabel("correctSiPM"),"Max SiPM charge in true vertex projection",10,0,10);
+
+  gate::Centella::instance()
+    ->hman()->h1(this->alabel("correctSiPMByMax"),"Max SiPM charge in true vertex projection (2 best planes)",10,0,10);
+
+  gate::Centella::instance()
+    ->hman()->h1(this->alabel("correctSiPMByTotal"),"Max SiPM charge in true vertex projection (2 best planes)",10,0,10);
+
+  gate::Centella::instance()
     ->hman()->h1(this->alabel("PhotEnergy"),"Photoelectron Energy",30000,0,2);
 
   gate::Centella::instance()
@@ -313,7 +322,9 @@ bool petAnalysis::execute(gate::Event& evt){
 		  gate::Centella::instance()
 			  ->hman()->fill(this->alabel(namez2NearBySiPM), reconsPoint5.z() - trueVertex.z());
 
-//		  printSensors(planesCut);
+		  //printSensors(planesCut);
+		  checkMaxSiPMPosition(planesCut,planes,trueVertex);
+	//	  projectPosition({,trueVertex);
 	  }
   }
 
@@ -403,7 +414,7 @@ bool petAnalysis::finalize(){
 	  std::cout << "y2NearBySiPM stddev "<< i << ": " << yNearBySiPMSD[i] << std::endl;
 	  std::cout << "z2NearBySiPM stddev "<< i << ": " << zNearBySiPMSD[i] << std::endl;*/
   }
-  std::cout << "---------------------------------" << std::endl;
+/*  std::cout << "---------------------------------" << std::endl;
   std::cout << "xNormSD min value at " << std::min_element(xNormSD.begin(), xNormSD.end()) - xNormSD.begin() << 
 	" val = " <<  xNormSD[std::min_element(xNormSD.begin(), xNormSD.end()) - xNormSD.begin()] << std::endl;
   std::cout << "yNormSD min value at " << std::min_element(yNormSD.begin(), yNormSD.end()) - yNormSD.begin() <<
@@ -439,7 +450,7 @@ bool petAnalysis::finalize(){
   std::cout << "zNearBySiPMSD min value at " << std::min_element(zNearBySiPMSD.begin(), zNearBySiPMSD.end()) - zNearBySiPMSD.begin() <<
 	 " val = " << zNearBySiPMSD[std::min_element(zNearBySiPMSD.begin(), zNearBySiPMSD.end()) - zNearBySiPMSD.begin()] << std::endl;
   std::cout << "---------------------------------" << std::endl;
-
+*/
   return true;
 
 }
@@ -1191,3 +1202,148 @@ void petAnalysis::computeBarycenters(std::vector<std::vector<gate::Hit*> > plane
 
 }
 
+
+//TODO
+void petAnalysis::checkMaxSiPMPosition(std::vector<std::vector<gate::Hit*> > planes, std::vector<std::vector<gate::Hit*> > planesNoCut, gate::Point3D& truePt){
+	int nonOrthogonal[6] = {2,3,0,1,5,4};
+
+
+	////////////////////////////////////////
+	// SELECT 2 Planes by max SiPM charge //
+	////////////////////////////////////////
+	std::vector<std::vector<double> > pointsRecons(6,std::vector<double>(2));
+	std::vector<std::vector<double> > errors(6,std::vector<double>(2));
+	computeBarycenters(planes,pointsRecons,errors);
+
+	//max charge
+	std::vector<std::vector<gate::Hit*> >  sortedSiPM(planes);
+	for(unsigned int i=0; i<6; i++){
+		std::sort(sortedSiPM[i].begin(), sortedSiPM[i].end(), petAnalysis::chargeOrderSensorsDesc);
+
+	//TODO: check position of max sipm
+	//	std::cout << "Plane " <<i<< " max: x=" << sortedSiPM[i][0]->GetPosition().x() << ", y=" << sortedSiPM[i][0]->GetPosition().y() << ", z=" << sortedSiPM[i][0]->GetPosition().z() << "; id " << sortedSiPM[i][0]->GetSensorID() << "; Value: " << sortedSiPM[i][0]->GetAmplitude() << std::endl;
+	}
+
+	std::vector<std::vector<gate::Hit*> >  sortedPlanes(planes);
+	std::vector<std::pair<int, double> > planesOrder(6);
+	for(unsigned int i=0; i<6; i++){
+		planesOrder[i] = std::pair<int, double>(i,sortedSiPM[i][0]->GetAmplitude());
+//		std::cout << "Plane " << planesOrder[i].first << " - charge: " << planesOrder[i].second << " - total: " << totalCharge(planesNoCut[i]) << std::endl;
+	}
+	std::sort(planesOrder.begin(), planesOrder.end(), petAnalysis::chargeOrderPlanesDesc);
+
+//	std::cout << "Ordering... " << std::endl;
+//	for(unsigned int i=0; i<6; i++){
+//		std::cout << "Plane " << planesOrder[i].first << " - charge: " << planesOrder[i].second << std::endl;
+//	}
+
+	int fstPlane = planesOrder[0].first;
+	int sndPlane = planesOrder[1].first;
+
+	if(sndPlane == nonOrthogonal[planesOrder[0].first]){
+		sndPlane = planesOrder[2].first;
+	}
+
+	//std::cout << "Best planes: " << fstPlane << " (max = id" << sortedSiPM[fstPlane][0]->GetSensorID()
+	  // 	<< "), " << sndPlane << " (max = id" << sortedSiPM[sndPlane][0]->GetSensorID() << std::endl;
+	std::vector<int> ids(6);
+	projectPosition(ids,truePt);
+	int countBySiPM=0;
+	if(sortedSiPM[fstPlane][0]->GetSensorID() == ids[fstPlane]){
+		countBySiPM++;
+	}	
+	if(sortedSiPM[sndPlane][0]->GetSensorID() == ids[fstPlane]){
+		countBySiPM++;
+	}	
+//	std::cout << "countBySiPM: " << countBySiPM << std::endl;
+	gate::Centella::instance()
+		->hman()->fill(this->alabel("correctSiPMByMax"), countBySiPM);
+
+
+
+	/////////////////////////////////////////
+	// SELECT 2 Planes by max total charge //
+	/////////////////////////////////////////
+	std::vector<std::pair<int, double> > planesOrderTotal(6);
+	for(unsigned int i=0; i<6; i++){
+		planesOrder[i] = std::pair<int, double>(i,totalCharge(planesNoCut[i]));
+	//	std::cout << "Plane " << planesOrder[i].first << " - charge: " << planesOrder[i].second << std::endl;
+	}
+	std::sort(planesOrderTotal.begin(), planesOrderTotal.end(), petAnalysis::chargeOrderPlanesDesc);
+
+//	std::cout << "Ordering... " << std::endl;
+//	for(unsigned int i=0; i<6; i++){
+//		std::cout << "Plane " << planesOrder[i].first << " - charge: " << planesOrder[i].second << std::endl;
+//	}
+
+	fstPlane = planesOrderTotal[0].first;
+	sndPlane = planesOrderTotal[1].first;
+
+	if(sndPlane == nonOrthogonal[planesOrderTotal[0].first]){
+		sndPlane = planesOrderTotal[2].first;
+	}
+
+	int countByTotal=0;
+	if(sortedSiPM[fstPlane][0]->GetSensorID() == ids[fstPlane]){
+		countByTotal++;
+	}	
+	if(sortedSiPM[sndPlane][0]->GetSensorID() == ids[fstPlane]){
+		countByTotal++;
+	}	
+//	std::cout << "countByTotal: " << countByTotal << std::endl;
+	gate::Centella::instance()
+		->hman()->fill(this->alabel("correctSiPMByTotal"), countByTotal);
+
+	int correctSiPM=0;
+	for(unsigned int i=0;i<6;i++){
+		if(sortedSiPM[i][0]->GetSensorID() == ids[i]){
+			correctSiPM++;
+		}
+	}
+//	std::cout << "correctSiPM: " << correctSiPM << std::endl;
+	gate::Centella::instance()
+		->hman()->fill(this->alabel("correctSiPM"), correctSiPM);
+}
+
+void petAnalysis::projectPosition(std::vector<int>& ids, gate::Point3D& truePt){
+	//int ids[6] = {-1,-1,-1,-1,-1,-1};
+	int i,j;
+	//std::cout << "x: " << truePt.x() << "\t y: " << truePt.y() << "\t z:" << truePt.z() << std::endl;
+	//Plane 0
+	j = floor((truePt.x()+50)/10);
+	i = 9-floor((truePt.y()+50)/10);
+	//std::cout << "i: " << i << "\t j: " << j << std::endl;
+	ids[0] = i*10 + j;	
+	//Plane 1
+	j = floor((truePt.y()+50)/10);
+	i = 9-floor((truePt.z()+50)/10);
+	//std::cout << "i: " << i << "\t j: " << j << std::endl;
+	ids[1] = 1000 + i + (9-j)*10;
+	//Plane 2
+	j = floor((truePt.x()+50)/10);
+	i = 9-floor((truePt.y()+50)/10);
+	//std::cout << "i: " << i << "\t j: " << j << std::endl;
+	ids[2] = 2000 + i*10 + (9-j);
+	//Plane 3
+	j = floor((truePt.y()+50)/10);
+	i = 9-floor((truePt.z()+50)/10);
+	//std::cout << "i: " << i << "\t j: " << j << std::endl;
+	ids[3] = 3000 + (9-i) + (9-j)*10;
+	//Plane 4
+	j = floor((truePt.x()+50)/10);
+	i = 9-floor((truePt.z()+50)/10);
+	//std::cout << "i: " << i << "\t j: " << j << std::endl;
+	ids[4] = 4000 + (9-i) + j*10;
+	//Plane 5
+	j = floor((truePt.x()+50)/10);
+	i = 9-floor((truePt.z()+50)/10);
+	//std::cout << "i: " << i << "\t j: " << j << std::endl;
+	ids[5] = 5000 + (9-i) + (9-j)*10;
+
+/*	std::cout << "Plane 0: sensor " << ids[0] << std::endl;
+	std::cout << "Plane 1: sensor " << ids[1] << std::endl;
+	std::cout << "Plane 2: sensor " << ids[2] << std::endl;
+	std::cout << "Plane 3: sensor " << ids[3] << std::endl;
+	std::cout << "Plane 4: sensor " << ids[4] << std::endl;
+	std::cout << "Plane 5: sensor " << ids[5] << std::endl;*/
+}

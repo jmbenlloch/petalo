@@ -60,6 +60,9 @@ class petAnalysis : public gate::IAlgo {
 
   void computeBarycenters(std::vector<std::vector<gate::Hit*> > planes, std::vector<std::vector<double> >& points, std::vector<std::vector<double> >& errors);
 
+  void projectPosition(std::vector<int>& ids, gate::Point3D& truePt);
+
+  void checkMaxSiPMPosition(std::vector<std::vector<gate::Hit*> > planes, std::vector<std::vector<gate::Hit*> > planesNoCut, gate::Point3D& truePt);
 
 
   //! finalize algorithm
