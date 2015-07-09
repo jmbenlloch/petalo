@@ -248,11 +248,12 @@ bool petAnalysis::execute(gate::Event& evt){
 		  //std::cout << "cut: " << 0.01*STEP*k << std::endl;
 		  
 		  //TODO test findCoronna
-	//	  util::findCluster* findCluster = new util::findCluster();
-	//	  std::vector<std::vector<gate::Hit*> > clusters(6);
+		  util::findCluster* findCluster = new util::findCluster();
+		  std::vector<std::vector<gate::Hit*> > clusters(6);
 		  //findCluster->findCoronna(planesCut[0],cluster);
 		  //findCluster->findCoronnaAllPlanes(planesCut,clusters);
-	//	  findCluster->findCoronnaAllPlanes(planes,clusters);
+		  findCluster->findCoronnaAllPlanes(planes,clusters,1);
+	//	  findCluster->findCoronnaAllPlanes(planes,clusters,2);
 
 		  //Point Reconstruction
 		  gate::Point3D reconsPoint; 
@@ -261,20 +262,20 @@ bool petAnalysis::execute(gate::Event& evt){
 		  gate::Point3D reconsPoint4; 
 		  gate::Point3D reconsPoint5; 
 
-	/*	  reconsPerPlane(clusters,trueVertex);  
+		  reconsPerPlane(clusters,trueVertex);  
 		  reconstruction(clusters,reconsPoint);
 		  reconstructionNoNorm(clusters,reconsPoint2);
 		  bestPointRecons(clusters,trueVertex,reconsPoint3);
 		  reconstruct2NearestPlanes(clusters, planes, reconsPoint4);
 		  //reconstruct2NearestPlanesByMaxSiPM(clusters, planes, reconsPoint5);
-*/
-		  reconsPerPlane(planesCut,trueVertex);  
+
+/*		  reconsPerPlane(planesCut,trueVertex);  
 		  reconstruction(planesCut,reconsPoint);
 		  reconstructionNoNorm(planesCut,reconsPoint2);
 		  bestPointRecons(planesCut,trueVertex,reconsPoint3);
 		  reconstruct2NearestPlanes(planesCut, planes, reconsPoint4);
 		  reconstruct2NearestPlanesByMaxSiPM(planesCut, planes, reconsPoint5);
-
+*/
 		  string namexNorm = "xNorm_" + gate::to_string(5*k);
 		  string nameyNorm = "yNorm_" + gate::to_string(5*k);
 		  string namezNorm = "zNorm_" + gate::to_string(5*k);
