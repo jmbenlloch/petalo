@@ -1,5 +1,6 @@
 #include <algorithm> 
 #include "barycenterAlgorithm.hh"
+#include "findCluster.hh"
 #include "TF1.h"
 #include<petAnalysis.h>
 
@@ -33,6 +34,9 @@ bool petAnalysis::initialize(){
   
   gate::Centella::instance()
     ->hman()->h1(this->alabel("Energy"),"Energy SiPM",30000,0,10000);
+
+  gate::Centella::instance()
+    ->hman()->h1(this->alabel("z"),"Event position",30000,-50,50);
 
   gate::Centella::instance()
     ->hman()->h1(this->alabel("Compton"),"Number of Compton interactions",10,0,10);
@@ -93,51 +97,51 @@ bool petAnalysis::initialize(){
 	  string nameyNorm = "yNorm_" + gate::to_string(5*i);
 	  string namezNorm = "zNorm_" + gate::to_string(5*i);
 	  gate::Centella::instance()
-		  ->hman()->h1(this->alabel(namexNorm),"x-x0",100,-120,120);
+		  ->hman()->h1(this->alabel(namexNorm),"x-x0",100,-50,50);
 	  gate::Centella::instance()
-		  ->hman()->h1(this->alabel(nameyNorm),"y-y0",100,-120,120);
+		  ->hman()->h1(this->alabel(nameyNorm),"y-y0",100,-50,50);
 	  gate::Centella::instance()
-		  ->hman()->h1(this->alabel(namezNorm),"z-z0",100,-120,120);
+		  ->hman()->h1(this->alabel(namezNorm),"z-z0",100,-50,50);
 
 	  string namexNoNorm = "xNoNorm_" + gate::to_string(5*i);
 	  string nameyNoNorm = "yNoNorm_" + gate::to_string(5*i);
 	  string namezNoNorm = "zNoNorm_" + gate::to_string(5*i);
 	  gate::Centella::instance()
-		  ->hman()->h1(this->alabel(namexNoNorm),"x-x0",100,-120,120);
+		  ->hman()->h1(this->alabel(namexNoNorm),"x-x0",100,-50,50);
 	  gate::Centella::instance()
-		  ->hman()->h1(this->alabel(nameyNoNorm),"y-y0",100,-120,120);
+		  ->hman()->h1(this->alabel(nameyNoNorm),"y-y0",100,-50,50);
 	  gate::Centella::instance()
-		  ->hman()->h1(this->alabel(namezNoNorm),"z-z0",100,-120,120);
+		  ->hman()->h1(this->alabel(namezNoNorm),"z-z0",100,-50,50);
 
 	  string namexbestTrue = "xbestTrue_" + gate::to_string(5*i);
 	  string nameybestTrue = "ybestTrue_" + gate::to_string(5*i);
 	  string namezbestTrue = "zbestTrue_" + gate::to_string(5*i);
 	  gate::Centella::instance()
-		  ->hman()->h1(this->alabel(namexbestTrue),"x-x0",100,-120,120);
+		  ->hman()->h1(this->alabel(namexbestTrue),"x-x0",100,-50,50);
 	  gate::Centella::instance()
-		  ->hman()->h1(this->alabel(nameybestTrue),"y-y0",100,-120,120);
+		  ->hman()->h1(this->alabel(nameybestTrue),"y-y0",100,-50,50);
 	  gate::Centella::instance()
-		  ->hman()->h1(this->alabel(namezbestTrue),"z-z0",100,-120,120);
+		  ->hman()->h1(this->alabel(namezbestTrue),"z-z0",100,-50,50);
 
 	  string namex2Near = "x2Near_" + gate::to_string(5*i);
 	  string namey2Near = "y2Near_" + gate::to_string(5*i);
 	  string namez2Near = "z2Near_" + gate::to_string(5*i);
 	  gate::Centella::instance()
-		  ->hman()->h1(this->alabel(namex2Near),"x-x0",100,-120,120);
+		  ->hman()->h1(this->alabel(namex2Near),"x-x0",100,-50,50);
 	  gate::Centella::instance()
-		  ->hman()->h1(this->alabel(namey2Near),"y-y0",100,-120,120);
+		  ->hman()->h1(this->alabel(namey2Near),"y-y0",100,-50,50);
 	  gate::Centella::instance()
-		  ->hman()->h1(this->alabel(namez2Near),"z-z0",100,-120,120);
+		  ->hman()->h1(this->alabel(namez2Near),"z-z0",100,-50,50);
 
 	  string namex2NearBySiPM = "x2NearBySiPM_" + gate::to_string(5*i);
 	  string namey2NearBySiPM = "y2NearBySiPM_" + gate::to_string(5*i);
 	  string namez2NearBySiPM = "z2NearBySiPM_" + gate::to_string(5*i);
 	  gate::Centella::instance()
-		  ->hman()->h1(this->alabel(namex2NearBySiPM),"x-x0",100,-120,120);
+		  ->hman()->h1(this->alabel(namex2NearBySiPM),"x-x0",100,-50,50);
 	  gate::Centella::instance()
-		  ->hman()->h1(this->alabel(namey2NearBySiPM),"y-y0",100,-120,120);
+		  ->hman()->h1(this->alabel(namey2NearBySiPM),"y-y0",100,-50,50);
 	  gate::Centella::instance()
-		  ->hman()->h1(this->alabel(namez2NearBySiPM),"z-z0",100,-120,120);
+		  ->hman()->h1(this->alabel(namez2NearBySiPM),"z-z0",100,-50,50);
   }
 
   for(unsigned int i=0;i<6;i++){
@@ -217,12 +221,14 @@ bool petAnalysis::execute(gate::Event& evt){
 	  ->hman()->fill2d(this->alabel("xz"),trueVertex.x(),trueVertex.z());
   gate::Centella::instance()
 	  ->hman()->fill2d(this->alabel("yz"),trueVertex.y(),trueVertex.z());
+  gate::Centella::instance()
+	  ->hman()->fill(this->alabel("z"),trueVertex.z());
 
  //Try only events with photoelectric and one vertex
   if(firstDaughter.GetCreatorProc() == std::string("phot") 
 		  && firstDaughter.GetDaughters().size()==0){
 
-//	  std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
+	//  std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
 
 	  //Classify sensor hits per planes
 	  std::vector<std::vector<gate::Hit*> > planes(6);
@@ -230,17 +236,23 @@ bool petAnalysis::execute(gate::Event& evt){
 
 	  //Find best cut
 	  //TODO: Uncomment to find best value
-	  //for(unsigned int k=0;k<(100/STEP);k++){
-	  for(unsigned int k=0;k<1;k++){
+	  for(unsigned int k=0;k<(100/STEP);k++){
+	 // for(unsigned int k=0;k<1;k++){
 
 		  //Apply cut per plane
 		  std::vector<std::vector<gate::Hit*> > planesCut(6);
 		  for(unsigned int i=0; i<6;i++){
-			  //TODO: Uncomment to find best value
-			  //applyCut(planes[i], 0.01*STEP*k ,planesCut[i]);
-			  applyCut(planes[i], 0,planesCut[i]);
+			  applyCut(planes[i], 0.01*STEP*k ,planesCut[i]);
+	//		  applyCut(planes[i], 0.7,planesCut[i]);
 		  }
 		  //std::cout << "cut: " << 0.01*STEP*k << std::endl;
+		  
+		  //TODO test findCoronna
+	//	  util::findCluster* findCluster = new util::findCluster();
+	//	  std::vector<std::vector<gate::Hit*> > clusters(6);
+		  //findCluster->findCoronna(planesCut[0],cluster);
+		  //findCluster->findCoronnaAllPlanes(planesCut,clusters);
+	//	  findCluster->findCoronnaAllPlanes(planes,clusters);
 
 		  //Point Reconstruction
 		  gate::Point3D reconsPoint; 
@@ -249,8 +261,14 @@ bool petAnalysis::execute(gate::Event& evt){
 		  gate::Point3D reconsPoint4; 
 		  gate::Point3D reconsPoint5; 
 
+	/*	  reconsPerPlane(clusters,trueVertex);  
+		  reconstruction(clusters,reconsPoint);
+		  reconstructionNoNorm(clusters,reconsPoint2);
+		  bestPointRecons(clusters,trueVertex,reconsPoint3);
+		  reconstruct2NearestPlanes(clusters, planes, reconsPoint4);
+		  //reconstruct2NearestPlanesByMaxSiPM(clusters, planes, reconsPoint5);
+*/
 		  reconsPerPlane(planesCut,trueVertex);  
-
 		  reconstruction(planesCut,reconsPoint);
 		  reconstructionNoNorm(planesCut,reconsPoint2);
 		  bestPointRecons(planesCut,trueVertex,reconsPoint3);
@@ -267,18 +285,18 @@ bool petAnalysis::execute(gate::Event& evt){
 		  gate::Centella::instance()
 			  ->hman()->fill(this->alabel(namezNorm), reconsPoint.z() - trueVertex.z());
 
-		  /*	  std::cout << "Norm: x-x0 = " << reconsPoint.x() - trueVertex.x() << "\t y-y0 = " 
-				  << reconsPoint.y() - trueVertex.y() << "\t z-z0 = " << reconsPoint.z() - trueVertex.z() << std::endl;
-				  std::cout << "NoNorm: x-x0 = " << reconsPoint2.x() - trueVertex.x() << "\t y-y0 = " 
-				  << reconsPoint2.y() - trueVertex.y() << "\t z-z0 = " << reconsPoint2.z() - trueVertex.z() << std::endl;
-				  std::cout << "Best: x-x0 = " << reconsPoint3.x() - trueVertex.x() << "\t y-y0 = " 
-				  << reconsPoint3.y() - trueVertex.y() << "\t z-z0 = " << reconsPoint3.z() - trueVertex.z() << std::endl;
-				  std::cout << "Best2Near: x-x0 = " << reconsPoint4.x() - trueVertex.x() << "\t y-y0 = " 
-				  << reconsPoint4.y() - trueVertex.y() << "\t z-z0 = " << reconsPoint4.z() - trueVertex.z() << std::endl;
-				  std::cout << "Best2Near: x = " << reconsPoint4.x() << "\t y = " << reconsPoint4.y() << "\t z = " << reconsPoint4.z() << std::endl;
-				  std::cout << "Best2NearBySiPM: x-x0 = " << reconsPoint5.x() - trueVertex.x() << "\t y-y0 = " 
-				  << reconsPoint5.y() - trueVertex.y() << "\t z-z0 = " << reconsPoint5.z() - trueVertex.z() << std::endl;
-				  std::cout << "Best2NearBySiPM: x = " << reconsPoint5.x() << "\t y = " << reconsPoint5.y() << "\t z = " << reconsPoint5.z() << std::endl;*/
+	/*	  std::cout << "Norm: x-x0 = " << reconsPoint.x() - trueVertex.x() << "\t y-y0 = " 
+			  << reconsPoint.y() - trueVertex.y() << "\t z-z0 = " << reconsPoint.z() - trueVertex.z() << std::endl;
+		  std::cout << "NoNorm: x-x0 = " << reconsPoint2.x() - trueVertex.x() << "\t y-y0 = " 
+			  << reconsPoint2.y() - trueVertex.y() << "\t z-z0 = " << reconsPoint2.z() - trueVertex.z() << std::endl;
+		  std::cout << "Best: x-x0 = " << reconsPoint3.x() - trueVertex.x() << "\t y-y0 = " 
+			  << reconsPoint3.y() - trueVertex.y() << "\t z-z0 = " << reconsPoint3.z() - trueVertex.z() << std::endl;
+		  std::cout << "Best2Near: x-x0 = " << reconsPoint4.x() - trueVertex.x() << "\t y-y0 = " 
+			  << reconsPoint4.y() - trueVertex.y() << "\t z-z0 = " << reconsPoint4.z() - trueVertex.z() << std::endl;
+		  std::cout << "Best2Near: x = " << reconsPoint4.x() << "\t y = " << reconsPoint4.y() << "\t z = " << reconsPoint4.z() << std::endl;*/
+		  //std::cout << "Best2NearBySiPM: x-x0 = " << reconsPoint5.x() - trueVertex.x() << "\t y-y0 = " 
+		//	  << reconsPoint5.y() - trueVertex.y() << "\t z-z0 = " << reconsPoint5.z() - trueVertex.z() << std::endl;
+		  //std::cout << "Best2NearBySiPM: x = " << reconsPoint5.x() << "\t y = " << reconsPoint5.y() << "\t z = " << reconsPoint5.z() << std::endl;
 
 		  string namexNoNorm = "xNoNorm_" + gate::to_string(5*k);
 		  string nameyNoNorm = "yNoNorm_" + gate::to_string(5*k);
@@ -323,6 +341,7 @@ bool petAnalysis::execute(gate::Event& evt){
 			  ->hman()->fill(this->alabel(namez2NearBySiPM), reconsPoint5.z() - trueVertex.z());
 
 		  //printSensors(planesCut);
+	//	  printSensors(clusters);
 		  checkMaxSiPMPosition(planesCut,planes,trueVertex);
 	//	  projectPosition({,trueVertex);
 	  }
@@ -358,9 +377,9 @@ bool petAnalysis::finalize(){
   TH1* hist = gate::Centella::instance()->hman()->operator[]("petAnalysis_Energy");
   hist->Rebin(125);
   //double maxV = hist->GetBinCenter( hist->GetMaximumBin() );
-  TF1* gauF = new TF1("gauF","gaus",0,10000);
-  hist->Fit("gauF","","e",5000,6000);
-  std::cout << "FWHM res = " << 2.35*gauF->GetParameter(2)/gauF->GetParameter(1) << std::endl;
+//  TF1* gauF = new TF1("gauF","gaus",0,10000);
+//  hist->Fit("gauF","","e",5000,6000);
+//  std::cout << "FWHM res = " << 2.35*gauF->GetParameter(2)/gauF->GetParameter(1) << std::endl;
 
   std::vector<double> xNormSD(100/STEP), xNoNormSD(100/STEP), xNearSD(100/STEP), xNearBySiPMSD(100/STEP),xBestSD(100/STEP);
   std::vector<double> yNormSD(100/STEP), yNoNormSD(100/STEP), yNearSD(100/STEP), yNearBySiPMSD(100/STEP),yBestSD(100/STEP);
@@ -414,7 +433,7 @@ bool petAnalysis::finalize(){
 	  std::cout << "y2NearBySiPM stddev "<< i << ": " << yNearBySiPMSD[i] << std::endl;
 	  std::cout << "z2NearBySiPM stddev "<< i << ": " << zNearBySiPMSD[i] << std::endl;*/
   }
-/*  std::cout << "---------------------------------" << std::endl;
+  std::cout << "---------------------------------" << std::endl;
   std::cout << "xNormSD min value at " << std::min_element(xNormSD.begin(), xNormSD.end()) - xNormSD.begin() << 
 	" val = " <<  xNormSD[std::min_element(xNormSD.begin(), xNormSD.end()) - xNormSD.begin()] << std::endl;
   std::cout << "yNormSD min value at " << std::min_element(yNormSD.begin(), yNormSD.end()) - yNormSD.begin() <<
@@ -450,7 +469,7 @@ bool petAnalysis::finalize(){
   std::cout << "zNearBySiPMSD min value at " << std::min_element(zNearBySiPMSD.begin(), zNearBySiPMSD.end()) - zNearBySiPMSD.begin() <<
 	 " val = " << zNearBySiPMSD[std::min_element(zNearBySiPMSD.begin(), zNearBySiPMSD.end()) - zNearBySiPMSD.begin()] << std::endl;
   std::cout << "---------------------------------" << std::endl;
-*/
+
   return true;
 
 }
@@ -483,8 +502,8 @@ void petAnalysis::reconsPerPlane(std::vector<std::vector<gate::Hit*> > planes, g
 	std::cout << "x5: " << pointsRecons[5][0] << "\tx5-x = "
 	   	<< pointsRecons[5][0] - truePt.x() << "\t Var = " << errors[5][0] << std::endl;
 	std::cout << "z5: " << pointsRecons[5][1] << "\tz5-z = "
-	   	<< pointsRecons[5][1] - truePt.z() << "\t Var = " << errors[5][1] << std::endl;*/
-
+	   	<< pointsRecons[5][1] - truePt.z() << "\t Var = " << errors[5][1] << std::endl;
+*/
 	gate::Centella::instance()
 		->hman()->fill(this->alabel("Plane0"), std::sqrt(std::pow(pointsRecons[0][0]-truePt.x(),2) + std::pow(pointsRecons[0][1]-truePt.y(),2)));
 	gate::Centella::instance()
@@ -1200,6 +1219,13 @@ void petAnalysis::computeBarycenters(std::vector<std::vector<gate::Hit*> > plane
 		errors[i][1] = barycenter->getX2Err();
 	}
 
+/*	std::cout << "Plane 0: x=" << points[0][0] << ", y=" << points[0][1] << std::endl;
+	std::cout << "Plane 1: y=" << points[1][0] << ", z=" << points[1][1] << std::endl;
+	std::cout << "Plane 2: x=" << points[2][0] << ", y=" << points[2][1] << std::endl;
+	std::cout << "Plane 3: y=" << points[3][0] << ", z=" << points[3][1] << std::endl;
+	std::cout << "Plane 4: x=" << points[4][0] << ", z=" << points[4][1] << std::endl;
+	std::cout << "Plane 5: x=" << points[5][0] << ", z=" << points[5][1] << std::endl;
+*/
 }
 
 

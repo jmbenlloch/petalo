@@ -50,20 +50,25 @@ util::barycenterAlgorithm::computePosition(const vector<gate::Hit*>& sensors)
 	x1Pos_ += x1pos * sensors[i]->GetAmplitude() / sumE;
     x2Pos_ += x2pos * sensors[i]->GetAmplitude() / sumE;
 
-	x1Err_ += std::pow((sumE-sensors[i]->GetAmplitude())*x1pos/std::pow(sumE,2),2) * sensors[i]->GetAmplitude();
-	x2Err_ += std::pow((sumE-sensors[i]->GetAmplitude())*x2pos/std::pow(sumE,2),2) * sensors[i]->GetAmplitude();
+	//Paola
+//	x1Err_ += std::pow((sumE-sensors[i]->GetAmplitude())*x1pos/std::pow(sumE,2),2) * sensors[i]->GetAmplitude();
+//	x2Err_ += std::pow((sumE-sensors[i]->GetAmplitude())*x2pos/std::pow(sumE,2),2) * sensors[i]->GetAmplitude();
+
 
     // sigma
 //	x1pos2 += sensors[i]->GetAmplitude() * std::pow(x1pos, 2) / sumE;
 //	x2pos2 += sensors[i]->GetAmplitude() * std::pow(x2pos, 2) / sumE;
 
+	x1pos2 += sensors[i]->GetAmplitude() * std::pow(x1pos, 2) / sumE;
+	x2pos2 += sensors[i]->GetAmplitude() * std::pow(x2pos, 2) / sumE;
+
   }
   // Sqrt to get error.
-  //x1Err_ = std::sqrt(x1pos2 - std::pow(x1Pos_,2));
-  //x2Err_ = std::sqrt(x2pos2 - std::pow(x2Pos_,2));
+  x1Err_ = std::sqrt((x1pos2 - std::pow(x1Pos_,2))/sumE);
+  x2Err_ = std::sqrt((x2pos2 - std::pow(x2Pos_,2))/sumE);
   
-  x1Err_ = std::sqrt(x1Err_);
-  x2Err_ = std::sqrt(x2Err_);
+//  x1Err_ = std::sqrt(x1Err_);
+//  x2Err_ = std::sqrt(x2Err_);
 
 //  std::cout << "test\n";
   return true;
