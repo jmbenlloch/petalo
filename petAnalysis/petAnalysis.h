@@ -64,6 +64,12 @@ class petAnalysis : public gate::IAlgo {
 
   void checkMaxSiPMPosition(std::vector<std::vector<gate::Hit*> > planes, std::vector<std::vector<gate::Hit*> > planesNoCut, gate::Point3D& truePt);
 
+  double GetMaxCharge(gate::Event& evt);
+  double GetAvgCharge(gate::Event& evt);
+  double GetAvgChargeNoMax(gate::Event& evt);
+  void energyPhotCompt(gate::Event& evt);
+
+
 
   //! finalize algorithm
   bool finalize();          

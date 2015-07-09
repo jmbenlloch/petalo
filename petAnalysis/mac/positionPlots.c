@@ -18,7 +18,7 @@ void positionPlots(){
 	petAnalysis_yz->GetYaxis()->SetTitle("z (mm)");
 	petAnalysis_yz->Draw("colz");
 
-	TCanvas* c3 = new TCanvas("c3", "First canvas", 800,600);
+	TCanvas* c4 = new TCanvas("c4", "First canvas", 800,600);
 	petAnalysis_z->SetTitle("Proportion of events in Z position");
 	petAnalysis_z->Rebin(100);
 	petAnalysis_z->ComputeIntegral();

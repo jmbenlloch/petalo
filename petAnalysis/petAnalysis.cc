@@ -33,7 +33,12 @@ bool petAnalysis::initialize(){
   _m.message("Intializing algorithm",this->getAlgoLabel(),gate::NORMAL);
   
   gate::Centella::instance()
-    ->hman()->h1(this->alabel("Energy"),"Energy SiPM",30000,0,10000);
+    ->hman()->h1(this->alabel("Energy"),"Energy SiPM",500,0,20000);
+
+  gate::Centella::instance()
+    ->hman()->h1(this->alabel("EnergyPhot"),"Energy Phot SiPM",500,0,20000);
+  gate::Centella::instance()
+    ->hman()->h1(this->alabel("EnergyCompt"),"Energy Compton SiPM",500,0,20000);
 
   gate::Centella::instance()
     ->hman()->h1(this->alabel("z"),"Event position",30000,-50,50);
@@ -144,6 +149,20 @@ bool petAnalysis::initialize(){
 		  ->hman()->h1(this->alabel(namez2NearBySiPM),"z-z0",100,-50,50);
   }
 
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("xCoronna1"),"x-x0 coronna1",100,-50,50);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("yCoronna1"),"y-y0 coronna1",100,-50,50);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("zCoronna1"),"z-z0 coronna1",100,-50,50);
+
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("xCoronna2"),"x-x0 coronna2",100,-50,50);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("yCoronna2"),"y-y0 coronna2",100,-50,50);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("zCoronna2"),"z-z0 coronna2",100,-50,50);
+
   for(unsigned int i=0;i<6;i++){
 	  string histName = "SiPM" + gate::to_string(i);
 	  string histNameRel = "SiPM_Rel" + gate::to_string(i);
@@ -153,6 +172,24 @@ bool petAnalysis::initialize(){
 	  gate::Centella::instance()
 		  ->hman()->h2(this->alabel(histNameRel),histTitle,100,0,100,100,0.,1.);
   }
+
+  //Charge histograms
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("maxCharge"),"Max charge",1000,0,3000);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("avgCharge"),"Average charge",100,0,50);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("avgChargeNoMax"),"Average charge without max",100,0,50);
+
+  //Position studies
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("xPosZ"),"xRecons-xTrue",100,-50,50,100,-15,15);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("yPosZ"),"yRecons-yTrue",100,-50,50,100,-15,15);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("EPosX"),"E_Recons-E_True (x)",100,-50,50,100,-1000,1000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("EPosZ"),"E_Recons-E_True (z)",100,-50,50,100,-1000,1000);
 
   gate::Centella::instance()
 	  ->hman()->h2(this->alabel("xy"),"xy",100,-50,50,100,-50,50);
@@ -204,6 +241,18 @@ bool petAnalysis::execute(gate::Event& evt){
   findFirstParticle(evt.GetMCParticles(),primary);
   findFirstParticle(primary.GetDaughters(),firstDaughter);
 
+  //Fill charge histograms
+  gate::Centella::instance()
+	  ->hman()->fill(this->alabel("maxCharge"),GetMaxCharge(evt));
+  gate::Centella::instance()
+	  ->hman()->fill(this->alabel("avgCharge"),GetAvgCharge(evt));
+  gate::Centella::instance()
+	  ->hman()->fill(this->alabel("avgChargeNoMax"),GetAvgChargeNoMax(evt));
+
+
+  //Fill energy hists
+  energyPhotCompt(evt);
+
   //Fill compton hist
   //Only counts comptons from the primary particle
   fillComptonHist(primary);
@@ -234,26 +283,55 @@ bool petAnalysis::execute(gate::Event& evt){
 	  std::vector<std::vector<gate::Hit*> > planes(6);
 	  splitHitsPerPlane(evt,planes);
 
+
+	  //TODO test findCoronna
+	  util::findCluster* findCluster = new util::findCluster();
+	  std::vector<std::vector<gate::Hit*> > clusters(6);
+	  findCluster->findCoronnaAllPlanes(planes,clusters,1);
+	  gate::Point3D reconsPointCoronna; 
+	  bestPointRecons(clusters,trueVertex,reconsPointCoronna);
+	  gate::Centella::instance()
+		  ->hman()->fill(this->alabel("xCoronna1"), reconsPointCoronna.x() - trueVertex.x());
+	  gate::Centella::instance()
+		  ->hman()->fill(this->alabel("yCoronna1"), reconsPointCoronna.y() - trueVertex.y());
+	  gate::Centella::instance()
+		  ->hman()->fill(this->alabel("zCoronna1"), reconsPointCoronna.z() - trueVertex.z());
+
+	  //2ring
+	  std::vector<std::vector<gate::Hit*> > clusters2(6);
+	  findCluster->findCoronnaAllPlanes(planes,clusters2,2);
+	  gate::Point3D reconsPointCoronna2; 
+	  bestPointRecons(clusters2,trueVertex,reconsPointCoronna2);
+	  gate::Centella::instance()
+		  ->hman()->fill(this->alabel("xCoronna2"), reconsPointCoronna2.x() - trueVertex.x());
+	  gate::Centella::instance()
+		  ->hman()->fill(this->alabel("yCoronna2"), reconsPointCoronna2.y() - trueVertex.y());
+	  gate::Centella::instance()
+		  ->hman()->fill(this->alabel("zCoronna2"), reconsPointCoronna2.z() - trueVertex.z());
+
+	  //Energy in function of z
+	  int energy = 0;
+	  for(unsigned int i=0;i<evt.GetMCSensHits().size(); i++){
+		  energy += evt.GetMCSensHits()[i]->GetAmplitude();
+	  }
+	  gate::Centella::instance()
+		  ->hman()->fill2d(this->alabel("EPosX"), trueVertex.x(), 12650-energy);
+	  gate::Centella::instance()
+		  ->hman()->fill2d(this->alabel("EPosZ"), trueVertex.z(), 12650-energy);
+
 	  //Find best cut
 	  //TODO: Uncomment to find best value
 	  for(unsigned int k=0;k<(100/STEP);k++){
-	 // for(unsigned int k=0;k<1;k++){
+//  for(unsigned int k=0;k<1;k++){
 
 		  //Apply cut per plane
 		  std::vector<std::vector<gate::Hit*> > planesCut(6);
 		  for(unsigned int i=0; i<6;i++){
 			  applyCut(planes[i], 0.01*STEP*k ,planesCut[i]);
-	//		  applyCut(planes[i], 0.7,planesCut[i]);
+		//	  applyCut(planes[i], 0.,planesCut[i]);
 		  }
 		  //std::cout << "cut: " << 0.01*STEP*k << std::endl;
 		  
-		  //TODO test findCoronna
-		  util::findCluster* findCluster = new util::findCluster();
-		  std::vector<std::vector<gate::Hit*> > clusters(6);
-		  //findCluster->findCoronna(planesCut[0],cluster);
-		  //findCluster->findCoronnaAllPlanes(planesCut,clusters);
-		  findCluster->findCoronnaAllPlanes(planes,clusters,1);
-	//	  findCluster->findCoronnaAllPlanes(planes,clusters,2);
 
 		  //Point Reconstruction
 		  gate::Point3D reconsPoint; 
@@ -262,20 +340,31 @@ bool petAnalysis::execute(gate::Event& evt){
 		  gate::Point3D reconsPoint4; 
 		  gate::Point3D reconsPoint5; 
 
-		  reconsPerPlane(clusters,trueVertex);  
+/*		  reconsPerPlane(clusters,trueVertex);  
 		  reconstruction(clusters,reconsPoint);
 		  reconstructionNoNorm(clusters,reconsPoint2);
 		  bestPointRecons(clusters,trueVertex,reconsPoint3);
 		  reconstruct2NearestPlanes(clusters, planes, reconsPoint4);
 		  //reconstruct2NearestPlanesByMaxSiPM(clusters, planes, reconsPoint5);
-
-/*		  reconsPerPlane(planesCut,trueVertex);  
+*/
+		  reconsPerPlane(planesCut,trueVertex);  
 		  reconstruction(planesCut,reconsPoint);
 		  reconstructionNoNorm(planesCut,reconsPoint2);
 		  bestPointRecons(planesCut,trueVertex,reconsPoint3);
-		  reconstruct2NearestPlanes(planesCut, planes, reconsPoint4);
-		  reconstruct2NearestPlanesByMaxSiPM(planesCut, planes, reconsPoint5);
-*/
+//		  reconstruct2NearestPlanes(planesCut, planes, reconsPoint4);
+//		  reconstruct2NearestPlanesByMaxSiPM(planesCut, planes, reconsPoint5);
+
+		  //////////////
+		  // Position //
+		  //////////////
+		  if(5*k == 60){
+			  gate::Centella::instance()
+				  ->hman()->fill2d(this->alabel("xPosZ"), trueVertex.z(), reconsPoint.x()-trueVertex.x());
+			  gate::Centella::instance()
+				  ->hman()->fill2d(this->alabel("yPosZ"), trueVertex.z(), reconsPoint.y()-trueVertex.y());
+		  }
+		  ///////
+
 		  string namexNorm = "xNorm_" + gate::to_string(5*k);
 		  string nameyNorm = "yNorm_" + gate::to_string(5*k);
 		  string namezNorm = "zNorm_" + gate::to_string(5*k);
@@ -343,13 +432,13 @@ bool petAnalysis::execute(gate::Event& evt){
 
 		  //printSensors(planesCut);
 	//	  printSensors(clusters);
-		  checkMaxSiPMPosition(planesCut,planes,trueVertex);
+//		  checkMaxSiPMPosition(planesCut,planes,trueVertex);
 	//	  projectPosition({,trueVertex);
 	  }
   }
 
   //Hist2d to find the cut
-  //hist2dHits(evt);
+  hist2dHits(evt);
 
   //Hist2d event
  // hist2dEvent(evt);
@@ -375,8 +464,7 @@ bool petAnalysis::finalize(){
   std::cout << "Compton in Wall: " << fetch_istore("comptWall") << std::endl;
 
   // Actual hist name includes algorithm's name
-  TH1* hist = gate::Centella::instance()->hman()->operator[]("petAnalysis_Energy");
-  hist->Rebin(125);
+//  TH1* hist = gate::Centella::instance()->hman()->operator[]("petAnalysis_Energy");
   //double maxV = hist->GetBinCenter( hist->GetMaximumBin() );
 //  TF1* gauF = new TF1("gauF","gaus",0,10000);
 //  hist->Fit("gauF","","e",5000,6000);
@@ -752,16 +840,22 @@ void petAnalysis::splitHitsPerPlane(gate::Event& evt, std::vector<std::vector<ga
 	for(unsigned int i=0;i<evt.GetMCSensHits().size(); i++){
 		int id = evt.GetMCSensHits()[i]->GetSensorID();
 		if(id < 100){
+	//		std::cout << "Plane 0, sensor id: " << evt.GetMCSensHits()[i]->GetSensorID() << "\t x: " << evt.GetMCSensHits()[i]->GetPosition().x() << "\t y: " << evt.GetMCSensHits()[i]->GetPosition().y() << "\t z: " << evt.GetMCSensHits()[i]->GetPosition().z()  << std::endl;
 			planes[0].push_back(evt.GetMCSensHits()[i]);
 		}else if(id < 2000){
+	//		std::cout << "Plane 1, sensor id: " << evt.GetMCSensHits()[i]->GetSensorID() << "\t x: " << evt.GetMCSensHits()[i]->GetPosition().x() << "\t y: " << evt.GetMCSensHits()[i]->GetPosition().y() << "\t z: " << evt.GetMCSensHits()[i]->GetPosition().z()  << std::endl;
 			planes[1].push_back(evt.GetMCSensHits()[i]);
 		}else if(id < 3000){
+	//		std::cout << "Plane 2, sensor id: " << evt.GetMCSensHits()[i]->GetSensorID() << "\t x: " << evt.GetMCSensHits()[i]->GetPosition().x() << "\t y: " << evt.GetMCSensHits()[i]->GetPosition().y() << "\t z: " << evt.GetMCSensHits()[i]->GetPosition().z()  << std::endl;
 			planes[2].push_back(evt.GetMCSensHits()[i]);
 		}else if(id < 4000){
+	//		std::cout << "Plane 3, sensor id: " << evt.GetMCSensHits()[i]->GetSensorID() << "\t x: " << evt.GetMCSensHits()[i]->GetPosition().x() << "\t y: " << evt.GetMCSensHits()[i]->GetPosition().y() << "\t z: " << evt.GetMCSensHits()[i]->GetPosition().z()  << std::endl;
 			planes[3].push_back(evt.GetMCSensHits()[i]);
 		}else if(id < 5000){
+	//		std::cout << "Plane 4, sensor id: " << evt.GetMCSensHits()[i]->GetSensorID() << "\t x: " << evt.GetMCSensHits()[i]->GetPosition().x() << "\t y: " << evt.GetMCSensHits()[i]->GetPosition().y() << "\t z: " << evt.GetMCSensHits()[i]->GetPosition().z()  << std::endl;
 			planes[4].push_back(evt.GetMCSensHits()[i]);
 		}else if(id < 6000){
+	//		std::cout << "Plane 5, sensor id " << evt.GetMCSensHits()[i]->GetSensorID() << "\t x: " << evt.GetMCSensHits()[i]->GetPosition().x() << "\t y: " << evt.GetMCSensHits()[i]->GetPosition().y() << "\t z: " << evt.GetMCSensHits()[i]->GetPosition().z()  << std::endl;
 			planes[5].push_back(evt.GetMCSensHits()[i]);
 		}
 	}
@@ -1373,4 +1467,77 @@ void petAnalysis::projectPosition(std::vector<int>& ids, gate::Point3D& truePt){
 	std::cout << "Plane 3: sensor " << ids[3] << std::endl;
 	std::cout << "Plane 4: sensor " << ids[4] << std::endl;
 	std::cout << "Plane 5: sensor " << ids[5] << std::endl;*/
+}
+
+double petAnalysis::GetMaxCharge(gate::Event& evt){
+  std::vector<gate::Hit*> hits(evt.GetMCSensHits());
+  gate::Hit* max = *std::max_element(hits.begin(),hits.end(),chargeOrderSensorsAsc);
+  return max->GetAmplitude();
+}
+
+double petAnalysis::GetAvgCharge(gate::Event& evt){
+	double avg = 0;
+	for(unsigned int i=0;i<evt.GetMCSensHits().size();i++){
+		avg += evt.GetMCSensHits()[i]->GetAmplitude();
+	}
+	return avg/evt.GetMCSensHits().size();
+}
+
+double petAnalysis::GetAvgChargeNoMax(gate::Event& evt){
+	double avg = 0;
+	for(unsigned int i=0;i<evt.GetMCSensHits().size();i++){
+		avg += evt.GetMCSensHits()[i]->GetAmplitude();
+	}
+	avg -= GetMaxCharge(evt);
+	return avg/(evt.GetMCSensHits().size()-1);
+}
+
+
+void petAnalysis::energyPhotCompt(gate::Event& evt){
+  gate::MCParticle primary;
+  gate::MCParticle firstDaughter;
+  findFirstParticle(evt.GetMCParticles(),primary);
+  findFirstParticle(primary.GetDaughters(),firstDaughter);
+
+  int energy = 0;
+  for(unsigned int i=0;i<evt.GetMCSensHits().size(); i++){
+	  energy += evt.GetMCSensHits()[i]->GetAmplitude();
+  }
+
+ // if(firstDaughter.GetCreatorProc() == std::string("phot")){
+//	  gate::Centella::instance()
+//		  ->hman()->fill(this->alabel("EnergyPhot"),energy);
+  //}
+  /*
+  std::cout << "Event " << evt.GetEventID() <<  " - MCParticles: " << evt.GetMCParticles().size() << std::endl;
+  if(firstDaughter.GetCreatorProc() == std::string("compt")){
+	  gate::Centella::instance()
+		  ->hman()->fill(this->alabel("EnergyCompt"),energy);
+	  for(unsigned int j=0; j<primary.GetDaughters().size();j++){
+		  std::cout << "\t PDG/Proc/Energy: " << primary.GetDaughters()[j]->GetPDG() << "/" << primary.GetDaughters()[j]->GetCreatorProc() << "/" << primary.GetDaughters()[j]->GetInitialMom().GetE() << " - daughters: " << primary.GetDaughters()[j]->GetDaughters().size() << " - t=" << primary.GetDaughters()[j]->GetInitialVtx4D().GetT() << std::endl;
+
+		  const gate::MCParticle* p = primary.GetDaughters()[j];
+		  for(unsigned int k=0; k< p->GetDaughters().size();k++){
+			  std::cout << "\t\t PDG/Proc/Energy: " << p->GetDaughters()[k]->GetPDG() << 
+				  "/" << p->GetDaughters()[k]->GetCreatorProc() << "/" << 
+				  p->GetDaughters()[k]->GetInitialMom().GetE() << " - daughters: " << 
+				  p->GetDaughters()[k]->GetDaughters().size() << " - t=" << 
+				  p->GetDaughters()[k]->GetInitialVtx4D().GetT() << std::endl;
+		  }
+	  }
+  }
+*/
+  int flagPhot=0;
+  for(unsigned int i=0;i<evt.GetMCParticles().size();i++){
+	  if(evt.GetMCParticles()[i]->GetCreatorProc() == std::string("phot")){
+		  flagPhot = 1;
+		  gate::Centella::instance()
+			  ->hman()->fill(this->alabel("EnergyPhot"),energy);
+		  break;
+	  }
+  }
+  if(flagPhot==0){
+	  gate::Centella::instance()
+		  ->hman()->fill(this->alabel("EnergyCompt"),energy);
+  }
 }
