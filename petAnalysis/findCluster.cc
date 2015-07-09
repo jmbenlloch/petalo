@@ -29,11 +29,15 @@ util::findCluster::findCoronna(const std::vector<gate::Hit*>& plane, std::vector
 	// Delete all selected SiPM from list and store first cluster
 	// Loop until no more SiPM above threshold
 	
+//	for(unsigned int i=0;i<plane.size(); i++){
+//		std::cout << "Sensor: " << plane[i]->GetSensorID() << std::endl;
+//	}
+
 	gate::Hit* max = *std::max_element(plane.begin(),plane.end(),chargeOrderSensorsDec);
 	int id = max->GetSensorID();
 	int planeNumber = floor(id/1000);
-	int row = floor((id%100)/10);
-	int col = id%10;
+	int row = floor((id%100)/8);
+	int col = id%8;
 
 //	std::cout << "Max sensor: " << id << std::endl;
 //	std::cout << "Plane: " << planeNumber << "\t row " << row << "\t col " << col << std::endl;
@@ -41,23 +45,23 @@ util::findCluster::findCoronna(const std::vector<gate::Hit*>& plane, std::vector
 	std::vector<int> idsFirstRing;
 
 	for(int i = (row-1); i <= (row+1); i++){
-		if(i<0 || i>9){
+		if(i<0 || i>8){
 			continue;
 		}
 		for(int j = (col-1); j <= (col+1); j++){
-			if(j<0 || j>9){
+			if(j<0 || j>8){
 				continue;
 			}
-			idsFirstRing.push_back(planeNumber*1000 + i*10 + j);
+			idsFirstRing.push_back(planeNumber*1000 + i*8 + j);
 		}
 	}
 
-/*	std::cout << "First ring: ";
-	for(unsigned int i=0;i<idsFirstRing.size();i++){
-		std::cout << "\t" << idsFirstRing[i];
-	}
-	std::cout << std::endl;
-*/
+//	std::cout << "First ring: ";
+//	for(unsigned int i=0;i<idsFirstRing.size();i++){
+//		std::cout << "\t" << idsFirstRing[i];
+//	}
+//	std::cout << std::endl;
+
 	for(unsigned int j=0;j<idsFirstRing.size();j++){
 		for(unsigned int i=0;i<plane.size();i++){
 			if(plane[i]->GetSensorID() == idsFirstRing[j]){
