@@ -75,4 +75,8 @@ void bestHist(){
 	petAnalysis_yCoronna2->Draw();
 	TCanvas* c9 = new TCanvas("c9", "First canvas", 800,600);
 	petAnalysis_zCoronna2->Draw();*/
+
+	TCanvas* c10 = new TCanvas("c10", "First canvas", 800,600);
+	petAnalysis_zReconsRatio->Fit("gauF","","e",-15,15);
+	petAnalysis_zReconsRatio->Draw();
 }

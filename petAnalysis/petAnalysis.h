@@ -68,7 +68,7 @@ class petAnalysis : public gate::IAlgo {
   double GetAvgCharge(gate::Event& evt);
   double GetAvgChargeNoMax(gate::Event& evt);
   void energyPhotCompt(gate::Event& evt);
-
+  double zReconsRatio(double ratio);
 
 
   //! finalize algorithm

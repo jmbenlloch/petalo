@@ -181,22 +181,36 @@ bool petAnalysis::initialize(){
   gate::Centella::instance()
 	  ->hman()->h1(this->alabel("avgChargeNoMax"),"Average charge without max",100,0,50);
 
+  //2Planes Z recons
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("zRatio"),"Charge Ratio Plane 0 & Plane 2",100,-25,25,100,0,10);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("zReconsRatio"),"zRecons-zTrue using ratio",100,-25,25);
+
   //Position studies
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("xPosZ"),"xRecons-xTrue",100,-50,50,100,-15,15);
+	  ->hman()->h2(this->alabel("xPosZ"),"xRecons-xTrue",100,-25,25,100,-15,15);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("yPosZ"),"yRecons-yTrue",100,-50,50,100,-15,15);
+	  ->hman()->h2(this->alabel("yPosZ"),"yRecons-yTrue",100,-25,25,100,-15,15);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("EPosX"),"E_Recons-E_True (x)",100,-50,50,100,-1000,1000);
+	  ->hman()->h2(this->alabel("EPosX"),"E_Recons-E_True (x)",100,-25,25,100,-2000,2000);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("EPosZ"),"E_Recons-E_True (z)",100,-50,50,100,-1000,1000);
+	  ->hman()->h2(this->alabel("EPosZ"),"E_Recons-E_True (z)",100,-25,25,100,-2000,2000);
 
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("xy"),"xy",100,-50,50,100,-50,50);
+	  ->hman()->h2(this->alabel("xy"),"xy",100,-25,25,100,-25,25);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("xz"),"xz",100,-50,50,100,-50,50);
+	  ->hman()->h2(this->alabel("xz"),"xz",100,-25,25,100,-25,25);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("yz"),"yz",100,-50,50,100,-50,50);
+	  ->hman()->h2(this->alabel("yz"),"yz",100,-25,25,100,-25,25);
+
+  //Energy
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("xyEnergy"),"xy",100,-25,25,100,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("xzEnergy"),"xz",100,-25,25,100,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("yzEnergy"),"yz",100,-25,25,100,-25,25);
 
   //Hist2d events
 /*  store("index",0);
@@ -249,7 +263,6 @@ bool petAnalysis::execute(gate::Event& evt){
   gate::Centella::instance()
 	  ->hman()->fill(this->alabel("avgChargeNoMax"),GetAvgChargeNoMax(evt));
 
-
   //Fill energy hists
   energyPhotCompt(evt);
 
@@ -277,12 +290,39 @@ bool petAnalysis::execute(gate::Event& evt){
   if(firstDaughter.GetCreatorProc() == std::string("phot") 
 		  && firstDaughter.GetDaughters().size()==0){
 
+/*  if(firstDaughter.GetCreatorProc() == std::string("phot") 
+		  && firstDaughter.GetDaughters().size()==0
+		  && nearPlane(trueVertex,10)){*/
+
 	//  std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
+
+	  //Energy
+	  int energy = 0;
+	  for(unsigned int i=0;i<evt.GetMCSensHits().size(); i++){
+		  energy += evt.GetMCSensHits()[i]->GetAmplitude();
+	  }
 
 	  //Classify sensor hits per planes
 	  std::vector<std::vector<gate::Hit*> > planes(6);
 	  splitHitsPerPlane(evt,planes);
 
+	  //zRatio
+	  gate::Centella::instance()
+		  ->hman()->fill2d(this->alabel("zRatio"),trueVertex.z(),totalCharge(planes[0])/totalCharge(planes[2]));
+	  gate::Centella::instance()
+		  ->hman()->fill(this->alabel("zReconsRatio"), zReconsRatio(totalCharge(planes[0])/totalCharge(planes[2])) - trueVertex.z());
+
+	  //Energy
+	  gate::Centella::instance()
+		  ->hman()->fill2d(this->alabel("xyEnergy"),trueVertex.x(),trueVertex.y(),energy);
+	  gate::Centella::instance()
+		  ->hman()->fill2d(this->alabel("xzEnergy"),trueVertex.x(),trueVertex.z(),energy);
+	  gate::Centella::instance()
+		  ->hman()->fill2d(this->alabel("yzEnergy"),trueVertex.y(),trueVertex.z(),energy);
+	  
+
+	  // First centimeter
+//	  if(nearPlane(trueVertex,10)){
 
 	  //TODO test findCoronna
 	  util::findCluster* findCluster = new util::findCluster();
@@ -310,14 +350,10 @@ bool petAnalysis::execute(gate::Event& evt){
 		  ->hman()->fill(this->alabel("zCoronna2"), reconsPointCoronna2.z() - trueVertex.z());
 
 	  //Energy in function of z
-	  int energy = 0;
-	  for(unsigned int i=0;i<evt.GetMCSensHits().size(); i++){
-		  energy += evt.GetMCSensHits()[i]->GetAmplitude();
-	  }
 	  gate::Centella::instance()
-		  ->hman()->fill2d(this->alabel("EPosX"), trueVertex.x(), 12650-energy);
+		  ->hman()->fill2d(this->alabel("EPosX"), trueVertex.x(), energy-10770);
 	  gate::Centella::instance()
-		  ->hman()->fill2d(this->alabel("EPosZ"), trueVertex.z(), 12650-energy);
+		  ->hman()->fill2d(this->alabel("EPosZ"), trueVertex.z(), energy-10770);
 
 	  //Find best cut
 	  //TODO: Uncomment to find best value
@@ -435,6 +471,8 @@ bool petAnalysis::execute(gate::Event& evt){
 //		  checkMaxSiPMPosition(planesCut,planes,trueVertex);
 	//	  projectPosition({,trueVertex);
 	  }
+
+//	  }
   }
 
   //Hist2d to find the cut
@@ -840,22 +878,22 @@ void petAnalysis::splitHitsPerPlane(gate::Event& evt, std::vector<std::vector<ga
 	for(unsigned int i=0;i<evt.GetMCSensHits().size(); i++){
 		int id = evt.GetMCSensHits()[i]->GetSensorID();
 		if(id < 100){
-	//		std::cout << "Plane 0, sensor id: " << evt.GetMCSensHits()[i]->GetSensorID() << "\t x: " << evt.GetMCSensHits()[i]->GetPosition().x() << "\t y: " << evt.GetMCSensHits()[i]->GetPosition().y() << "\t z: " << evt.GetMCSensHits()[i]->GetPosition().z()  << std::endl;
+		//	std::cout << "Plane 0, sensor id: " << evt.GetMCSensHits()[i]->GetSensorID() << "\t x: " << evt.GetMCSensHits()[i]->GetPosition().x() << "\t y: " << evt.GetMCSensHits()[i]->GetPosition().y() << "\t z: " << evt.GetMCSensHits()[i]->GetPosition().z()  << std::endl;
 			planes[0].push_back(evt.GetMCSensHits()[i]);
 		}else if(id < 2000){
-	//		std::cout << "Plane 1, sensor id: " << evt.GetMCSensHits()[i]->GetSensorID() << "\t x: " << evt.GetMCSensHits()[i]->GetPosition().x() << "\t y: " << evt.GetMCSensHits()[i]->GetPosition().y() << "\t z: " << evt.GetMCSensHits()[i]->GetPosition().z()  << std::endl;
+		//	std::cout << "Plane 1, sensor id: " << evt.GetMCSensHits()[i]->GetSensorID() << "\t x: " << evt.GetMCSensHits()[i]->GetPosition().x() << "\t y: " << evt.GetMCSensHits()[i]->GetPosition().y() << "\t z: " << evt.GetMCSensHits()[i]->GetPosition().z()  << std::endl;
 			planes[1].push_back(evt.GetMCSensHits()[i]);
 		}else if(id < 3000){
-	//		std::cout << "Plane 2, sensor id: " << evt.GetMCSensHits()[i]->GetSensorID() << "\t x: " << evt.GetMCSensHits()[i]->GetPosition().x() << "\t y: " << evt.GetMCSensHits()[i]->GetPosition().y() << "\t z: " << evt.GetMCSensHits()[i]->GetPosition().z()  << std::endl;
+		//	std::cout << "Plane 2, sensor id: " << evt.GetMCSensHits()[i]->GetSensorID() << "\t x: " << evt.GetMCSensHits()[i]->GetPosition().x() << "\t y: " << evt.GetMCSensHits()[i]->GetPosition().y() << "\t z: " << evt.GetMCSensHits()[i]->GetPosition().z()  << std::endl;
 			planes[2].push_back(evt.GetMCSensHits()[i]);
 		}else if(id < 4000){
-	//		std::cout << "Plane 3, sensor id: " << evt.GetMCSensHits()[i]->GetSensorID() << "\t x: " << evt.GetMCSensHits()[i]->GetPosition().x() << "\t y: " << evt.GetMCSensHits()[i]->GetPosition().y() << "\t z: " << evt.GetMCSensHits()[i]->GetPosition().z()  << std::endl;
+		//	std::cout << "Plane 3, sensor id: " << evt.GetMCSensHits()[i]->GetSensorID() << "\t x: " << evt.GetMCSensHits()[i]->GetPosition().x() << "\t y: " << evt.GetMCSensHits()[i]->GetPosition().y() << "\t z: " << evt.GetMCSensHits()[i]->GetPosition().z()  << std::endl;
 			planes[3].push_back(evt.GetMCSensHits()[i]);
 		}else if(id < 5000){
-	//		std::cout << "Plane 4, sensor id: " << evt.GetMCSensHits()[i]->GetSensorID() << "\t x: " << evt.GetMCSensHits()[i]->GetPosition().x() << "\t y: " << evt.GetMCSensHits()[i]->GetPosition().y() << "\t z: " << evt.GetMCSensHits()[i]->GetPosition().z()  << std::endl;
+		//	std::cout << "Plane 4, sensor id: " << evt.GetMCSensHits()[i]->GetSensorID() << "\t x: " << evt.GetMCSensHits()[i]->GetPosition().x() << "\t y: " << evt.GetMCSensHits()[i]->GetPosition().y() << "\t z: " << evt.GetMCSensHits()[i]->GetPosition().z()  << std::endl;
 			planes[4].push_back(evt.GetMCSensHits()[i]);
 		}else if(id < 6000){
-	//		std::cout << "Plane 5, sensor id " << evt.GetMCSensHits()[i]->GetSensorID() << "\t x: " << evt.GetMCSensHits()[i]->GetPosition().x() << "\t y: " << evt.GetMCSensHits()[i]->GetPosition().y() << "\t z: " << evt.GetMCSensHits()[i]->GetPosition().z()  << std::endl;
+		//	std::cout << "Plane 5, sensor id " << evt.GetMCSensHits()[i]->GetSensorID() << "\t x: " << evt.GetMCSensHits()[i]->GetPosition().x() << "\t y: " << evt.GetMCSensHits()[i]->GetPosition().y() << "\t z: " << evt.GetMCSensHits()[i]->GetPosition().z()  << std::endl;
 			planes[5].push_back(evt.GetMCSensHits()[i]);
 		}
 	}
@@ -898,9 +936,10 @@ bool petAnalysis::nearPlane(gate::Point3D& pt, double distance){
 	//Plane 0: z = -50.575 && Plane 1: x = -50.575
 	//Plane 2: z =  50.575 && Plane 3: x =  50.575
 	//Plane 4: y =  50.575 && Plane 5: y = -50.575
-	return (std::abs(pt.x() - 50.575) <= distance) || (std::abs(pt.x() + 50.575) <= distance) ||
-	(std::abs(pt.y() - 50.575) <= distance) || (std::abs(pt.y() + 50.575) <= distance) ||
-	(std::abs(pt.z() - 50.575) <= distance) || (std::abs(pt.z() + 50.575) <= distance);
+//	return (std::abs(pt.x() - 50.575) <= distance) || (std::abs(pt.x() + 50.575) <= distance) ||
+//	(std::abs(pt.y() - 50.575) <= distance) || (std::abs(pt.y() + 50.575) <= distance) ||
+//	(std::abs(pt.z() - 50.575) <= distance) || (std::abs(pt.z() + 50.575) <= distance);
+	return (std::abs(pt.z() + 25.575) <= distance);
 }
 
 void petAnalysis::fillComptonHist(gate::MCParticle& primary){
@@ -1531,8 +1570,8 @@ void petAnalysis::energyPhotCompt(gate::Event& evt){
   for(unsigned int i=0;i<evt.GetMCParticles().size();i++){
 	  if(evt.GetMCParticles()[i]->GetCreatorProc() == std::string("phot")){
 		  flagPhot = 1;
-		  gate::Centella::instance()
-			  ->hman()->fill(this->alabel("EnergyPhot"),energy);
+	//	  gate::Centella::instance()
+	//		  ->hman()->fill(this->alabel("EnergyPhot"),energy);
 		  break;
 	  }
   }
@@ -1540,4 +1579,22 @@ void petAnalysis::energyPhotCompt(gate::Event& evt){
 	  gate::Centella::instance()
 		  ->hman()->fill(this->alabel("EnergyCompt"),energy);
   }
+
+  if(firstDaughter.GetCreatorProc() == std::string("phot")){
+	  gate::Centella::instance()
+		  ->hman()->fill(this->alabel("EnergyPhot"),energy);
+  }
+}
+
+
+double petAnalysis::zReconsRatio(double ratio){
+	double ratios[100] = {2.73205, 2.73906, 2.66909, 2.61167, 2.52151, 2.49822, 2.44918, 2.417, 2.35749, 2.32905, 2.26496, 2.23821, 2.19439, 2.12249, 2.10054, 2.06435, 2.01884, 1.9875, 1.94561, 1.90444, 1.87033, 1.83465, 1.79233, 1.76525, 1.7309, 1.68712, 1.65806, 1.6348, 1.59805, 1.5388, 1.52833, 1.4927, 1.45451, 1.43733, 1.40809, 1.36951, 1.34272, 1.32054, 1.29409, 1.25984, 1.25199, 1.21908, 1.19365, 1.15915, 1.13903, 1.12939, 1.1031, 1.059, 1.05392, 1.03404, 1.00917, 0.992857, 0.967647, 0.930952, 0.931102, 0.915556, 0.907547, 0.859375, 0.851111, 0.840588, 0.829592, 0.80619, 0.775581, 0.760185, 0.748851, 0.747826, 0.715487, 0.711039, 0.687398, 0.666667, 0.657407, 0.654545, 0.642391, 0.646629, 0.627632, 0.604348, 0.577869, 0.565663, 0.55396, 0.55, 0.55, 0.543333, 0.547297, 0.532716, 0.502747, 0.467978, 0.462766, 0.459211, 0.453704, 0.452667, 0.45, 0.45, 0.44726, 0.441803, 0.435, 0.43, 0.371154, 0.389726, 0.367143, 0.358};
+	double z;
+	for(unsigned int i=0;i<100;i++){
+		if(ratio >= ratios[i]){
+			z = -24.75 + 0.5*i;
+			break;
+		}
+	}
+	return z;
 }
