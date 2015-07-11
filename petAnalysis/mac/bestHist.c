@@ -77,6 +77,10 @@ void bestHist(){
 	petAnalysis_zCoronna2->Draw();*/
 
 	TCanvas* c10 = new TCanvas("c10", "First canvas", 800,600);
+	petAnalysis_zReconsRatio->SetAxisRange(-20.,20.,"X");
+	petAnalysis_zReconsRatio->GetXaxis()->SetTitle("#Deltaz (mm)");
+	petAnalysis_zReconsRatio->GetYaxis()->SetTitleOffset(1.4);
+	petAnalysis_zReconsRatio->GetYaxis()->SetTitle("counts");
 	petAnalysis_zReconsRatio->Fit("gauF","","e",-15,15);
 	petAnalysis_zReconsRatio->Draw();
 }

@@ -387,7 +387,7 @@ bool petAnalysis::execute(gate::Event& evt){
 		  reconstruction(planesCut,reconsPoint);
 		  reconstructionNoNorm(planesCut,reconsPoint2);
 		  bestPointRecons(planesCut,trueVertex,reconsPoint3);
-//		  reconstruct2NearestPlanes(planesCut, planes, reconsPoint4);
+		  reconstruct2NearestPlanes(planesCut, planes, reconsPoint4);
 //		  reconstruct2NearestPlanesByMaxSiPM(planesCut, planes, reconsPoint5);
 
 		  //////////////
