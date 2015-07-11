@@ -177,9 +177,9 @@ bool petAnalysis::initialize(){
   gate::Centella::instance()
 	  ->hman()->h1(this->alabel("maxCharge"),"Max charge",1000,0,3000);
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("avgCharge"),"Average charge",100,0,50);
+	  ->hman()->h1(this->alabel("avgCharge"),"Average charge",100,0,100);
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("avgChargeNoMax"),"Average charge without max",100,0,50);
+	  ->hman()->h1(this->alabel("avgChargeNoMax"),"Average charge without max",100,0,100);
 
   //2Planes Z recons
   gate::Centella::instance()
@@ -189,9 +189,9 @@ bool petAnalysis::initialize(){
 
   //Position studies
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("xPosZ"),"xRecons-xTrue",100,-25,25,100,-15,15);
+	  ->hman()->h2(this->alabel("xPosZ"),"xRecons-xTrue",100,-25,25,100,-25,25);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("yPosZ"),"yRecons-yTrue",100,-25,25,100,-15,15);
+	  ->hman()->h2(this->alabel("yPosZ"),"yRecons-yTrue",100,-25,25,100,-25,25);
   gate::Centella::instance()
 	  ->hman()->h2(this->alabel("EPosX"),"E_Recons-E_True (x)",100,-25,25,100,-2000,2000);
   gate::Centella::instance()
@@ -325,7 +325,7 @@ bool petAnalysis::execute(gate::Event& evt){
 //	  if(nearPlane(trueVertex,10)){
 
 	  //TODO test findCoronna
-	  util::findCluster* findCluster = new util::findCluster();
+/*	  util::findCluster* findCluster = new util::findCluster();
 	  std::vector<std::vector<gate::Hit*> > clusters(6);
 	  findCluster->findCoronnaAllPlanes(planes,clusters,1);
 	  gate::Point3D reconsPointCoronna; 
@@ -348,12 +348,12 @@ bool petAnalysis::execute(gate::Event& evt){
 		  ->hman()->fill(this->alabel("yCoronna2"), reconsPointCoronna2.y() - trueVertex.y());
 	  gate::Centella::instance()
 		  ->hman()->fill(this->alabel("zCoronna2"), reconsPointCoronna2.z() - trueVertex.z());
-
+*/
 	  //Energy in function of z
 	  gate::Centella::instance()
-		  ->hman()->fill2d(this->alabel("EPosX"), trueVertex.x(), energy-10770);
+		  ->hman()->fill2d(this->alabel("EPosX"), trueVertex.x(), energy-9043);
 	  gate::Centella::instance()
-		  ->hman()->fill2d(this->alabel("EPosZ"), trueVertex.z(), energy-10770);
+		  ->hman()->fill2d(this->alabel("EPosZ"), trueVertex.z(), energy-9043);
 
 	  //Find best cut
 	  //TODO: Uncomment to find best value
@@ -680,21 +680,23 @@ void petAnalysis::reconstruction(std::vector<std::vector<gate::Hit*> > planes, g
 	// Average
 	x += pointsRecons[0][0] / std::pow(errors[0][0],2);
 	x += pointsRecons[2][0] / std::pow(errors[2][0],2); 
-	x += pointsRecons[4][0] / std::pow(errors[4][0],2);
-	x += pointsRecons[5][0] / std::pow(errors[5][0],2);
+//	x += pointsRecons[4][0] / std::pow(errors[4][0],2);
+//	x += pointsRecons[5][0] / std::pow(errors[5][0],2);
 	
 	y += pointsRecons[0][1] / std::pow(errors[0][1],2); 
-	y += pointsRecons[1][0] / std::pow(errors[1][0],2);
+//	y += pointsRecons[1][0] / std::pow(errors[1][0],2);
 	y += pointsRecons[2][1] / std::pow(errors[2][1],2);
-	y += pointsRecons[3][0] / std::pow(errors[3][0],2);
+//	y += pointsRecons[3][0] / std::pow(errors[3][0],2);
 
 	z += pointsRecons[1][1] / std::pow(errors[1][1],2);
 	z += pointsRecons[3][1] / std::pow(errors[3][1],2);
 	z += pointsRecons[4][1] / std::pow(errors[4][1],2);
 	z += pointsRecons[5][1] / std::pow(errors[5][1],2);
 
-	xNorm = std::pow(errors[0][0],-2) + std::pow(errors[2][0],-2) + std::pow(errors[4][0],-2) + std::pow(errors[5][0],-2);
-	yNorm = std::pow(errors[0][1],-2) + std::pow(errors[1][0],-2) + std::pow(errors[2][1],-2) + std::pow(errors[3][0],-2);
+//	xNorm = std::pow(errors[0][0],-2) + std::pow(errors[2][0],-2) + std::pow(errors[4][0],-2) + std::pow(errors[5][0],-2);
+//	yNorm = std::pow(errors[0][1],-2) + std::pow(errors[1][0],-2) + std::pow(errors[2][1],-2) + std::pow(errors[3][0],-2);
+	xNorm = std::pow(errors[0][0],-2) + std::pow(errors[2][0],-2);
+	yNorm = std::pow(errors[0][1],-2) + std::pow(errors[2][1],-2);
 	zNorm = std::pow(errors[1][1],-2) + std::pow(errors[3][1],-2) + std::pow(errors[4][1],-2) + std::pow(errors[5][1],-2);
 
 	pt.x(x/xNorm);
@@ -1181,7 +1183,7 @@ void petAnalysis::bestPointRecons(std::vector<std::vector<gate::Hit*> > planes, 
 		pt.x(pointsRecons[2][0]);
 		error = std::abs(pointsRecons[2][0] - truePt.x());
 	}
-	if(std::abs(pointsRecons[4][0] - truePt.x()) < error){
+/*	if(std::abs(pointsRecons[4][0] - truePt.x()) < error){
 		pt.x(pointsRecons[4][0]);
 		error = std::abs(pointsRecons[4][0] - truePt.x());
 	}
@@ -1189,23 +1191,23 @@ void petAnalysis::bestPointRecons(std::vector<std::vector<gate::Hit*> > planes, 
 		pt.x(pointsRecons[5][0]);
 		error = std::abs(pointsRecons[5][0] - truePt.x());
 	}
-
+*/
 	//Select best y
 	error = std::abs(pointsRecons[0][1] - truePt.y());
 	pt.y(pointsRecons[0][1]);
-	if(std::abs(pointsRecons[1][0] - truePt.y()) < error){
+/*	if(std::abs(pointsRecons[1][0] - truePt.y()) < error){
 		pt.y(pointsRecons[1][0]);
 		error = std::abs(pointsRecons[1][0] - truePt.y());
-	}
+	}*/
 	if(std::abs(pointsRecons[2][1] - truePt.y()) < error){
 		pt.y(pointsRecons[2][1]);
 		error = std::abs(pointsRecons[2][1] - truePt.y());
 	}
-	if(std::abs(pointsRecons[3][0] - truePt.y()) < error){
+/*	if(std::abs(pointsRecons[3][0] - truePt.y()) < error){
 		pt.y(pointsRecons[3][0]);
 		error = std::abs(pointsRecons[3][0] - truePt.y());
 	}
-
+*/
 	//Select best z
 	error = std::abs(pointsRecons[1][1] - truePt.z());
 	pt.z(pointsRecons[1][1]);
@@ -1588,7 +1590,8 @@ void petAnalysis::energyPhotCompt(gate::Event& evt){
 
 
 double petAnalysis::zReconsRatio(double ratio){
-	double ratios[100] = {2.73205, 2.73906, 2.66909, 2.61167, 2.52151, 2.49822, 2.44918, 2.417, 2.35749, 2.32905, 2.26496, 2.23821, 2.19439, 2.12249, 2.10054, 2.06435, 2.01884, 1.9875, 1.94561, 1.90444, 1.87033, 1.83465, 1.79233, 1.76525, 1.7309, 1.68712, 1.65806, 1.6348, 1.59805, 1.5388, 1.52833, 1.4927, 1.45451, 1.43733, 1.40809, 1.36951, 1.34272, 1.32054, 1.29409, 1.25984, 1.25199, 1.21908, 1.19365, 1.15915, 1.13903, 1.12939, 1.1031, 1.059, 1.05392, 1.03404, 1.00917, 0.992857, 0.967647, 0.930952, 0.931102, 0.915556, 0.907547, 0.859375, 0.851111, 0.840588, 0.829592, 0.80619, 0.775581, 0.760185, 0.748851, 0.747826, 0.715487, 0.711039, 0.687398, 0.666667, 0.657407, 0.654545, 0.642391, 0.646629, 0.627632, 0.604348, 0.577869, 0.565663, 0.55396, 0.55, 0.55, 0.543333, 0.547297, 0.532716, 0.502747, 0.467978, 0.462766, 0.459211, 0.453704, 0.452667, 0.45, 0.45, 0.44726, 0.441803, 0.435, 0.43, 0.371154, 0.389726, 0.367143, 0.358};
+//	double ratios[100] = {2.73205, 2.73906, 2.66909, 2.61167, 2.52151, 2.49822, 2.44918, 2.417, 2.35749, 2.32905, 2.26496, 2.23821, 2.19439, 2.12249, 2.10054, 2.06435, 2.01884, 1.9875, 1.94561, 1.90444, 1.87033, 1.83465, 1.79233, 1.76525, 1.7309, 1.68712, 1.65806, 1.6348, 1.59805, 1.5388, 1.52833, 1.4927, 1.45451, 1.43733, 1.40809, 1.36951, 1.34272, 1.32054, 1.29409, 1.25984, 1.25199, 1.21908, 1.19365, 1.15915, 1.13903, 1.12939, 1.1031, 1.059, 1.05392, 1.03404, 1.00917, 0.992857, 0.967647, 0.930952, 0.931102, 0.915556, 0.907547, 0.859375, 0.851111, 0.840588, 0.829592, 0.80619, 0.775581, 0.760185, 0.748851, 0.747826, 0.715487, 0.711039, 0.687398, 0.666667, 0.657407, 0.654545, 0.642391, 0.646629, 0.627632, 0.604348, 0.577869, 0.565663, 0.55396, 0.55, 0.55, 0.543333, 0.547297, 0.532716, 0.502747, 0.467978, 0.462766, 0.459211, 0.453704, 0.452667, 0.45, 0.45, 0.44726, 0.441803, 0.435, 0.43, 0.371154, 0.389726, 0.367143, 0.358};
+	double ratios[100] = {1.85, 1.83148, 1.82097, 1.78438, 1.77727, 1.73929, 1.72931, 1.714, 1.67963, 1.68103, 1.65645, 1.64032, 1.618, 1.59444, 1.57692, 1.57083, 1.574, 1.53333, 1.51071, 1.47963, 1.47667, 1.44667, 1.442, 1.41316, 1.41471, 1.37667, 1.37632, 1.365, 1.32143, 1.33, 1.30238, 1.29545, 1.26667, 1.24048, 1.24565, 1.20385, 1.20556, 1.18333, 1.18158, 1.1629, 1.15, 1.145, 1.125, 1.10263, 1.09118, 1.06176, 1.05, 1.05556, 1.04444, 1.01875, 0.992105, 0.995455, 0.973077, 0.97, 0.955556, 0.95, 0.94, 0.944737, 0.911111, 0.888889, 0.864286, 0.855263, 0.857692, 0.85, 0.85, 0.85, 0.821429, 0.816667, 0.8, 0.763333, 0.766667, 0.75, 0.75, 0.75, 0.75, 0.75, 0.735714, 0.707143, 0.7, 0.672222, 0.680769, 0.668182, 0.65, 0.65, 0.65, 0.65, 0.65, 0.65, 0.65, 0.616667, 0.588462, 0.6, 0.576667, 0.568182, 0.5625, 0.57, 0.55, 0.55, 0.55, 0.535714};
 	double z;
 	for(unsigned int i=0;i<100;i++){
 		if(ratio >= ratios[i]){
