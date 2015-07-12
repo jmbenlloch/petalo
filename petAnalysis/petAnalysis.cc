@@ -294,7 +294,7 @@ bool petAnalysis::execute(gate::Event& evt){
 		  && firstDaughter.GetDaughters().size()==0
 		  && nearPlane(trueVertex,10)){*/
 
-	//  std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
+	  std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
 
 	  //Energy
 	  int energy = 0;
@@ -357,14 +357,14 @@ bool petAnalysis::execute(gate::Event& evt){
 
 	  //Find best cut
 	  //TODO: Uncomment to find best value
-	  for(unsigned int k=0;k<(100/STEP);k++){
-//  for(unsigned int k=0;k<1;k++){
+//	  for(unsigned int k=0;k<(100/STEP);k++){
+	  for(unsigned int k=0;k<1;k++){
 
 		  //Apply cut per plane
 		  std::vector<std::vector<gate::Hit*> > planesCut(6);
 		  for(unsigned int i=0; i<6;i++){
-			  applyCut(planes[i], 0.01*STEP*k ,planesCut[i]);
-		//	  applyCut(planes[i], 0.,planesCut[i]);
+		//	  applyCut(planes[i], 0.01*STEP*k ,planesCut[i]);
+			  applyCut(planes[i], 0.6,planesCut[i]);
 		  }
 		  //std::cout << "cut: " << 0.01*STEP*k << std::endl;
 		  
@@ -466,7 +466,7 @@ bool petAnalysis::execute(gate::Event& evt){
 		  gate::Centella::instance()
 			  ->hman()->fill(this->alabel(namez2NearBySiPM), reconsPoint5.z() - trueVertex.z());
 
-		  //printSensors(planesCut);
+		  printSensors(planesCut);
 	//	  printSensors(clusters);
 //		  checkMaxSiPMPosition(planesCut,planes,trueVertex);
 	//	  projectPosition({,trueVertex);
@@ -698,6 +698,22 @@ void petAnalysis::reconstruction(std::vector<std::vector<gate::Hit*> > planes, g
 	xNorm = std::pow(errors[0][0],-2) + std::pow(errors[2][0],-2);
 	yNorm = std::pow(errors[0][1],-2) + std::pow(errors[2][1],-2);
 	zNorm = std::pow(errors[1][1],-2) + std::pow(errors[3][1],-2) + std::pow(errors[4][1],-2) + std::pow(errors[5][1],-2);
+
+	std::cout << "x0: " << pointsRecons[0][0] << ", var: " << std::pow(errors[0][0],2)
+		<< " -> x0/var = " << pointsRecons[0][0] / std::pow(errors[0][0],2) << std::endl;
+	std::cout << "x2: " << pointsRecons[2][0] << ", var: " << std::pow(errors[2][0],2)
+		<< " -> x2/var = " << pointsRecons[2][0] / std::pow(errors[2][0],2) << std::endl;
+	std::cout << "x0/var + x2/var = " <<  pointsRecons[0][0]/std::pow(errors[0][0],2)+pointsRecons[2][0]/std::pow(errors[2][0],2)
+		<< " norm: " << std::pow(errors[0][0],-2) + std::pow(errors[2][0],-2) << std::endl;
+	std::cout << "\t x = " << x/xNorm << std::endl;
+
+	std::cout << "y0: " << pointsRecons[0][1] << ", var: " << std::pow(errors[0][1],2)
+		<< " -> y0/var = " << pointsRecons[0][1] / std::pow(errors[0][1],2) << std::endl;
+	std::cout << "y2: " << pointsRecons[2][1] << ", var: " << std::pow(errors[2][1],2)
+		<< " -> y2/var = " << pointsRecons[2][1] / std::pow(errors[2][1],2) << std::endl;
+	std::cout << "y0/var + y2/var = " <<  pointsRecons[0][1]/std::pow(errors[0][1],2)+pointsRecons[2][1]/std::pow(errors[2][1],2)
+		<< " norm: " << std::pow(errors[0][1],-2) + std::pow(errors[2][1],-2) << std::endl;
+	std::cout << "\t y = " << y/yNorm << std::endl;
 
 	pt.x(x/xNorm);
 	pt.y(y/yNorm);
@@ -964,27 +980,27 @@ void petAnalysis::printSensors(std::vector<std::vector<gate::Hit*> >& planes){
 	//}
 	int id;
 	double count=0.,row=0.,colTotal=0.,total=0.,rowTotal=0.;
-	double colSum[10];
-	memset(colSum, 0, 10*sizeof(double));
+	double colSum[8];
+	memset(colSum, 0, 8*sizeof(double));
 
 	std::cout << "---------- Plane 0 (x,y) -----------\n";
-	std::cout << "\t-45\t\t-35\t\t-25\t\t-15\t\t-05\t\t+05\t\t+15\t\t+25\t\t+35\t\t+45" << std::endl;
-	for(int i=0;i<10;i++){
-		std::cout << (45-i*10);
-		for(int j=0;j<10;j++){
-			id = i*10 + j;
+	std::cout << "\t-21.7\t\t-15.5\t\t-9.3\t\t-3.1\t\t+3.1\t\t+9.3\t\t+15.5\t\t+21.7" << std::endl;
+	for(int i=0;i<8;i++){
+		std::cout << (21.7-i*6.2);
+		for(int j=0;j<8;j++){
+			id = i*8 + j;
 			count = findSensors(planes[0],id);
 			std::cout << "\tid00" << id << ": " << count;
 			total += count;
-			row += (-45+j*10) * count;
-			colSum[j] += (45-i*10)*count;
+			row += (-21.7+j*6.2) * count;
+			colSum[j] += (21.7-i*6.2)*count;
 		}
 		std::cout << "\t " << row << std::endl;
 		rowTotal += row;
 		row=0.;
 	}
 	std::cout << "Col: ";
-	for(int i=0;i<10;i++){
+	for(int i=0;i<8;i++){
 		colTotal += colSum[i];
 		std::cout << "\t\t" << colSum[i];
 	}
@@ -994,142 +1010,26 @@ void petAnalysis::printSensors(std::vector<std::vector<gate::Hit*> >& planes){
 	total=0;
 	rowTotal=0.;
 	colTotal=0.;
-	memset(colSum, 0, 10*sizeof(double));
-
-	std::cout << "---------- Plane 1 (y,z) -----------\n";
-	std::cout << "\t-45\t\t-35\t\t-25\t\t-15\t\t-05\t\t+05\t\t+15\t\t+25\t\t+35\t\t+45" << std::endl;
-	for(int i=0;i<10;i++){
-		std::cout << (45-i*10);
-		for(int j=0;j<10;j++){
-			id = 1000 + i + (9-j)*10;
-			count = findSensors(planes[1],id);
-			std::cout << "\tid" << id << ": " << count;
-			total += count;
-			row += (-45+j*10) * count;
-			colSum[j] += (45-i*10)*count;
-		}
-		std::cout << "\t " << row << std::endl;
-		rowTotal += row;
-		row=0.;
-	}
-	std::cout << "Col: ";
-	for(int i=0;i<10;i++){
-		colTotal += colSum[i];
-		std::cout << "\t\t" << colSum[i];
-	}
-	std::cout << std::endl;
-	std::cout << "Total sum: " << total << "\t Total Row: " << rowTotal << "\t Total Col: " << colTotal << std::endl;
-	std::cout << "Row/Sum: " << rowTotal/total << "\t Col/Sum: " << colTotal/total << std::endl;
-	total=0;
-	rowTotal=0.;
-	colTotal=0.;
-	memset(colSum, 0, 10*sizeof(double));
+	memset(colSum, 0, 8*sizeof(double));
 
 	std::cout << "---------- Plane 2 (x,y) -----------\n";
-	std::cout << "\t-45\t\t-35\t\t-25\t\t-15\t\t-05\t\t+05\t\t+15\t\t+25\t\t+35\t\t+45" << std::endl;
-	for(int i=0;i<10;i++){
-		std::cout << (45-i*10);
-		for(int j=0;j<10;j++){
-			id = 2000 + i*10 + (9-j);
+	std::cout << "\t-21.7\t\t-15.5\t\t-9.3\t\t-3.1\t\t+3.1\t\t+9.3\t\t+15.5\t\t+21.7" << std::endl;
+	for(int i=0;i<8;i++){
+		std::cout << (21.7-i*6.2);
+		for(int j=0;j<8;j++){
+			id = 2000 + i*8 + (7-j);
 			count = findSensors(planes[2],id);
 			std::cout << "\tid" << id << ": " << count;
 			total += count;
-			row += (-45+j*10) * count;
-			colSum[j] += (45-i*10)*count;
+			row += (-21.7+j*6.2) * count;
+			colSum[j] += (21.7-i*6.2)*count;
 		}
 		std::cout << "\t " << row << std::endl;
 		rowTotal += row;
 		row=0.;
 	}
 	std::cout << "Col: ";
-	for(int i=0;i<10;i++){
-		colTotal += colSum[i];
-		std::cout << "\t\t" << colSum[i];
-	}
-	std::cout << std::endl;
-	std::cout << "Total sum: " << total << "\t Total Row: " << rowTotal << "\t Total Col: " << colTotal << std::endl;
-	std::cout << "Row/Sum: " << rowTotal/total << "\t Col/Sum: " << colTotal/total << std::endl;
-	total=0;
-	rowTotal=0.;
-	colTotal=0.;
-	memset(colSum, 0, 10*sizeof(double));
-	
-	std::cout << "---------- Plane 3 (y,z) -----------\n";
-	std::cout << "\t-45\t\t-35\t\t-25\t\t-15\t\t-05\t\t+05\t\t+15\t\t+25\t\t+35\t\t+45" << std::endl;
-	for(int i=0;i<10;i++){
-		std::cout << (45-i*10);
-		for(int j=0;j<10;j++){
-			id = 3000 + (9-i) + (9-j)*10;
-			count = findSensors(planes[3],id);
-			std::cout << "\tid" << id << ": " << count;
-			total += count;
-			row += (-45+j*10) * count;
-			colSum[j] += (45-i*10)*count;
-		}
-		std::cout << "\t " << row << std::endl;
-		rowTotal += row;
-		row=0.;
-	}
-	std::cout << "Col: ";
-	for(int i=0;i<10;i++){
-		colTotal += colSum[i];
-		std::cout << "\t\t" << colSum[i];
-	}
-	std::cout << std::endl;
-	std::cout << "Total sum: " << total << "\t Total Row: " << rowTotal << "\t Total Col: " << colTotal << std::endl;
-	std::cout << "Row/Sum: " << rowTotal/total << "\t Col/Sum: " << colTotal/total << std::endl;
-	total=0;
-	rowTotal=0.;
-	colTotal=0.;
-	memset(colSum, 0, 10*sizeof(double));
-
-	std::cout << "---------- Plane 4 (x,z) -----------\n";
-	std::cout << "\t-45\t\t-35\t\t-25\t\t-15\t\t-05\t\t+05\t\t+15\t\t+25\t\t+35\t\t+45" << std::endl;
-	for(int i=0;i<10;i++){
-		std::cout << (45-i*10);
-		for(int j=0;j<10;j++){
-			id = 4000 + (9-i) + j*10;
-			count = findSensors(planes[4],id);
-			std::cout << "\tid" << id << ": " << count;
-			total += count;
-			row += (-45+j*10) * count;
-			colSum[j] += (45-i*10)*count;
-		}
-		std::cout << "\t " << row << std::endl;
-		rowTotal += row;
-		row=0.;
-	}
-	std::cout << "Col: ";
-	for(int i=0;i<10;i++){
-		colTotal += colSum[i];
-		std::cout << "\t\t" << colSum[i];
-	}
-	std::cout << std::endl;
-	std::cout << "Total sum: " << total << "\t Total Row: " << rowTotal << "\t Total Col: " << colTotal << std::endl;
-	std::cout << "Row/Sum: " << rowTotal/total << "\t Col/Sum: " << colTotal/total << std::endl;
-	total=0;
-	rowTotal=0.;
-	colTotal=0.;
-	memset(colSum, 0, 10*sizeof(double));
-
-	std::cout << "---------- Plane 5 (x,z) -----------\n";
-	std::cout << "\t-45\t\t-35\t\t-25\t\t-15\t\t-05\t\t+05\t\t+15\t\t+25\t\t+35\t\t+45\t\tsum" << std::endl;
-	for(int i=0;i<10;i++){
-		std::cout << (45-i*10);
-		for(int j=0;j<10;j++){
-			id = 5000 + (9-i) + (9-j)*10;
-			count = findSensors(planes[5],id);
-			std::cout << "\tid" << id << ": " << count;
-			total += count;
-			row += (-45+j*10) * count;
-			colSum[j] += (45-i*10)*count;
-		}
-		std::cout << "\t " << row << std::endl;
-		rowTotal += row;
-		row=0.;
-	}
-	std::cout << "Col: ";
-	for(int i=0;i<10;i++){
+	for(int i=0;i<8;i++){
 		colTotal += colSum[i];
 		std::cout << "\t\t" << colSum[i];
 	}
