@@ -173,6 +173,16 @@ bool petAnalysis::initialize(){
 		  ->hman()->h2(this->alabel(histNameRel),histTitle,100,0,100,100,0.,1.);
   }
 
+  //bad plane x coordinate
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("xBad"),"Worst Plane x",100,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("yBad"),"Worst Plane y",100,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("xGood"),"Best Plane x",100,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("yGood"),"Best Plane y",100,-25,25);
+
   //Charge histograms
   gate::Centella::instance()
 	  ->hman()->h1(this->alabel("maxCharge"),"Max charge",1000,0,3000);
@@ -466,7 +476,7 @@ bool petAnalysis::execute(gate::Event& evt){
 		  gate::Centella::instance()
 			  ->hman()->fill(this->alabel(namez2NearBySiPM), reconsPoint5.z() - trueVertex.z());
 
-		  printSensors(planesCut);
+		  //printSensors(planesCut);
 	//	  printSensors(clusters);
 //		  checkMaxSiPMPosition(planesCut,planes,trueVertex);
 	//	  projectPosition({,trueVertex);
@@ -699,7 +709,7 @@ void petAnalysis::reconstruction(std::vector<std::vector<gate::Hit*> > planes, g
 	yNorm = std::pow(errors[0][1],-2) + std::pow(errors[2][1],-2);
 	zNorm = std::pow(errors[1][1],-2) + std::pow(errors[3][1],-2) + std::pow(errors[4][1],-2) + std::pow(errors[5][1],-2);
 
-	std::cout << "x0: " << pointsRecons[0][0] << ", var: " << std::pow(errors[0][0],2)
+/*	std::cout << "x0: " << pointsRecons[0][0] << ", var: " << std::pow(errors[0][0],2)
 		<< " -> x0/var = " << pointsRecons[0][0] / std::pow(errors[0][0],2) << std::endl;
 	std::cout << "x2: " << pointsRecons[2][0] << ", var: " << std::pow(errors[2][0],2)
 		<< " -> x2/var = " << pointsRecons[2][0] / std::pow(errors[2][0],2) << std::endl;
@@ -714,7 +724,7 @@ void petAnalysis::reconstruction(std::vector<std::vector<gate::Hit*> > planes, g
 	std::cout << "y0/var + y2/var = " <<  pointsRecons[0][1]/std::pow(errors[0][1],2)+pointsRecons[2][1]/std::pow(errors[2][1],2)
 		<< " norm: " << std::pow(errors[0][1],-2) + std::pow(errors[2][1],-2) << std::endl;
 	std::cout << "\t y = " << y/yNorm << std::endl;
-
+*/
 	pt.x(x/xNorm);
 	pt.y(y/yNorm);
 	pt.z(z/zNorm);
@@ -1082,32 +1092,40 @@ void petAnalysis::bestPointRecons(std::vector<std::vector<gate::Hit*> > planes, 
 	if(std::abs(pointsRecons[2][0] - truePt.x()) < error){
 		pt.x(pointsRecons[2][0]);
 		error = std::abs(pointsRecons[2][0] - truePt.x());
+		//NEW HIST
+		gate::Centella::instance()
+			->hman()->fill(this->alabel("xBad"), pointsRecons[0][0]);
+		gate::Centella::instance()
+			->hman()->fill(this->alabel("xGood"), pointsRecons[2][0]);
 	}
-/*	if(std::abs(pointsRecons[4][0] - truePt.x()) < error){
-		pt.x(pointsRecons[4][0]);
-		error = std::abs(pointsRecons[4][0] - truePt.x());
+	//NEW HIST
+	else{
+		gate::Centella::instance()
+			->hman()->fill(this->alabel("xBad"), pointsRecons[2][0]);
+		gate::Centella::instance()
+			->hman()->fill(this->alabel("xGood"), pointsRecons[0][0]);
 	}
-	if(std::abs(pointsRecons[5][0] - truePt.x()) < error){
-		pt.x(pointsRecons[5][0]);
-		error = std::abs(pointsRecons[5][0] - truePt.x());
-	}
-*/
+
 	//Select best y
 	error = std::abs(pointsRecons[0][1] - truePt.y());
 	pt.y(pointsRecons[0][1]);
-/*	if(std::abs(pointsRecons[1][0] - truePt.y()) < error){
-		pt.y(pointsRecons[1][0]);
-		error = std::abs(pointsRecons[1][0] - truePt.y());
-	}*/
 	if(std::abs(pointsRecons[2][1] - truePt.y()) < error){
 		pt.y(pointsRecons[2][1]);
 		error = std::abs(pointsRecons[2][1] - truePt.y());
+		//NEW HIST
+		gate::Centella::instance()
+			->hman()->fill(this->alabel("yBad"), pointsRecons[0][1]);
+		gate::Centella::instance()
+			->hman()->fill(this->alabel("yGood"), pointsRecons[2][1]);
 	}
-/*	if(std::abs(pointsRecons[3][0] - truePt.y()) < error){
-		pt.y(pointsRecons[3][0]);
-		error = std::abs(pointsRecons[3][0] - truePt.y());
+	//NEW HIST
+	else{
+		gate::Centella::instance()
+			->hman()->fill(this->alabel("yBad"), pointsRecons[2][1]);
+		gate::Centella::instance()
+			->hman()->fill(this->alabel("yGood"), pointsRecons[0][1]);
 	}
-*/
+
 	//Select best z
 	error = std::abs(pointsRecons[1][1] - truePt.z());
 	pt.z(pointsRecons[1][1]);
