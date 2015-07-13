@@ -403,7 +403,7 @@ bool petAnalysis::execute(gate::Event& evt){
 		  //////////////
 		  // Position //
 		  //////////////
-		  if(5*k == 60){
+		  if(5*k == 75){
 			  gate::Centella::instance()
 				  ->hman()->fill2d(this->alabel("xPosZ"), trueVertex.z(), reconsPoint.x()-trueVertex.x());
 			  gate::Centella::instance()
