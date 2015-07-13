@@ -1,7 +1,7 @@
 void newHist(){
 
 	TCanvas* c1 = new TCanvas("c1", "First canvas", 800,600);
-	petAnalysis_EPosX->GetXaxis()->SetTitle("z (mm)");
+	petAnalysis_EPosX->GetXaxis()->SetTitle("x (mm)");
 	petAnalysis_EPosX->GetYaxis()->SetTitleOffset(1.4);
 	petAnalysis_EPosX->GetYaxis()->SetTitle("\deltaE (pe)");
 	petAnalysis_EPosX->Draw("colz");

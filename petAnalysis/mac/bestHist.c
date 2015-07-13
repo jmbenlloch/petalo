@@ -20,38 +20,38 @@ void bestHist(){
 	petAnalysis_zbestTrue_85->GetXaxis()->SetTitle("#Deltaz (mm)");
 */
 	
-	petAnalysis_xbestTrue_60->SetTitle("xRecons - xTrue");
-	petAnalysis_ybestTrue_60->SetTitle("yRecons - yTrue");
-	petAnalysis_zbestTrue_60->SetTitle("zRecons - zTrue");
+	petAnalysis_xbestTrue_75->SetTitle("xRecons - xTrue");
+	petAnalysis_ybestTrue_75->SetTitle("yRecons - yTrue");
+	petAnalysis_zbestTrue_75->SetTitle("zRecons - zTrue");
 
-	petAnalysis_xbestTrue_60->SetAxisRange(-20.,20.,"X");
-	petAnalysis_xbestTrue_60->GetXaxis()->SetTitle("#Deltax (mm)");
-	petAnalysis_xbestTrue_60->GetYaxis()->SetTitleOffset(1.4);
-	petAnalysis_xbestTrue_60->GetYaxis()->SetTitle("counts");
+	petAnalysis_xbestTrue_75->SetAxisRange(-20.,20.,"X");
+	petAnalysis_xbestTrue_75->GetXaxis()->SetTitle("#Deltax (mm)");
+	petAnalysis_xbestTrue_75->GetYaxis()->SetTitleOffset(1.4);
+	petAnalysis_xbestTrue_75->GetYaxis()->SetTitle("counts");
 //	petAnalysis_xbestTrue_75->SetLineWidth(2);
-	petAnalysis_ybestTrue_60->SetAxisRange(-20.,20.,"X");
-	petAnalysis_ybestTrue_60->GetXaxis()->SetTitle("#Deltay (mm)");
-	petAnalysis_ybestTrue_60->GetYaxis()->SetTitleOffset(1.4);
-	petAnalysis_ybestTrue_60->GetYaxis()->SetTitle("counts");
-	petAnalysis_zbestTrue_60->SetAxisRange(-20.,20.,"X");
-	petAnalysis_zbestTrue_60->GetXaxis()->SetTitle("#Deltaz (mm)");
-	petAnalysis_zbestTrue_60->GetYaxis()->SetTitleOffset(1.4);
-	petAnalysis_zbestTrue_60->GetYaxis()->SetTitle("counts");
+	petAnalysis_ybestTrue_75->SetAxisRange(-20.,20.,"X");
+	petAnalysis_ybestTrue_75->GetXaxis()->SetTitle("#Deltay (mm)");
+	petAnalysis_ybestTrue_75->GetYaxis()->SetTitleOffset(1.4);
+	petAnalysis_ybestTrue_75->GetYaxis()->SetTitle("counts");
+	petAnalysis_zbestTrue_75->SetAxisRange(-20.,20.,"X");
+	petAnalysis_zbestTrue_75->GetXaxis()->SetTitle("#Deltaz (mm)");
+	petAnalysis_zbestTrue_75->GetYaxis()->SetTitleOffset(1.4);
+	petAnalysis_zbestTrue_75->GetYaxis()->SetTitle("counts");
 
-	petAnalysis_xbestTrue_60->Fit("gauF","","e",-15,15);
-	petAnalysis_ybestTrue_60->Fit("gauF","","e",-15,15);
-	petAnalysis_zbestTrue_60->Fit("gauF","","e",-15,15);
+	petAnalysis_xbestTrue_75->Fit("gauF","","e",-15,15);
+	petAnalysis_ybestTrue_75->Fit("gauF","","e",-15,15);
+	petAnalysis_zbestTrue_75->Fit("gauF","","e",-15,15);
 
 //	c1->Divide(3,0);
 //	c1->cd(1);
 //	c1->cd(2);
 //	c1->cd(3);
 
-	petAnalysis_xbestTrue_60->Draw();
+	petAnalysis_xbestTrue_75->Draw();
 	TCanvas* c2 = new TCanvas("c2", "First canvas", 800,600);
-	petAnalysis_ybestTrue_60->Draw();
+	petAnalysis_ybestTrue_75->Draw();
 	TCanvas* c3 = new TCanvas("c3", "First canvas", 800,600);
-	petAnalysis_zbestTrue_60->Draw();
+	petAnalysis_zbestTrue_75->Draw();
 
 /*
 	TCanvas* c4 = new TCanvas("c4", "First canvas", 800,600);

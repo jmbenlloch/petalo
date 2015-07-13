@@ -361,20 +361,20 @@ bool petAnalysis::execute(gate::Event& evt){
 */
 	  //Energy in function of z
 	  gate::Centella::instance()
-		  ->hman()->fill2d(this->alabel("EPosX"), trueVertex.x(), energy-9043);
+		  ->hman()->fill2d(this->alabel("EPosX"), trueVertex.x(), energy-9790);
 	  gate::Centella::instance()
-		  ->hman()->fill2d(this->alabel("EPosZ"), trueVertex.z(), energy-9043);
+		  ->hman()->fill2d(this->alabel("EPosZ"), trueVertex.z(), energy-9790);
 
 	  //Find best cut
 	  //TODO: Uncomment to find best value
-//	  for(unsigned int k=0;k<(100/STEP);k++){
-	  for(unsigned int k=0;k<1;k++){
+	  for(unsigned int k=0;k<(100/STEP);k++){
+	//  for(unsigned int k=0;k<1;k++){
 
 		  //Apply cut per plane
 		  std::vector<std::vector<gate::Hit*> > planesCut(6);
 		  for(unsigned int i=0; i<6;i++){
-		//	  applyCut(planes[i], 0.01*STEP*k ,planesCut[i]);
-			  applyCut(planes[i], 0.6,planesCut[i]);
+			  applyCut(planes[i], 0.01*STEP*k ,planesCut[i]);
+//			  applyCut(planes[i], 0.6,planesCut[i]);
 		  }
 		  //std::cout << "cut: " << 0.01*STEP*k << std::endl;
 		  
@@ -694,20 +694,21 @@ void petAnalysis::reconstruction(std::vector<std::vector<gate::Hit*> > planes, g
 //	x += pointsRecons[5][0] / std::pow(errors[5][0],2);
 	
 	y += pointsRecons[0][1] / std::pow(errors[0][1],2); 
-//	y += pointsRecons[1][0] / std::pow(errors[1][0],2);
+	y += pointsRecons[1][0] / std::pow(errors[1][0],2);
 	y += pointsRecons[2][1] / std::pow(errors[2][1],2);
 //	y += pointsRecons[3][0] / std::pow(errors[3][0],2);
 
 	z += pointsRecons[1][1] / std::pow(errors[1][1],2);
-	z += pointsRecons[3][1] / std::pow(errors[3][1],2);
-	z += pointsRecons[4][1] / std::pow(errors[4][1],2);
-	z += pointsRecons[5][1] / std::pow(errors[5][1],2);
+//	z += pointsRecons[3][1] / std::pow(errors[3][1],2);
+//	z += pointsRecons[4][1] / std::pow(errors[4][1],2);
+//	z += pointsRecons[5][1] / std::pow(errors[5][1],2);
 
 //	xNorm = std::pow(errors[0][0],-2) + std::pow(errors[2][0],-2) + std::pow(errors[4][0],-2) + std::pow(errors[5][0],-2);
 //	yNorm = std::pow(errors[0][1],-2) + std::pow(errors[1][0],-2) + std::pow(errors[2][1],-2) + std::pow(errors[3][0],-2);
+//	zNorm = std::pow(errors[1][1],-2) + std::pow(errors[3][1],-2) + std::pow(errors[4][1],-2) + std::pow(errors[5][1],-2);
 	xNorm = std::pow(errors[0][0],-2) + std::pow(errors[2][0],-2);
-	yNorm = std::pow(errors[0][1],-2) + std::pow(errors[2][1],-2);
-	zNorm = std::pow(errors[1][1],-2) + std::pow(errors[3][1],-2) + std::pow(errors[4][1],-2) + std::pow(errors[5][1],-2);
+	yNorm = std::pow(errors[0][1],-2) + std::pow(errors[2][1],-2) + std::pow(errors[1][0],-2);
+	zNorm = std::pow(errors[1][1],-2);
 
 /*	std::cout << "x0: " << pointsRecons[0][0] << ", var: " << std::pow(errors[0][0],2)
 		<< " -> x0/var = " << pointsRecons[0][0] / std::pow(errors[0][0],2) << std::endl;
@@ -906,22 +907,22 @@ void petAnalysis::splitHitsPerPlane(gate::Event& evt, std::vector<std::vector<ga
 	for(unsigned int i=0;i<evt.GetMCSensHits().size(); i++){
 		int id = evt.GetMCSensHits()[i]->GetSensorID();
 		if(id < 100){
-		//	std::cout << "Plane 0, sensor id: " << evt.GetMCSensHits()[i]->GetSensorID() << "\t x: " << evt.GetMCSensHits()[i]->GetPosition().x() << "\t y: " << evt.GetMCSensHits()[i]->GetPosition().y() << "\t z: " << evt.GetMCSensHits()[i]->GetPosition().z()  << std::endl;
+//			std::cout << "Plane 0, sensor id: " << evt.GetMCSensHits()[i]->GetSensorID() << "\t x: " << evt.GetMCSensHits()[i]->GetPosition().x() << "\t y: " << evt.GetMCSensHits()[i]->GetPosition().y() << "\t z: " << evt.GetMCSensHits()[i]->GetPosition().z()  << std::endl;
 			planes[0].push_back(evt.GetMCSensHits()[i]);
 		}else if(id < 2000){
-		//	std::cout << "Plane 1, sensor id: " << evt.GetMCSensHits()[i]->GetSensorID() << "\t x: " << evt.GetMCSensHits()[i]->GetPosition().x() << "\t y: " << evt.GetMCSensHits()[i]->GetPosition().y() << "\t z: " << evt.GetMCSensHits()[i]->GetPosition().z()  << std::endl;
+//			std::cout << "Plane 1, sensor id: " << evt.GetMCSensHits()[i]->GetSensorID() << "\t x: " << evt.GetMCSensHits()[i]->GetPosition().x() << "\t y: " << evt.GetMCSensHits()[i]->GetPosition().y() << "\t z: " << evt.GetMCSensHits()[i]->GetPosition().z()  << std::endl;
 			planes[1].push_back(evt.GetMCSensHits()[i]);
 		}else if(id < 3000){
-		//	std::cout << "Plane 2, sensor id: " << evt.GetMCSensHits()[i]->GetSensorID() << "\t x: " << evt.GetMCSensHits()[i]->GetPosition().x() << "\t y: " << evt.GetMCSensHits()[i]->GetPosition().y() << "\t z: " << evt.GetMCSensHits()[i]->GetPosition().z()  << std::endl;
+//			std::cout << "Plane 2, sensor id: " << evt.GetMCSensHits()[i]->GetSensorID() << "\t x: " << evt.GetMCSensHits()[i]->GetPosition().x() << "\t y: " << evt.GetMCSensHits()[i]->GetPosition().y() << "\t z: " << evt.GetMCSensHits()[i]->GetPosition().z()  << std::endl;
 			planes[2].push_back(evt.GetMCSensHits()[i]);
 		}else if(id < 4000){
-		//	std::cout << "Plane 3, sensor id: " << evt.GetMCSensHits()[i]->GetSensorID() << "\t x: " << evt.GetMCSensHits()[i]->GetPosition().x() << "\t y: " << evt.GetMCSensHits()[i]->GetPosition().y() << "\t z: " << evt.GetMCSensHits()[i]->GetPosition().z()  << std::endl;
+//			std::cout << "Plane 3, sensor id: " << evt.GetMCSensHits()[i]->GetSensorID() << "\t x: " << evt.GetMCSensHits()[i]->GetPosition().x() << "\t y: " << evt.GetMCSensHits()[i]->GetPosition().y() << "\t z: " << evt.GetMCSensHits()[i]->GetPosition().z()  << std::endl;
 			planes[3].push_back(evt.GetMCSensHits()[i]);
 		}else if(id < 5000){
-		//	std::cout << "Plane 4, sensor id: " << evt.GetMCSensHits()[i]->GetSensorID() << "\t x: " << evt.GetMCSensHits()[i]->GetPosition().x() << "\t y: " << evt.GetMCSensHits()[i]->GetPosition().y() << "\t z: " << evt.GetMCSensHits()[i]->GetPosition().z()  << std::endl;
+//			std::cout << "Plane 4, sensor id: " << evt.GetMCSensHits()[i]->GetSensorID() << "\t x: " << evt.GetMCSensHits()[i]->GetPosition().x() << "\t y: " << evt.GetMCSensHits()[i]->GetPosition().y() << "\t z: " << evt.GetMCSensHits()[i]->GetPosition().z()  << std::endl;
 			planes[4].push_back(evt.GetMCSensHits()[i]);
 		}else if(id < 6000){
-		//	std::cout << "Plane 5, sensor id " << evt.GetMCSensHits()[i]->GetSensorID() << "\t x: " << evt.GetMCSensHits()[i]->GetPosition().x() << "\t y: " << evt.GetMCSensHits()[i]->GetPosition().y() << "\t z: " << evt.GetMCSensHits()[i]->GetPosition().z()  << std::endl;
+//			std::cout << "Plane 5, sensor id " << evt.GetMCSensHits()[i]->GetSensorID() << "\t x: " << evt.GetMCSensHits()[i]->GetPosition().x() << "\t y: " << evt.GetMCSensHits()[i]->GetPosition().y() << "\t z: " << evt.GetMCSensHits()[i]->GetPosition().z()  << std::endl;
 			planes[5].push_back(evt.GetMCSensHits()[i]);
 		}
 	}
@@ -1092,18 +1093,6 @@ void petAnalysis::bestPointRecons(std::vector<std::vector<gate::Hit*> > planes, 
 	if(std::abs(pointsRecons[2][0] - truePt.x()) < error){
 		pt.x(pointsRecons[2][0]);
 		error = std::abs(pointsRecons[2][0] - truePt.x());
-		//NEW HIST
-		gate::Centella::instance()
-			->hman()->fill(this->alabel("xBad"), pointsRecons[0][0]);
-		gate::Centella::instance()
-			->hman()->fill(this->alabel("xGood"), pointsRecons[2][0]);
-	}
-	//NEW HIST
-	else{
-		gate::Centella::instance()
-			->hman()->fill(this->alabel("xBad"), pointsRecons[2][0]);
-		gate::Centella::instance()
-			->hman()->fill(this->alabel("xGood"), pointsRecons[0][0]);
 	}
 
 	//Select best y
@@ -1112,24 +1101,16 @@ void petAnalysis::bestPointRecons(std::vector<std::vector<gate::Hit*> > planes, 
 	if(std::abs(pointsRecons[2][1] - truePt.y()) < error){
 		pt.y(pointsRecons[2][1]);
 		error = std::abs(pointsRecons[2][1] - truePt.y());
-		//NEW HIST
-		gate::Centella::instance()
-			->hman()->fill(this->alabel("yBad"), pointsRecons[0][1]);
-		gate::Centella::instance()
-			->hman()->fill(this->alabel("yGood"), pointsRecons[2][1]);
 	}
-	//NEW HIST
-	else{
-		gate::Centella::instance()
-			->hman()->fill(this->alabel("yBad"), pointsRecons[2][1]);
-		gate::Centella::instance()
-			->hman()->fill(this->alabel("yGood"), pointsRecons[0][1]);
+	if(std::abs(pointsRecons[1][0] - truePt.y()) < error){
+		pt.y(pointsRecons[1][0]);
+		error = std::abs(pointsRecons[1][0] - truePt.y());
 	}
 
 	//Select best z
 	error = std::abs(pointsRecons[1][1] - truePt.z());
 	pt.z(pointsRecons[1][1]);
-	if(std::abs(pointsRecons[3][1] - truePt.z()) < error){
+/*	if(std::abs(pointsRecons[3][1] - truePt.z()) < error){
 		pt.z(pointsRecons[3][1]);
 		error = std::abs(pointsRecons[3][1] - truePt.z());
 	}
@@ -1140,7 +1121,7 @@ void petAnalysis::bestPointRecons(std::vector<std::vector<gate::Hit*> > planes, 
 	if(std::abs(pointsRecons[5][1] - truePt.z()) < error){
 		pt.z(pointsRecons[5][1]);
 		error = std::abs(pointsRecons[5][1] - truePt.z());
-	}
+	}*/
 }
 
 void petAnalysis::reconstruct2NearestPlanes(std::vector<std::vector<gate::Hit*> > planes, std::vector<std::vector<gate::Hit*> > planesNoCut, gate::Point3D& pt){
@@ -1509,7 +1490,8 @@ void petAnalysis::energyPhotCompt(gate::Event& evt){
 
 double petAnalysis::zReconsRatio(double ratio){
 //	double ratios[100] = {2.73205, 2.73906, 2.66909, 2.61167, 2.52151, 2.49822, 2.44918, 2.417, 2.35749, 2.32905, 2.26496, 2.23821, 2.19439, 2.12249, 2.10054, 2.06435, 2.01884, 1.9875, 1.94561, 1.90444, 1.87033, 1.83465, 1.79233, 1.76525, 1.7309, 1.68712, 1.65806, 1.6348, 1.59805, 1.5388, 1.52833, 1.4927, 1.45451, 1.43733, 1.40809, 1.36951, 1.34272, 1.32054, 1.29409, 1.25984, 1.25199, 1.21908, 1.19365, 1.15915, 1.13903, 1.12939, 1.1031, 1.059, 1.05392, 1.03404, 1.00917, 0.992857, 0.967647, 0.930952, 0.931102, 0.915556, 0.907547, 0.859375, 0.851111, 0.840588, 0.829592, 0.80619, 0.775581, 0.760185, 0.748851, 0.747826, 0.715487, 0.711039, 0.687398, 0.666667, 0.657407, 0.654545, 0.642391, 0.646629, 0.627632, 0.604348, 0.577869, 0.565663, 0.55396, 0.55, 0.55, 0.543333, 0.547297, 0.532716, 0.502747, 0.467978, 0.462766, 0.459211, 0.453704, 0.452667, 0.45, 0.45, 0.44726, 0.441803, 0.435, 0.43, 0.371154, 0.389726, 0.367143, 0.358};
-	double ratios[100] = {1.85, 1.83148, 1.82097, 1.78438, 1.77727, 1.73929, 1.72931, 1.714, 1.67963, 1.68103, 1.65645, 1.64032, 1.618, 1.59444, 1.57692, 1.57083, 1.574, 1.53333, 1.51071, 1.47963, 1.47667, 1.44667, 1.442, 1.41316, 1.41471, 1.37667, 1.37632, 1.365, 1.32143, 1.33, 1.30238, 1.29545, 1.26667, 1.24048, 1.24565, 1.20385, 1.20556, 1.18333, 1.18158, 1.1629, 1.15, 1.145, 1.125, 1.10263, 1.09118, 1.06176, 1.05, 1.05556, 1.04444, 1.01875, 0.992105, 0.995455, 0.973077, 0.97, 0.955556, 0.95, 0.94, 0.944737, 0.911111, 0.888889, 0.864286, 0.855263, 0.857692, 0.85, 0.85, 0.85, 0.821429, 0.816667, 0.8, 0.763333, 0.766667, 0.75, 0.75, 0.75, 0.75, 0.75, 0.735714, 0.707143, 0.7, 0.672222, 0.680769, 0.668182, 0.65, 0.65, 0.65, 0.65, 0.65, 0.65, 0.65, 0.616667, 0.588462, 0.6, 0.576667, 0.568182, 0.5625, 0.57, 0.55, 0.55, 0.55, 0.535714};
+//	double ratios[100] = {1.85, 1.83148, 1.82097, 1.78438, 1.77727, 1.73929, 1.72931, 1.714, 1.67963, 1.68103, 1.65645, 1.64032, 1.618, 1.59444, 1.57692, 1.57083, 1.574, 1.53333, 1.51071, 1.47963, 1.47667, 1.44667, 1.442, 1.41316, 1.41471, 1.37667, 1.37632, 1.365, 1.32143, 1.33, 1.30238, 1.29545, 1.26667, 1.24048, 1.24565, 1.20385, 1.20556, 1.18333, 1.18158, 1.1629, 1.15, 1.145, 1.125, 1.10263, 1.09118, 1.06176, 1.05, 1.05556, 1.04444, 1.01875, 0.992105, 0.995455, 0.973077, 0.97, 0.955556, 0.95, 0.94, 0.944737, 0.911111, 0.888889, 0.864286, 0.855263, 0.857692, 0.85, 0.85, 0.85, 0.821429, 0.816667, 0.8, 0.763333, 0.766667, 0.75, 0.75, 0.75, 0.75, 0.75, 0.735714, 0.707143, 0.7, 0.672222, 0.680769, 0.668182, 0.65, 0.65, 0.65, 0.65, 0.65, 0.65, 0.65, 0.616667, 0.588462, 0.6, 0.576667, 0.568182, 0.5625, 0.57, 0.55, 0.55, 0.55, 0.535714};
+	double ratios[100] = {2.075, 2.08043, 2.08913, 2.01, 2.05556, 1.99054, 1.97143, 1.92692, 1.9197, 1.89643, 1.85909, 1.82931, 1.82143, 1.78333, 1.76282, 1.74091, 1.72333, 1.69063, 1.65244, 1.61923, 1.62692, 1.59286, 1.56563, 1.53696, 1.52813, 1.50714, 1.46429, 1.44524, 1.41875, 1.41667, 1.39375, 1.36364, 1.36579, 1.32778, 1.314, 1.27381, 1.26579, 1.26053, 1.23824, 1.19737, 1.18448, 1.15667, 1.155, 1.14, 1.09167, 1.08478, 1.05, 1.05, 1.05588, 1.02857, 1.0125, 0.998, 0.9625, 0.955, 0.938235, 0.94, 0.918421, 0.890909, 0.858, 0.859091, 0.855882, 0.85, 0.85, 0.844737, 0.81875, 0.775, 0.755882, 0.75, 0.763333, 0.731818, 0.731818, 0.722727, 0.72, 0.708824, 0.683333, 0.65, 0.65, 0.66, 0.65, 0.65, 0.65, 0.627778, 0.622727, 0.625, 0.583333, 0.575, 0.55, 0.566667, 0.55, 0.55, 0.55, 0.55, 0.516667, 0.5125, 0.53, 0.503333, 0.5, 0.4875, 0.458333, 0.466667};
 	double z;
 	for(unsigned int i=0;i<100;i++){
 		if(ratio >= ratios[i]){
