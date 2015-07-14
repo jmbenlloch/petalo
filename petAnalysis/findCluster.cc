@@ -5,11 +5,11 @@ util::findCluster::findCluster(){
 }
 
 bool
-util::findCluster::findCoronnaAllPlanes(const std::vector<std::vector<gate::Hit*> >& planes, std::vector<std::vector<gate::Hit*> >& clusters, int rings){
+util::findCluster::findCoronnaAllPlanes(const std::vector<std::vector<gate::Hit*> >& planes, std::vector<std::vector<gate::Hit*> >& clusters, int rings, double threshold){
 	if(rings==1){
 		for(unsigned int i=0;i<planes.size();i++){
 	//		std::cout << "------ Plane " << i << "-------\n";
-			findCoronna(planes[i],clusters[i]);
+			findCoronna(planes[i],clusters[i],80);
 		}
 	}
 	if(rings==2){
@@ -23,7 +23,7 @@ util::findCluster::findCoronnaAllPlanes(const std::vector<std::vector<gate::Hit*
 }
 
 bool
-util::findCluster::findCoronna(const std::vector<gate::Hit*>& plane, std::vector<gate::Hit*>& cluster){
+util::findCluster::findCoronna(const std::vector<gate::Hit*>& plane, std::vector<gate::Hit*>& cluster, double threshold){
 	// Find max value in the plane
 	// Select all SiPM around max (about a threshold)
 	// Delete all selected SiPM from list and store first cluster
@@ -65,7 +65,9 @@ util::findCluster::findCoronna(const std::vector<gate::Hit*>& plane, std::vector
 	for(unsigned int j=0;j<idsFirstRing.size();j++){
 		for(unsigned int i=0;i<plane.size();i++){
 			if(plane[i]->GetSensorID() == idsFirstRing[j]){
-				cluster.push_back(plane[i]);
+				if(plane[i]->GetAmplitude() > threshold){
+					cluster.push_back(plane[i]);
+				}
 				break;
 			}
 		}

@@ -15,9 +15,9 @@ namespace util
     ~findCluster() {}
 
     // Calculation function
-    bool findCoronna(const std::vector<gate::Hit*>& plane, std::vector<gate::Hit*>& cluster);
+    bool findCoronna(const std::vector<gate::Hit*>& plane, std::vector<gate::Hit*>& cluster, double threshold);
     bool findCoronna2Rings(const std::vector<gate::Hit*>& plane, std::vector<gate::Hit*>& cluster);
-	bool findCoronnaAllPlanes(const std::vector<std::vector<gate::Hit*> >& planes, std::vector<std::vector<gate::Hit*> >& clusters, int rings);
+	bool findCoronnaAllPlanes(const std::vector<std::vector<gate::Hit*> >& planes, std::vector<std::vector<gate::Hit*> >& clusters, int rings, double threshold);
 
 
 	static bool chargeOrderSensorsDec(const gate::Hit* s1, const gate::Hit* s2);
