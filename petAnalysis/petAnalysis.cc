@@ -351,7 +351,7 @@ bool petAnalysis::execute(gate::Event& evt){
 
 	  //Energy in function of z
 	  gate::Centella::instance()
-		  ->hman()->fill2d(this->alabel("EPosX"), trueVertex.x(), energy-9641)
+		  ->hman()->fill2d(this->alabel("EPosX"), trueVertex.x(), energy-9641);
 	  gate::Centella::instance()
 		  ->hman()->fill2d(this->alabel("EPosZ"), trueVertex.z(), energy-9641);
 
