@@ -9,13 +9,17 @@ util::findCluster::findCoronnaAllPlanes(const std::vector<std::vector<gate::Hit*
 	if(rings==1){
 		for(unsigned int i=0;i<planes.size();i++){
 	//		std::cout << "------ Plane " << i << "-------\n";
-			findCoronna(planes[i],clusters[i]);
+			if(planes[i].size() > 0){
+				findCoronna(planes[i],clusters[i]);
+			}
 		}
 	}
 	if(rings==2){
 		for(unsigned int i=0;i<planes.size();i++){
 //			std::cout << "------ Plane " << i << "-------\n";
-			findCoronna2Rings(planes[i],clusters[i]);
+			if(planes[i].size() > 0){
+				findCoronna2Rings(planes[i],clusters[i]);
+			}
 		}
 	}
 
@@ -45,11 +49,11 @@ util::findCluster::findCoronna(const std::vector<gate::Hit*>& plane, std::vector
 	std::vector<int> idsFirstRing;
 
 	for(int i = (row-1); i <= (row+1); i++){
-		if(i<0 || i>8){
+		if(i<0 || i>7){
 			continue;
 		}
 		for(int j = (col-1); j <= (col+1); j++){
-			if(j<0 || j>8){
+			if(j<0 || j>7){
 				continue;
 			}
 			idsFirstRing.push_back(planeNumber*1000 + i*8 + j);
@@ -104,14 +108,14 @@ util::findCluster::findCoronna2Rings(const std::vector<gate::Hit*>& plane, std::
 	//idsFirstRing.push_back(id);
 
 	for(int i = (row-2); i <= (row+2); i++){
-		if(i<0 || i>9){
+		if(i<0 || i>7){
 			continue;
 		}
 		for(int j = (col-2); j <= (col+2); j++){
-			if(j<0 || j>9){
+			if(j<0 || j>7){
 				continue;
 			}
-			idsFirstRing.push_back(planeNumber*1000 + i*10 + j);
+			idsFirstRing.push_back(planeNumber*1000 + i*8 + j);
 		}
 	}
 
