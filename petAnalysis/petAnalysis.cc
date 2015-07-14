@@ -266,12 +266,12 @@ bool petAnalysis::execute(gate::Event& evt){
   findFirstParticle(primary.GetDaughters(),firstDaughter);
 
   //Fill charge histograms
-  gate::Centella::instance()
-	  ->hman()->fill(this->alabel("maxCharge"),GetMaxCharge(evt));
-  gate::Centella::instance()
-	  ->hman()->fill(this->alabel("avgCharge"),GetAvgCharge(evt));
-  gate::Centella::instance()
-	  ->hman()->fill(this->alabel("avgChargeNoMax"),GetAvgChargeNoMax(evt));
+//  gate::Centella::instance()
+//	  ->hman()->fill(this->alabel("maxCharge"),GetMaxCharge(evt));
+//  gate::Centella::instance()
+//	  ->hman()->fill(this->alabel("avgCharge"),GetAvgCharge(evt));
+//  gate::Centella::instance()
+//	  ->hman()->fill(this->alabel("avgChargeNoMax"),GetAvgChargeNoMax(evt));
 
   //Fill energy hists
   energyPhotCompt(evt);
