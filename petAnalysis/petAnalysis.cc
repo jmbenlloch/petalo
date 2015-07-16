@@ -4,9 +4,6 @@
 #include "TF1.h"
 #include<petAnalysis.h>
 
-#define CUT 0.7
-#define STEP 5
-
 ClassImp(petAnalysis)
 
 //==========================================================================
@@ -53,6 +50,27 @@ bool petAnalysis::initialize(){
     ->hman()->h1(this->alabel("XeGammaEnergy"),"Xe Gamma Energy",30000,0,1);
 
   gate::Centella::instance()
+	  ->hman()->h1(this->alabel("xBest"),"x-x0 best",100,-50,50);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("yBest"),"y-y0 best",100,-50,50);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("zBest"),"z-z0 best",100,-50,50);
+  
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("xCorrected"),"x-x0 best",100,-50,50);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("yCorrected"),"y-y0 best",100,-50,50);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("zCorrected"),"z-z0 best",100,-50,50);
+
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("xCoronna0"),"x-x0 coronna0",100,-50,50);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("yCoronna0"),"y-y0 coronna0",100,-50,50);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("zCoronna0"),"z-z0 coronna0",100,-50,50);
+
+  gate::Centella::instance()
 	  ->hman()->h1(this->alabel("xCoronna1"),"x-x0 coronna1",100,-50,50);
   gate::Centella::instance()
 	  ->hman()->h1(this->alabel("yCoronna1"),"y-y0 coronna1",100,-50,50);
@@ -95,9 +113,17 @@ bool petAnalysis::initialize(){
 
   //Position studies
   gate::Centella::instance()
+	  ->hman()->h2(this->alabel("xPosX"),"xRecons-xTrue",100,-25,25,100,-15,15);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("xPosY"),"xRecons-xTrue",100,-25,25,100,-15,15);
+  gate::Centella::instance()
 	  ->hman()->h2(this->alabel("xPosZ"),"xRecons-xTrue",100,-25,25,100,-15,15);
   gate::Centella::instance()
+	  ->hman()->h2(this->alabel("yPosY"),"yRecons-yTrue",100,-25,25,100,-15,15);
+  gate::Centella::instance()
 	  ->hman()->h2(this->alabel("yPosZ"),"yRecons-yTrue",100,-25,25,100,-15,15);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("zPosZ"),"yRecons-yTrue",100,-25,25,100,-15,15);
   gate::Centella::instance()
 	  ->hman()->h2(this->alabel("EPosX"),"E_Recons-E_True (x)",100,-25,25,100,-2000,2000);
   gate::Centella::instance()
@@ -125,7 +151,8 @@ bool petAnalysis::initialize(){
   store("photoWall",0);
   store("comptWall",0);
 
-  store("cut",CUT);
+  store("reconsEvents",0);
+  store("totalEvents",0);
 
   return true;
 
@@ -184,7 +211,7 @@ bool petAnalysis::execute(gate::Event& evt){
   if(firstDaughter.GetCreatorProc() == std::string("phot") 
 		  && firstDaughter.GetDaughters().size()==0){
 
-	//  std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
+//	  std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
 
 	  //Energy
 	  int energy = 0;
@@ -213,34 +240,118 @@ bool petAnalysis::execute(gate::Event& evt){
 	  //findCoronna
 	  util::findCluster* findCluster = new util::findCluster();
 	  std::vector<std::vector<gate::Hit*> > clusters(6);
-	  findCluster->findCoronnaAllPlanes(planes,clusters,1,80);
+	  std::vector<std::vector<gate::Hit*> > clusters2(6);
+	  std::vector<std::vector<gate::Hit*> > clusters0(6);
+	  findCluster->findCoronnaAllPlanes(planes,clusters,1,80,80);
+	  findCluster->findCoronnaAllPlanes(planes,clusters2,2,80,80);
+	  //findCluster->findCoronnaAllPlanes(planes,clusters0,0,80,80);
+
 	  gate::Point3D reconsPointCoronna; 
+	  gate::Point3D reconsPointCoronna0; 
+	  gate::Point3D reconsPointCoronna2; 
+	  gate::Point3D reconsPointBest; 
+	  gate::Point3D reconsPointCorrected; 
 	  reconstruction(clusters,reconsPointCoronna);
+	  reconstruction(clusters2,reconsPointCoronna2);
+	//  reconstruction(clusters0,reconsPointCoronna0);
+	  reconstructionCoronna0(planes,reconsPointCoronna0,80,80);
+	  reconstructionCorrected(clusters,reconsPointCorrected);
+	  bestPointRecons(clusters,trueVertex,reconsPointBest);
+
+/*	  if(std::isnan(reconsPointCoronna.x())){
+		  std::cout << "xNan" << std::endl;
+	  }
+	  if(std::isnan(reconsPointCoronna.y())){
+		  std::cout << "yNan" << std::endl;
+	  }
+	  if(std::isnan(reconsPointCoronna.z())){
+		  std::cout << "zNan" << std::endl;
+	  }*/
+
+	  fstore("totalEvents",fetch_istore("totalEvents")+1);
+	  if(!(std::isnan(reconsPointCoronna.x()) || std::isnan(reconsPointCoronna.y()) | std::isnan(reconsPointCoronna.z()))){
+		  fstore("reconsEvents",fetch_istore("reconsEvents")+1);
+		  gate::Centella::instance()
+			  ->hman()->fill(this->alabel("xCoronna1"), reconsPointCoronna.x() - trueVertex.x());
+		  gate::Centella::instance()
+			  ->hman()->fill(this->alabel("yCoronna1"), reconsPointCoronna.y() - trueVertex.y());
+		  gate::Centella::instance()
+			  ->hman()->fill(this->alabel("zCoronna1"), reconsPointCoronna.z() - trueVertex.z());
+	  }
+
 	  gate::Centella::instance()
-		  ->hman()->fill(this->alabel("xCoronna1"), reconsPointCoronna.x() - trueVertex.x());
+		  ->hman()->fill(this->alabel("xCoronna2"), reconsPointCoronna2.x() - trueVertex.x());
 	  gate::Centella::instance()
-		  ->hman()->fill(this->alabel("yCoronna1"), reconsPointCoronna.y() - trueVertex.y());
+		  ->hman()->fill(this->alabel("yCoronna2"), reconsPointCoronna2.y() - trueVertex.y());
 	  gate::Centella::instance()
-		  ->hman()->fill(this->alabel("zCoronna1"), reconsPointCoronna.z() - trueVertex.z());
+		  ->hman()->fill(this->alabel("zCoronna2"), reconsPointCoronna2.z() - trueVertex.z());
+
+	  gate::Centella::instance()
+		  ->hman()->fill(this->alabel("xCoronna0"), reconsPointCoronna0.x() - trueVertex.x());
+	  gate::Centella::instance()
+		  ->hman()->fill(this->alabel("yCoronna0"), reconsPointCoronna0.y() - trueVertex.y());
+	  gate::Centella::instance()
+		  ->hman()->fill(this->alabel("zCoronna0"), reconsPointCoronna0.z() - trueVertex.z());
+
+	  gate::Centella::instance()
+		  ->hman()->fill(this->alabel("xBest"), reconsPointBest.x() - trueVertex.x());
+	  gate::Centella::instance()
+		  ->hman()->fill(this->alabel("yBest"), reconsPointBest.y() - trueVertex.y());
+	  gate::Centella::instance()
+		  ->hman()->fill(this->alabel("zBest"), reconsPointBest.z() - trueVertex.z());
+
+	  gate::Centella::instance()
+		  ->hman()->fill(this->alabel("xCorrected"), reconsPointCorrected.x() - trueVertex.x());
+	  gate::Centella::instance()
+		  ->hman()->fill(this->alabel("yCorrected"), reconsPointCorrected.y() - trueVertex.y());
+	  gate::Centella::instance()
+		  ->hman()->fill(this->alabel("zCorrected"), reconsPointCorrected.z() - trueVertex.z());
 
 	  //chargeCluster
 	  for(unsigned int i=0;i<6;i++){
 		  std::vector<gate::Hit*> hits(evt.GetMCSensHits());
 		  gate::Hit* max = *std::max_element(hits.begin(),hits.end(),chargeOrderSensorsAsc);
 		  for(unsigned int j=0;j<clusters[i].size();j++){
-			  if(max->GetSensorID() != clusters[i][j]->GetSensorID() &&
-					  max->GetAmplitude() > 80){
+			  if(max->GetSensorID() != clusters[i][j]->GetSensorID()){
 				  gate::Centella::instance()
 					  ->hman()->fill(this->alabel("chargeCluster"), clusters[i][j]->GetAmplitude());
 			  }
 		  }
 	  }
 
+	  //Bias
+	  gate::Centella::instance()
+		  ->hman()->fill2d(this->alabel("xPosX"), trueVertex.x(), reconsPointBest.x()-trueVertex.x());
+	  gate::Centella::instance()
+		  ->hman()->fill2d(this->alabel("xPosY"), trueVertex.y(), reconsPointBest.x()-trueVertex.x());
+	  gate::Centella::instance()
+		  ->hman()->fill2d(this->alabel("xPosZ"), trueVertex.z(), reconsPointBest.x()-trueVertex.x());
+	  gate::Centella::instance()
+		  ->hman()->fill2d(this->alabel("yPosY"), trueVertex.y(), reconsPointBest.y()-trueVertex.y());
+	  gate::Centella::instance()
+		  ->hman()->fill2d(this->alabel("yPosZ"), trueVertex.z(), reconsPointBest.y()-trueVertex.y());
+	  gate::Centella::instance()
+		  ->hman()->fill2d(this->alabel("zPosZ"), trueVertex.z(), reconsPointBest.z()-trueVertex.z());
+/*	  gate::Centella::instance()
+		  ->hman()->fill2d(this->alabel("xPosX"), trueVertex.x(), reconsPointCoronna.x()-trueVertex.x());
+	  gate::Centella::instance()
+		  ->hman()->fill2d(this->alabel("xPosY"), trueVertex.y(), reconsPointCoronna.x()-trueVertex.x());
+	  gate::Centella::instance()
+		  ->hman()->fill2d(this->alabel("xPosZ"), trueVertex.z(), reconsPointCoronna.x()-trueVertex.x());
+	  gate::Centella::instance()
+		  ->hman()->fill2d(this->alabel("yPosY"), trueVertex.y(), reconsPointCoronna.y()-trueVertex.y());
+	  gate::Centella::instance()
+		  ->hman()->fill2d(this->alabel("yPosZ"), trueVertex.z(), reconsPointCoronna.y()-trueVertex.y());
+	  gate::Centella::instance()
+		  ->hman()->fill2d(this->alabel("zPosZ"), trueVertex.z(), reconsPointCoronna.z()-trueVertex.z());*/
+
 	  //Energy in function of z
 	  gate::Centella::instance()
 		  ->hman()->fill2d(this->alabel("EPosX"), trueVertex.x(), energy-10770);
 	  gate::Centella::instance()
 		  ->hman()->fill2d(this->alabel("EPosZ"), trueVertex.z(), energy-10770);
+
+	//  printSensors(clusters);
   }
 
   //Hist2d to find the cut
@@ -265,6 +376,9 @@ bool petAnalysis::finalize(){
   std::cout << "Photoelectric with e-: " << fetch_istore("photoE") << std::endl;
   std::cout << "Photoelectric in Wall: " << fetch_istore("photoWall") << std::endl;
   std::cout << "Compton in Wall: " << fetch_istore("comptWall") << std::endl;
+  std::cout << "\n Reconstructed events: " << fetch_istore("reconsEvents") 
+	  << "\t Total events: " << fetch_istore("totalEvents")
+	  << "\t Efficiency: " << fetch_istore("reconsEvents")/(fetch_istore("totalEvents")*1.0) << std::endl;
 
   return true;
 
@@ -296,16 +410,19 @@ void petAnalysis::reconstruction(std::vector<std::vector<gate::Hit*> > planes, g
 	}
 	
 	for(unsigned int i=0;i<signalPlanes.size();i++){
-		point[planesCoord[i][0]] += points[i][0] / std::pow(errors[i][0],2);
-		point[planesCoord[i][1]] += points[i][1] / std::pow(errors[i][1],2);
+		point[planesCoord[signalPlanes[i]][0]] += points[signalPlanes[i]][0] / std::pow(errors[signalPlanes[i]][0],2);
+		point[planesCoord[signalPlanes[i]][1]] += points[signalPlanes[i]][1] / std::pow(errors[signalPlanes[i]][1],2);
 
-		norm[planesCoord[i][0]] += std::pow(errors[i][0],-2);
-		norm[planesCoord[i][1]] += std::pow(errors[i][1],-2);
+		norm[planesCoord[signalPlanes[i]][0]] += std::pow(errors[signalPlanes[i]][0],-2);
+		norm[planesCoord[signalPlanes[i]][1]] += std::pow(errors[signalPlanes[i]][1],-2);
 	}
 
 	pt.x(point[0]/norm[0]);
 	pt.y(point[1]/norm[1]);
 	pt.z(point[2]/norm[2]);
+/*	std::cout << "x: " << point[0] << "\t y: " << point[1] << "\t z: " << point[2] << std::endl;
+	std::cout << "xVar: " << norm[0] << "\t yVar: " << norm[1] << "\t zVar: " << norm[2] << std::endl;
+	std::cout << "x: " << pt.x() << "\t y: " << pt.y() << "\t z: " << pt.z() << std::endl;*/
 }
 
 void petAnalysis::energyHist(gate::Event& evt){
@@ -543,57 +660,64 @@ double petAnalysis::findSensors(std::vector<gate::Hit*>& plane, int id){
 void petAnalysis::bestPointRecons(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& truePt, gate::Point3D& pt){
 	double error=0.;
 	gate::Point3D auxPt;
+	//Calculate barycenter
+	std::string planesDirections[6] = {"xy","yz","xy","yz","xz","xz"};
+	util::barycenterAlgorithm* barycenter = new util::barycenterAlgorithm();
+	std::vector<double> x,y,z;
 
-	std::vector<std::vector<double> > pointsRecons(6,std::vector<double>(2));
-	std::vector<std::vector<double> > errors(6,std::vector<double>(2));
-	computeBarycenters(planes,pointsRecons,errors);
-
-	//Select best x
-	error = std::abs(pointsRecons[0][0] - truePt.x());
-	pt.x(pointsRecons[0][0]);
-	if(std::abs(pointsRecons[2][0] - truePt.x()) < error){
-		pt.x(pointsRecons[2][0]);
-		error = std::abs(pointsRecons[2][0] - truePt.x());
-	}
-	if(std::abs(pointsRecons[4][0] - truePt.x()) < error){
-		pt.x(pointsRecons[4][0]);
-		error = std::abs(pointsRecons[4][0] - truePt.x());
-	}
-	if(std::abs(pointsRecons[5][0] - truePt.x()) < error){
-		pt.x(pointsRecons[5][0]);
-		error = std::abs(pointsRecons[5][0] - truePt.x());
-	}
-
-	//Select best y
-	error = std::abs(pointsRecons[0][1] - truePt.y());
-	pt.y(pointsRecons[0][1]);
-	if(std::abs(pointsRecons[1][0] - truePt.y()) < error){
-		pt.y(pointsRecons[1][0]);
-		error = std::abs(pointsRecons[1][0] - truePt.y());
-	}
-	if(std::abs(pointsRecons[2][1] - truePt.y()) < error){
-		pt.y(pointsRecons[2][1]);
-		error = std::abs(pointsRecons[2][1] - truePt.y());
-	}
-	if(std::abs(pointsRecons[3][0] - truePt.y()) < error){
-		pt.y(pointsRecons[3][0]);
-		error = std::abs(pointsRecons[3][0] - truePt.y());
+	for(unsigned int i=0;i<6;i++){
+		if(planes[i].size()>0){
+			barycenter->setPlane(planesDirections[i]);
+			barycenter->computePosition(planes[i]);
+			switch(i){
+				case 0:
+					x.push_back(barycenter->getX1());
+					y.push_back(barycenter->getX2());
+					break;
+				case 1:
+					y.push_back(barycenter->getX1());
+					z.push_back(barycenter->getX2());
+					break;
+				case 2:
+					x.push_back(barycenter->getX1());
+					y.push_back(barycenter->getX2());
+					break;
+				case 3:
+					y.push_back(barycenter->getX1());
+					z.push_back(barycenter->getX2());
+					break;
+				case 4:
+					x.push_back(barycenter->getX1());
+					z.push_back(barycenter->getX2());
+					break;
+				case 5:
+					x.push_back(barycenter->getX1());
+					z.push_back(barycenter->getX2());
+					break;
+			}
+		}
 	}
 
-	//Select best z
-	error = std::abs(pointsRecons[1][1] - truePt.z());
-	pt.z(pointsRecons[1][1]);
-	if(std::abs(pointsRecons[3][1] - truePt.z()) < error){
-		pt.z(pointsRecons[3][1]);
-		error = std::abs(pointsRecons[3][1] - truePt.z());
+	error = 100000.;
+	for(unsigned int i=0;i<x.size();i++){
+		if(std::abs(x[i] - truePt.x()) < error){
+			pt.x(x[i]);
+			error = std::abs(x[i] - truePt.x());
+		}
 	}
-	if(std::abs(pointsRecons[4][1] - truePt.z()) < error){
-		pt.z(pointsRecons[4][1]);
-		error = std::abs(pointsRecons[4][1] - truePt.z());
+	error = 100000.;
+	for(unsigned int i=0;i<y.size();i++){
+		if(std::abs(y[i] - truePt.y()) < error){
+			pt.y(y[i]);
+			error = std::abs(y[i] - truePt.y());
+		}
 	}
-	if(std::abs(pointsRecons[5][1] - truePt.z()) < error){
-		pt.z(pointsRecons[5][1]);
-		error = std::abs(pointsRecons[5][1] - truePt.z());
+	error = 100000.;
+	for(unsigned int i=0;i<z.size();i++){
+		if(std::abs(z[i] - truePt.z()) < error){
+			pt.z(z[i]);
+			error = std::abs(z[i] - truePt.z());
+		}
 	}
 }
 
@@ -720,4 +844,242 @@ double petAnalysis::zReconsRatio(double ratio){
 		}
 	}
 	return z;
+}
+
+void petAnalysis::reconstructionCorrected(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& pt){
+	reconstruction(planes,pt);
+	double x[100] = {3.35526, 2.96429, 2.26071, 1.82045, 1.26136, 1.05429, 0.772785, 0.15375, 0.0522472, -0.252632, -0.406731, -0.746907, -1.22339, -1.39571, -1.12188, -1.57785, -1.72949, -1.83913, -2.32075, -1.95783, -2.21429, -1.90446, -1.98778, -1.65594, -1.35, -0.535714, -0.323864, -0.523043, -0.4025, -0.278205, -0.374211, -0.240845, -0.284483, -0.164423, -0.208065, -0.0845865, -0.193373, -0.128182, 0.0572727, 0.0466387, 0.0458678, -0.0175, -0.0201031, -0.102778, -0.0268212, -0.00867769, 0.054878, 0.0264706, -0.0516807, -0.0739726, 0.0430435, -0.0233333, 0.0615789, -0.0689189, 0.15, 0.114179, 0.00258621, 0.0293103, 0.075, 0.16978, 0.0209677, 0.0387931, 0.0456522, 0.0769565, 0.304054, 0.233193, 0.063913, 0.333673, 0.211682, 0.11129, 0.408696, 0.396154, 0.442035, 0.532418, 0.864286, 1.74737, 1.8075, 2.355, 1.7434, 2.74907, 2.32982, 1.42304, 2.31207, 2.23919, 1.77651, 1.52037, 1.39488, 0.833168, 0.692857, 0.233505, 0.472222, 0.00185185, -0.105, -0.380435, -0.854545, -1.58115, -2.01, -2.60357, -3.36, -3.4};
+	double y[100] = {3.15, 2.72368, 2.53966, 1.93364, 1.51, 0.812069, 0.614286, 0.138235, 0.06, -0.132524, -0.429775, -0.839286, -0.853448, -1.1625, -1.824, -1.57683, -1.63983, -2.04391, -1.85388, -2.42328, -2.38659, -1.99128, -2.42405, -1.65928, -2.01375, -0.7325, -0.511856, -0.111538, -0.0463636, -0.260526, -0.168, -0.53087, -0.0517699, -0.287405, -0.276804, -0.248507, -0.157317, 0.214773, 0.111468, -0.168103, -0.0166667, 0.0163366, -0.107895, 0.127778, -0.0766187, -0.228151, 0.0679487, -0.198387, 0.0138462, -0.0371795, 0.0047619, 0.177027, 0.0525641, -0.114238, 0.146319, 0.0365546, 0.0735849, -0.0616438, -0.115289, 0.0508929, 0.054, 0.163725, 0.015, 0.0151376, 0.176866, -0.00157895, 0.204098, 0.205385, 0.36, 0.168919, 0.583696, 0.00535714, 0.294, 0.383945, 0.767857, 1.38333, 1.926, 2.5, 2.6775, 1.93919, 2.17443, 1.93816, 1.57174, 2.04179, 1.93, 1.90714, 1.44036, 0.838732, 0.644681, 0.321429, 0.1375, 0.066, 0.105172, -0.594304, -0.960638, -1.23197, -1.80455, -2.26154, -2.88214, -2.93571};
+	double z[100] = {3.44826, 3.00467, 2.67919, 2.13037, 1.70339, 1.36382, 0.872513, 0.412857, 0.13871, 0.0216418, -0.272513, -0.584759, -1.03757, -1.33, -1.52165, -1.89146, -1.81909, -1.95, -2.78497, -2.17979, -2.25577, -2.15948, -2.07541, -2.41667, -1.97079, -0.747521, -0.567073, -0.586364, -0.378947, -0.256957, -0.0862832, -0.176923, -0.444, 0.0847826, 0.256542, 0.275, -0.0326087, -0.0924658, -0.145652, -0.0233945, -0.332474, -0.0182927, -0.176374, -0.132955, -0.118966, 0.119231, -0.109091, 0.389189, -0.0127119, -0.253125, 0.145714, -0.322727, -0.496667, -0.075, -0.0589286, 0.22619, 0.0663934, 0.334615, 0.291176, 0.173684, -0.00633803, 0.177632, 0.045, -0.17069, -0.124286, 0.337013, 0.144231, 0.0359155, 0.188961, -0.136667, 0.137143, 0.760714, 0.384545, 0.37381, 1.67609, 1.7325, 1.77128, 2.18462, 2.30132, 2.286, 2.0125, 2.49, 1.81849, 1.86892, 1.485, 1.47632, 0.807353, 0.893836, 0.718182, 0.0394737, -0.31, -0.183803, -0.551887, -0.697059, -1.16111, -1.51731, -2.34296, -2.58582, -2.97188, -3.59262};
+
+	TH1* hist = gate::Centella::instance()->hman()->operator[]("petAnalysis_xPosX");
+	int xIndex = hist->GetXaxis()->FindBin(pt.x());
+	int yIndex = hist->GetXaxis()->FindBin(pt.y());
+	int zIndex = hist->GetXaxis()->FindBin(pt.z());
+
+//	std::cout << "xPre: " << pt.x() << "\t yPre: " << pt.y() << "\t zPre: " << pt.z() << std::endl;
+	pt.x(pt.x() + x[xIndex]);
+	pt.y(pt.y() + y[yIndex]);
+	pt.z(pt.z() + z[zIndex]);
+//	std::cout << "xPost: " << pt.x() << "\t yPost: " << pt.y() << "\t zost: " << pt.z() << std::endl;
+}
+
+void petAnalysis::printSensors(std::vector<std::vector<gate::Hit*> >& planes){
+	std::cout << "---------- Sensors -----------\n";
+	int id;
+	double count=0.,row=0.,colTotal=0.,total=0.,rowTotal=0.;
+	double colSum[8];
+	memset(colSum, 0, 8*sizeof(double));
+	int numberSiPM=8;
+	double pitch = 6.2;
+
+	std::cout << "---------- Plane 0 (x,y) -----------\n";
+	std::cout << "\t-21.7\t\t-15.5\t\t-9.3\t\t-3.1\t\t+3.1\t\t+9.3\t\t+15.5\t\t+21.7" << std::endl;
+	for(int i=0;i<numberSiPM;i++){
+		std::cout << (21.7-i*pitch);
+		for(int j=0;j<numberSiPM;j++){
+			id = i*numberSiPM + j;
+			count = findSensors(planes[0],id);
+			std::cout << "\tid00" << id << ": " << count;
+			total += count;
+			row += (-21.7+j*pitch) * count;
+			colSum[j] += (21.7-i*pitch)*count;
+		}
+		std::cout << "\t " << row << std::endl;
+		rowTotal += row;
+		row=0.;
+	}
+	std::cout << "Col: ";
+	for(int i=0;i<8;i++){
+		colTotal += colSum[i];
+		std::cout << "\t\t" << colSum[i];
+	}
+	std::cout << std::endl;
+	std::cout << "Total sum: " << total << "\t Total Row: " << rowTotal << "\t Total Col: " << colTotal << std::endl;
+	std::cout << "Row/Sum: " << rowTotal/total << "\t Col/Sum: " << colTotal/total << std::endl;
+	total=0;
+	rowTotal=0.;
+	colTotal=0.;
+	memset(colSum, 0, 8*sizeof(double));
+
+	std::cout << "---------- Plane 1 (y,z) -----------\n";
+	std::cout << "\t-21.7\t\t-15.5\t\t-9.3\t\t-3.1\t\t+3.1\t\t+9.3\t\t+15.5\t\t+21.7" << std::endl;
+	for(int i=0;i<8;i++){
+		std::cout << (21.7-i*pitch);
+		for(int j=0;j<8;j++){
+			id = 1000 + i + (7-j)*8;
+			count = findSensors(planes[1],id);
+			std::cout << "\tid" << id << ": " << count;
+			total += count;
+			row += (-21.7+j*pitch) * count;
+			colSum[j] += (21.7-i*pitch)*count;
+		}
+		std::cout << "\t " << row << std::endl;
+		rowTotal += row;
+		row=0.;
+	}
+	std::cout << "Col: ";
+	for(int i=0;i<8;i++){
+		colTotal += colSum[i];
+		std::cout << "\t\t" << colSum[i];
+	}
+	std::cout << std::endl;
+	std::cout << "Total sum: " << total << "\t Total Row: " << rowTotal << "\t Total Col: " << colTotal << std::endl;
+	std::cout << "Row/Sum: " << rowTotal/total << "\t Col/Sum: " << colTotal/total << std::endl;
+	total=0;
+	rowTotal=0.;
+	colTotal=0.;
+	memset(colSum, 0, 8*sizeof(double));
+
+	std::cout << "---------- Plane 2 (x,y) -----------\n";
+	std::cout << "\t-21.7\t\t-15.5\t\t-9.3\t\t-3.1\t\t+3.1\t\t+9.3\t\t+15.5\t\t+21.7" << std::endl;
+	for(int i=0;i<8;i++){
+		std::cout << (21.7-i*pitch);
+		for(int j=0;j<8;j++){
+			id = 2000 + i*8 + (7-j);
+			count = findSensors(planes[2],id);
+			std::cout << "\tid" << id << ": " << count;
+			total += count;
+			row += (-21.7+j*pitch) * count;
+			colSum[j] += (21.7-i*pitch)*count;
+		}
+		std::cout << "\t " << row << std::endl;
+		rowTotal += row;
+		row=0.;
+	}
+	std::cout << "Col: ";
+	for(int i=0;i<8;i++){
+		colTotal += colSum[i];
+		std::cout << "\t\t" << colSum[i];
+	}
+	std::cout << std::endl;
+	std::cout << "Total sum: " << total << "\t Total Row: " << rowTotal << "\t Total Col: " << colTotal << std::endl;
+	std::cout << "Row/Sum: " << rowTotal/total << "\t Col/Sum: " << colTotal/total << std::endl;
+	total=0;
+	rowTotal=0.;
+	colTotal=0.;
+	memset(colSum, 0, 8*sizeof(double));
+	
+	std::cout << "---------- Plane 3 (y,z) -----------\n";
+	std::cout << "\t-21.7\t\t-15.5\t\t-9.3\t\t-3.1\t\t+3.1\t\t+9.3\t\t+15.5\t\t+21.7" << std::endl;
+	for(int i=0;i<8;i++){
+		std::cout << (21.7-i*pitch);
+		for(int j=0;j<8;j++){
+			id = 3000 + (7-i) + (7-j)*8;
+			count = findSensors(planes[3],id);
+			std::cout << "\tid" << id << ": " << count;
+			total += count;
+			row += (-21.7+j*pitch) * count;
+			colSum[j] += (21.7-i*pitch)*count;
+		}
+		std::cout << "\t " << row << std::endl;
+		rowTotal += row;
+		row=0.;
+	}
+	std::cout << "Col: ";
+	for(int i=0;i<8;i++){
+		colTotal += colSum[i];
+		std::cout << "\t\t" << colSum[i];
+	}
+	std::cout << std::endl;
+	std::cout << "Total sum: " << total << "\t Total Row: " << rowTotal << "\t Total Col: " << colTotal << std::endl;
+	std::cout << "Row/Sum: " << rowTotal/total << "\t Col/Sum: " << colTotal/total << std::endl;
+	total=0;
+	rowTotal=0.;
+	colTotal=0.;
+	memset(colSum, 0, 8*sizeof(double));
+
+	std::cout << "---------- Plane 4 (x,z) -----------\n";
+	std::cout << "\t-21.7\t\t-15.5\t\t-9.3\t\t-3.1\t\t+3.1\t\t+9.3\t\t+15.5\t\t+21.7" << std::endl;
+	for(int i=0;i<8;i++){
+		std::cout << (21.7-i*pitch);
+		for(int j=0;j<8;j++){
+			id = 4000 + (7-i) + j*8;
+			count = findSensors(planes[4],id);
+			std::cout << "\tid" << id << ": " << count;
+			total += count;
+			row += (-21.7+j*pitch) * count;
+			colSum[j] += (21.7-i*pitch)*count;
+		}
+		std::cout << "\t " << row << std::endl;
+		rowTotal += row;
+		row=0.;
+	}
+	std::cout << "Col: ";
+	for(int i=0;i<8;i++){
+		colTotal += colSum[i];
+		std::cout << "\t\t" << colSum[i];
+	}
+	std::cout << std::endl;
+	std::cout << "Total sum: " << total << "\t Total Row: " << rowTotal << "\t Total Col: " << colTotal << std::endl;
+	std::cout << "Row/Sum: " << rowTotal/total << "\t Col/Sum: " << colTotal/total << std::endl;
+	total=0;
+	rowTotal=0.;
+	colTotal=0.;
+	memset(colSum, 0, 8*sizeof(double));
+
+	std::cout << "---------- Plane 5 (x,z) -----------\n";
+	std::cout << "\t-21.7\t\t-15.5\t\t-9.3\t\t-3.1\t\t+3.1\t\t+9.3\t\t+15.5\t\t+21.7" << std::endl;
+	for(int i=0;i<8;i++){
+		std::cout << (21.7-i*8);
+		for(int j=0;j<8;j++){
+			id = 5000 + (7-i) + (7-j)*8;
+			count = findSensors(planes[5],id);
+			std::cout << "\tid" << id << ": " << count;
+			total += count;
+			row += (-21.7+j*pitch) * count;
+			colSum[j] += (21.7-i*pitch)*count;
+		}
+		std::cout << "\t " << row << std::endl;
+		rowTotal += row;
+		row=0.;
+	}
+	std::cout << "Col: ";
+	for(int i=0;i<numberSiPM;i++){
+		colTotal += colSum[i];
+		std::cout << "\t\t" << colSum[i];
+	}
+	std::cout << std::endl;
+	std::cout << "Total sum: " << total << "\t Total Row: " << rowTotal << "\t Total Col: " << colTotal << std::endl;
+	std::cout << "Row/Sum: " << rowTotal/total << "\t Col/Sum: " << colTotal/total << std::endl;
+}
+
+void petAnalysis::reconstructionCoronna0(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& pt, double thresholdMax, double thresholdNeighbours){
+	//Calculate barycenter
+	std::vector<std::vector<double> > points(6,std::vector<double>(2));
+	std::vector<std::vector<double> > errors(6,std::vector<double>(2));
+	std::string planesDirections[6] = {"xy","yz","xy","yz","xz","xz"};
+	util::barycenterAlgorithm* barycenter = new util::barycenterAlgorithm();
+
+	std::vector<int> signalPlanes;
+	double point[3] = {0.,0.,0.};
+	double norm[3] = {0.,0.,0.};
+	int planesCoord[6][2] = {{0,1},{1,2},{0,1},{1,2},{0,2},{0,2}};
+
+	for(unsigned int i=0;i<6;i++){
+		barycenter->setPlane(planesDirections[i]);
+		bool active = barycenter->computePositionCoronna0(planes[i],thresholdMax,thresholdNeighbours);
+		if(active){
+			signalPlanes.push_back(i);
+			points[i][0] = barycenter->getX1();
+			points[i][1] = barycenter->getX2();
+			errors[i][0] = barycenter->getX1Err();
+			errors[i][1] = barycenter->getX2Err();
+		}
+	}
+	
+	for(unsigned int i=0;i<signalPlanes.size();i++){
+		point[planesCoord[signalPlanes[i]][0]] += points[signalPlanes[i]][0] / std::pow(errors[signalPlanes[i]][0],2);
+		point[planesCoord[signalPlanes[i]][1]] += points[signalPlanes[i]][1] / std::pow(errors[signalPlanes[i]][1],2);
+
+		norm[planesCoord[signalPlanes[i]][0]] += std::pow(errors[signalPlanes[i]][0],-2);
+		norm[planesCoord[signalPlanes[i]][1]] += std::pow(errors[signalPlanes[i]][1],-2);
+	}
+
+	pt.x(point[0]/norm[0]);
+	pt.y(point[1]/norm[1]);
+	pt.z(point[2]/norm[2]);
+/*	std::cout << "x: " << point[0] << "\t y: " << point[1] << "\t z: " << point[2] << std::endl;
+	std::cout << "xVar: " << norm[0] << "\t yVar: " << norm[1] << "\t zVar: " << norm[2] << std::endl;
+	std::cout << "x: " << pt.x() << "\t y: " << pt.y() << "\t z: " << pt.z() << std::endl;*/
 }

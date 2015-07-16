@@ -5,17 +5,23 @@ util::findCluster::findCluster(){
 }
 
 bool
-util::findCluster::findCoronnaAllPlanes(const std::vector<std::vector<gate::Hit*> >& planes, std::vector<std::vector<gate::Hit*> >& clusters, int rings, double threshold){
+util::findCluster::findCoronnaAllPlanes(const std::vector<std::vector<gate::Hit*> >& planes, std::vector<std::vector<gate::Hit*> >& clusters, int rings, double thresholdMax, double thresholdNeighbours){
+	if(rings==0){
+		for(unsigned int i=0;i<planes.size();i++){
+	//		std::cout << "------ Plane " << i << "-------\n";
+			findCoronna0(planes[i],clusters[i],thresholdMax,thresholdNeighbours);
+		}
+	}
 	if(rings==1){
 		for(unsigned int i=0;i<planes.size();i++){
 	//		std::cout << "------ Plane " << i << "-------\n";
-			findCoronna(planes[i],clusters[i],80);
+			findCoronna(planes[i],clusters[i],thresholdMax,thresholdNeighbours);
 		}
 	}
 	if(rings==2){
 		for(unsigned int i=0;i<planes.size();i++){
 //			std::cout << "------ Plane " << i << "-------\n";
-			findCoronna2Rings(planes[i],clusters[i]);
+			findCoronna2Rings(planes[i],clusters[i],thresholdMax,thresholdNeighbours);
 		}
 	}
 
@@ -23,62 +29,59 @@ util::findCluster::findCoronnaAllPlanes(const std::vector<std::vector<gate::Hit*
 }
 
 bool
-util::findCluster::findCoronna(const std::vector<gate::Hit*>& plane, std::vector<gate::Hit*>& cluster, double threshold){
-	// Find max value in the plane
-	// Select all SiPM around max (about a threshold)
-	// Delete all selected SiPM from list and store first cluster
-	// Loop until no more SiPM above threshold
-	
+util::findCluster::findCoronna(const std::vector<gate::Hit*>& plane, std::vector<gate::Hit*>& cluster, double thresholdMax, double thresholdNeighbours){
 //	for(unsigned int i=0;i<plane.size(); i++){
 //		std::cout << "Sensor: " << plane[i]->GetSensorID() << std::endl;
 //	}
 
 	gate::Hit* max = *std::max_element(plane.begin(),plane.end(),chargeOrderSensorsDec);
-	int id = max->GetSensorID();
-	int planeNumber = floor(id/1000);
-	int row = floor((id%100)/8);
-	int col = id%8;
+	if(max->GetAmplitude() > thresholdMax){
+		int id = max->GetSensorID();
+		int planeNumber = floor(id/1000);
+		int row = floor((id%100)/8);
+		int col = id%8;
 
-//	std::cout << "Max sensor: " << id << std::endl;
-//	std::cout << "Plane: " << planeNumber << "\t row " << row << "\t col " << col << std::endl;
+		//	std::cout << "Max sensor: " << id << std::endl;
+		//	std::cout << "Plane: " << planeNumber << "\t row " << row << "\t col " << col << std::endl;
 
-	std::vector<int> idsFirstRing;
+		std::vector<int> idsFirstRing;
 
-	for(int i = (row-1); i <= (row+1); i++){
-		if(i<0 || i>8){
-			continue;
-		}
-		for(int j = (col-1); j <= (col+1); j++){
-			if(j<0 || j>8){
+		for(int i = (row-1); i <= (row+1); i++){
+			if(i<0 || i>8){
 				continue;
 			}
-			idsFirstRing.push_back(planeNumber*1000 + i*8 + j);
-		}
-	}
-
-//	std::cout << "First ring: ";
-//	for(unsigned int i=0;i<idsFirstRing.size();i++){
-//		std::cout << "\t" << idsFirstRing[i];
-//	}
-//	std::cout << std::endl;
-
-	for(unsigned int j=0;j<idsFirstRing.size();j++){
-		for(unsigned int i=0;i<plane.size();i++){
-			if(plane[i]->GetSensorID() == idsFirstRing[j]){
-				if(plane[i]->GetAmplitude() > threshold){
-					cluster.push_back(plane[i]);
+			for(int j = (col-1); j <= (col+1); j++){
+				if(j<0 || j>8){
+					continue;
 				}
-				break;
+				idsFirstRing.push_back(planeNumber*1000 + i*8 + j);
 			}
 		}
-	}
 
-/*	std::cout << "Selected: ";
-	for(unsigned int i=0;i<cluster.size();i++){
-		std::cout << "\t" << cluster[i]->GetSensorID();
+		//	std::cout << "First ring: ";
+		//	for(unsigned int i=0;i<idsFirstRing.size();i++){
+		//		std::cout << "\t" << idsFirstRing[i];
+		//	}
+		//	std::cout << std::endl;
+
+		for(unsigned int j=0;j<idsFirstRing.size();j++){
+			for(unsigned int i=0;i<plane.size();i++){
+				if(plane[i]->GetSensorID() == idsFirstRing[j]){
+					if(plane[i]->GetAmplitude() > thresholdNeighbours){
+						cluster.push_back(plane[i]);
+					}
+					break;
+				}
+			}
+		}
+
+		/*	std::cout << "Selected: ";
+			for(unsigned int i=0;i<cluster.size();i++){
+			std::cout << "\t" << cluster[i]->GetSensorID();
+			}
+			std::cout << std::endl;
+			*/
 	}
-	std::cout << std::endl;
-*/
 	return true;
 }
 
@@ -87,57 +90,116 @@ bool util::findCluster::chargeOrderSensorsDec(const gate::Hit* s1, const gate::H
 }
 
 bool
-util::findCluster::findCoronna2Rings(const std::vector<gate::Hit*>& plane, std::vector<gate::Hit*>& cluster){
-	// Find max value in the plane
-	// Select all SiPM around max (about a threshold)
-	// Delete all selected SiPM from list and store first cluster
-	// Loop until no more SiPM above threshold
-	
+util::findCluster::findCoronna2Rings(const std::vector<gate::Hit*>& plane, std::vector<gate::Hit*>& cluster, double thresholdMax, double thresholdNeighbours){
 	gate::Hit* max = *std::max_element(plane.begin(),plane.end(),chargeOrderSensorsDec);
-	int id = max->GetSensorID();
-	int planeNumber = floor(id/1000);
-	int row = floor((id%100)/10);
-	int col = id%10;
 
-//	std::cout << "Max sensor: " << id << std::endl;
-//	std::cout << "Plane: " << planeNumber << "\t row " << row << "\t col " << col << std::endl;
+	if(max->GetAmplitude() > thresholdMax){
+		int id = max->GetSensorID();
+		int planeNumber = floor(id/1000);
+		int row = floor((id%100)/10);
+		int col = id%10;
 
-	std::vector<int> idsFirstRing;
-	//idsFirstRing.push_back(id);
+		//	std::cout << "Max sensor: " << id << std::endl;
+		//	std::cout << "Plane: " << planeNumber << "\t row " << row << "\t col " << col << std::endl;
 
-	for(int i = (row-2); i <= (row+2); i++){
-		if(i<0 || i>9){
-			continue;
-		}
-		for(int j = (col-2); j <= (col+2); j++){
-			if(j<0 || j>9){
+		std::vector<int> idsFirstRing;
+		//idsFirstRing.push_back(id);
+
+		for(int i = (row-2); i <= (row+2); i++){
+			if(i<0 || i>9){
 				continue;
 			}
-			idsFirstRing.push_back(planeNumber*1000 + i*10 + j);
-		}
-	}
-
-/*	std::cout << "First ring: ";
-	for(unsigned int i=0;i<idsFirstRing.size();i++){
-		std::cout << "\t" << idsFirstRing[i];
-	}
-	std::cout << std::endl;
-*/
-	for(unsigned int j=0;j<idsFirstRing.size();j++){
-		for(unsigned int i=0;i<plane.size();i++){
-			if(plane[i]->GetSensorID() == idsFirstRing[j]){
-				cluster.push_back(plane[i]);
-				break;
+			for(int j = (col-2); j <= (col+2); j++){
+				if(j<0 || j>9){
+					continue;
+				}
+				idsFirstRing.push_back(planeNumber*1000 + i*10 + j);
 			}
 		}
-	}
 
-/*	std::cout << "Selected: ";
-	for(unsigned int i=0;i<cluster.size();i++){
-		std::cout << "\t" << cluster[i]->GetSensorID();
+		/*	std::cout << "First ring: ";
+			for(unsigned int i=0;i<idsFirstRing.size();i++){
+			std::cout << "\t" << idsFirstRing[i];
+			}
+			std::cout << std::endl;
+			*/
+		for(unsigned int j=0;j<idsFirstRing.size();j++){
+			for(unsigned int i=0;i<plane.size();i++){
+				if(plane[i]->GetSensorID() == idsFirstRing[j]){
+					if(plane[i]->GetAmplitude() > thresholdNeighbours){
+						cluster.push_back(plane[i]);
+					}
+					break;
+				}
+			}
+		}
+
+		/*	std::cout << "Selected: ";
+			for(unsigned int i=0;i<cluster.size();i++){
+			std::cout << "\t" << cluster[i]->GetSensorID();
+			}
+			std::cout << std::endl;
+			*/
 	}
-	std::cout << std::endl;
-*/
+	return true;
+}
+
+bool
+util::findCluster::findCoronna0(const std::vector<gate::Hit*>& plane, std::vector<gate::Hit*>& cluster, double thresholdMax, double thresholdNeighbours){
+//	for(unsigned int i=0;i<plane.size(); i++){
+//		std::cout << "Sensor: " << plane[i]->GetSensorID() << std::endl;
+//	}
+
+	gate::Hit* max = *std::max_element(plane.begin(),plane.end(),chargeOrderSensorsDec);
+	if(max->GetAmplitude() > thresholdMax){
+		int id = max->GetSensorID();
+		int planeNumber = floor(id/1000);
+		int row = floor((id%100)/8);
+		int col = id%8;
+
+		//	std::cout << "Max sensor: " << id << std::endl;
+		//	std::cout << "Plane: " << planeNumber << "\t row " << row << "\t col " << col << std::endl;
+
+		std::vector<int> idsFirstRing;
+
+		idsFirstRing.push_back(id);
+		if((row-1) >= 0){
+			idsFirstRing.push_back(planeNumber*1000 + (row-1)*8 + col);
+		}
+		if((row+1) <= 8){
+			idsFirstRing.push_back(planeNumber*1000 + (row+1)*8 + col);
+		}
+		if((col-1) >= 0){
+			idsFirstRing.push_back(planeNumber*1000 + row*8 + (col-1));
+		}
+		if((col+1) <= 8){
+			idsFirstRing.push_back(planeNumber*1000 + row*8 + (col+1));
+		}
+
+		//	std::cout << "First ring: ";
+		//	for(unsigned int i=0;i<idsFirstRing.size();i++){
+		//		std::cout << "\t" << idsFirstRing[i];
+		//	}
+		//	std::cout << std::endl;
+
+		for(unsigned int j=0;j<idsFirstRing.size();j++){
+			for(unsigned int i=0;i<plane.size();i++){
+				if(plane[i]->GetSensorID() == idsFirstRing[j]){
+					if(plane[i]->GetAmplitude() > thresholdNeighbours){
+						cluster.push_back(plane[i]);
+					}
+					break;
+				}
+			}
+		}
+
+		/*	std::cout << "Selected: ";
+			for(unsigned int i=0;i<cluster.size();i++){
+			std::cout << "\t" << cluster[i]->GetSensorID();
+			}
+			std::cout << std::endl;
+			*/
+	}
 	return true;
 }
 

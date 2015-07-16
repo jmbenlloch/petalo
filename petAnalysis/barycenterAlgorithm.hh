@@ -21,6 +21,8 @@ namespace util
 
     // Calculation function
     bool computePosition(const vector<gate::Hit*>& sensors);
+    bool computePositionCoronna0(const vector<gate::Hit*>& sensors, double thresholdMax, double thresholdNeighbours);
+	static bool chargeOrderSensorsDec(const gate::Hit* s1, const gate::Hit* s2);
 
     // Getters for the information calculated.
     double getX1() const;
