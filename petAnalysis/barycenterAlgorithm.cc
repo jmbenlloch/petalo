@@ -51,9 +51,8 @@ util::barycenterAlgorithm::computePosition(const vector<gate::Hit*>& sensors)
     x2Pos_ += x2pos * sensors[i]->GetAmplitude() / sumE;
 
 	//Paola
-//	x1Err_ += std::pow((sumE-sensors[i]->GetAmplitude())*x1pos/std::pow(sumE,2),2) * sensors[i]->GetAmplitude();
-//	x2Err_ += std::pow((sumE-sensors[i]->GetAmplitude())*x2pos/std::pow(sumE,2),2) * sensors[i]->GetAmplitude();
-
+	//x1Err_ += std::pow((sumE-sensors[i]->GetAmplitude())*x1pos/std::pow(sumE,2),2) * sensors[i]->GetAmplitude();
+	//x2Err_ += std::pow((sumE-sensors[i]->GetAmplitude())*x2pos/std::pow(sumE,2),2) * sensors[i]->GetAmplitude();
 
     // sigma
 	x1pos2 += std::pow(x1pos,2) * sensors[i]->GetAmplitude() / sumE;

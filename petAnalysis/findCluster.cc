@@ -8,20 +8,26 @@ bool
 util::findCluster::findCoronnaAllPlanes(const std::vector<std::vector<gate::Hit*> >& planes, std::vector<std::vector<gate::Hit*> >& clusters, int rings, double thresholdMax, double thresholdNeighbours){
 	if(rings==0){
 		for(unsigned int i=0;i<planes.size();i++){
-	//		std::cout << "------ Plane " << i << "-------\n";
-			findCoronna0(planes[i],clusters[i],thresholdMax,thresholdNeighbours);
+			if(planes[i].size() > 0){
+				//		std::cout << "------ Plane " << i << "-------\n";
+				findCoronna0(planes[i],clusters[i],thresholdMax,thresholdNeighbours);
+			}
 		}
 	}
 	if(rings==1){
 		for(unsigned int i=0;i<planes.size();i++){
-	//		std::cout << "------ Plane " << i << "-------\n";
-			findCoronna(planes[i],clusters[i],thresholdMax,thresholdNeighbours);
+			if(planes[i].size() > 0){
+				//		std::cout << "------ Plane " << i << "-------\n";
+				findCoronna(planes[i],clusters[i],thresholdMax,thresholdNeighbours);
+			}
 		}
 	}
 	if(rings==2){
 		for(unsigned int i=0;i<planes.size();i++){
-//			std::cout << "------ Plane " << i << "-------\n";
-			findCoronna2Rings(planes[i],clusters[i],thresholdMax,thresholdNeighbours);
+			if(planes[i].size() > 0){
+				//			std::cout << "------ Plane " << i << "-------\n";
+				findCoronna2Rings(planes[i],clusters[i],thresholdMax,thresholdNeighbours);
+			}
 		}
 	}
 

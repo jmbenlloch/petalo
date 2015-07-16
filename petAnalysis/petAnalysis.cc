@@ -211,7 +211,7 @@ bool petAnalysis::execute(gate::Event& evt){
   if(firstDaughter.GetCreatorProc() == std::string("phot") 
 		  && firstDaughter.GetDaughters().size()==0){
 
-//	  std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
+	//  std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
 
 	  //Energy
 	  int energy = 0;
@@ -252,10 +252,10 @@ bool petAnalysis::execute(gate::Event& evt){
 	  gate::Point3D reconsPointBest; 
 	  gate::Point3D reconsPointCorrected; 
 	  reconstruction(clusters,reconsPointCoronna);
-	  reconstruction(clusters2,reconsPointCoronna2);
+	  //reconstruction(clusters2,reconsPointCoronna2);
 	//  reconstruction(clusters0,reconsPointCoronna0);
-	  reconstructionCoronna0(planes,reconsPointCoronna0,80,80);
-	  reconstructionCorrected(clusters,reconsPointCorrected);
+	  //reconstructionCoronna0(planes,reconsPointCoronna0,80,80);
+	  //reconstructionCorrected(clusters,reconsPointCorrected);
 	  bestPointRecons(clusters,trueVertex,reconsPointBest);
 
 /*	  if(std::isnan(reconsPointCoronna.x())){
@@ -269,7 +269,8 @@ bool petAnalysis::execute(gate::Event& evt){
 	  }*/
 
 	  fstore("totalEvents",fetch_istore("totalEvents")+1);
-	  if(!(std::isnan(reconsPointCoronna.x()) || std::isnan(reconsPointCoronna.y()) | std::isnan(reconsPointCoronna.z()))){
+	  if(!(std::isnan(reconsPointCoronna.x()) || std::isnan(reconsPointCoronna.y()) || std::isnan(reconsPointCoronna.z()))){
+//	  if(!(std::isnan(reconsPointCoronna.x()) || std::isnan(reconsPointCoronna.y()))){
 		  fstore("reconsEvents",fetch_istore("reconsEvents")+1);
 		  gate::Centella::instance()
 			  ->hman()->fill(this->alabel("xCoronna1"), reconsPointCoronna.x() - trueVertex.x());
@@ -278,6 +279,9 @@ bool petAnalysis::execute(gate::Event& evt){
 		  gate::Centella::instance()
 			  ->hman()->fill(this->alabel("zCoronna1"), reconsPointCoronna.z() - trueVertex.z());
 	  }
+/*	  std::cout << "xC1: " << reconsPointCoronna.x() - trueVertex.x() << std::endl;
+	  std::cout << "yC1: " << reconsPointCoronna.y() - trueVertex.y() << std::endl;
+	  std::cout << "zC1: " << reconsPointCoronna.z() - trueVertex.z() << std::endl;*/
 
 	  gate::Centella::instance()
 		  ->hman()->fill(this->alabel("xCoronna2"), reconsPointCoronna2.x() - trueVertex.x());
@@ -293,12 +297,17 @@ bool petAnalysis::execute(gate::Event& evt){
 	  gate::Centella::instance()
 		  ->hman()->fill(this->alabel("zCoronna0"), reconsPointCoronna0.z() - trueVertex.z());
 
-	  gate::Centella::instance()
-		  ->hman()->fill(this->alabel("xBest"), reconsPointBest.x() - trueVertex.x());
-	  gate::Centella::instance()
-		  ->hman()->fill(this->alabel("yBest"), reconsPointBest.y() - trueVertex.y());
-	  gate::Centella::instance()
-		  ->hman()->fill(this->alabel("zBest"), reconsPointBest.z() - trueVertex.z());
+	  if(!(std::isnan(reconsPointCoronna.x()) || std::isnan(reconsPointCoronna.y()) || std::isnan(reconsPointCoronna.z()))){
+		  gate::Centella::instance()
+			  ->hman()->fill(this->alabel("xBest"), reconsPointBest.x() - trueVertex.x());
+		  gate::Centella::instance()
+			  ->hman()->fill(this->alabel("yBest"), reconsPointBest.y() - trueVertex.y());
+		  gate::Centella::instance()
+			  ->hman()->fill(this->alabel("zBest"), reconsPointBest.z() - trueVertex.z());
+	  }
+/*	  std::cout << "xBest: " << reconsPointBest.x() - trueVertex.x() << std::endl;
+	  std::cout << "yBest: " << reconsPointBest.y() - trueVertex.y() << std::endl;
+	  std::cout << "zBest: " << reconsPointBest.z() - trueVertex.z() << std::endl;*/
 
 	  gate::Centella::instance()
 		  ->hman()->fill(this->alabel("xCorrected"), reconsPointCorrected.x() - trueVertex.x());
@@ -320,30 +329,32 @@ bool petAnalysis::execute(gate::Event& evt){
 	  }
 
 	  //Bias
-	  gate::Centella::instance()
-		  ->hman()->fill2d(this->alabel("xPosX"), trueVertex.x(), reconsPointBest.x()-trueVertex.x());
-	  gate::Centella::instance()
-		  ->hman()->fill2d(this->alabel("xPosY"), trueVertex.y(), reconsPointBest.x()-trueVertex.x());
-	  gate::Centella::instance()
-		  ->hman()->fill2d(this->alabel("xPosZ"), trueVertex.z(), reconsPointBest.x()-trueVertex.x());
-	  gate::Centella::instance()
-		  ->hman()->fill2d(this->alabel("yPosY"), trueVertex.y(), reconsPointBest.y()-trueVertex.y());
-	  gate::Centella::instance()
-		  ->hman()->fill2d(this->alabel("yPosZ"), trueVertex.z(), reconsPointBest.y()-trueVertex.y());
-	  gate::Centella::instance()
-		  ->hman()->fill2d(this->alabel("zPosZ"), trueVertex.z(), reconsPointBest.z()-trueVertex.z());
-/*	  gate::Centella::instance()
-		  ->hman()->fill2d(this->alabel("xPosX"), trueVertex.x(), reconsPointCoronna.x()-trueVertex.x());
-	  gate::Centella::instance()
-		  ->hman()->fill2d(this->alabel("xPosY"), trueVertex.y(), reconsPointCoronna.x()-trueVertex.x());
-	  gate::Centella::instance()
-		  ->hman()->fill2d(this->alabel("xPosZ"), trueVertex.z(), reconsPointCoronna.x()-trueVertex.x());
-	  gate::Centella::instance()
-		  ->hman()->fill2d(this->alabel("yPosY"), trueVertex.y(), reconsPointCoronna.y()-trueVertex.y());
-	  gate::Centella::instance()
-		  ->hman()->fill2d(this->alabel("yPosZ"), trueVertex.z(), reconsPointCoronna.y()-trueVertex.y());
-	  gate::Centella::instance()
-		  ->hman()->fill2d(this->alabel("zPosZ"), trueVertex.z(), reconsPointCoronna.z()-trueVertex.z());*/
+	  if(!(std::isnan(reconsPointCoronna.x()) || std::isnan(reconsPointCoronna.y()) || std::isnan(reconsPointCoronna.z()))){
+		  gate::Centella::instance()
+			  ->hman()->fill2d(this->alabel("xPosX"), trueVertex.x(), reconsPointBest.x()-trueVertex.x());
+		  gate::Centella::instance()
+			  ->hman()->fill2d(this->alabel("xPosY"), trueVertex.y(), reconsPointBest.x()-trueVertex.x());
+		  gate::Centella::instance()
+			  ->hman()->fill2d(this->alabel("xPosZ"), trueVertex.z(), reconsPointBest.x()-trueVertex.x());
+		  gate::Centella::instance()
+			  ->hman()->fill2d(this->alabel("yPosY"), trueVertex.y(), reconsPointBest.y()-trueVertex.y());
+		  gate::Centella::instance()
+			  ->hman()->fill2d(this->alabel("yPosZ"), trueVertex.z(), reconsPointBest.y()-trueVertex.y());
+		  gate::Centella::instance()
+			  ->hman()->fill2d(this->alabel("zPosZ"), trueVertex.z(), reconsPointBest.z()-trueVertex.z());
+		  /*gate::Centella::instance()
+			  ->hman()->fill2d(this->alabel("xPosX"), trueVertex.x(), reconsPointCoronna.x()-trueVertex.x());
+		  gate::Centella::instance()
+			  ->hman()->fill2d(this->alabel("xPosY"), trueVertex.y(), reconsPointCoronna.x()-trueVertex.x());
+		  gate::Centella::instance()
+			  ->hman()->fill2d(this->alabel("xPosZ"), trueVertex.z(), reconsPointCoronna.x()-trueVertex.x());
+		  gate::Centella::instance()
+			  ->hman()->fill2d(this->alabel("yPosY"), trueVertex.y(), reconsPointCoronna.y()-trueVertex.y());
+		  gate::Centella::instance()
+			  ->hman()->fill2d(this->alabel("yPosZ"), trueVertex.z(), reconsPointCoronna.y()-trueVertex.y());
+		  gate::Centella::instance()
+			  ->hman()->fill2d(this->alabel("zPosZ"), trueVertex.z(), reconsPointCoronna.z()-trueVertex.z());*/
+	  }
 
 	  //Energy in function of z
 	  gate::Centella::instance()
@@ -351,7 +362,7 @@ bool petAnalysis::execute(gate::Event& evt){
 	  gate::Centella::instance()
 		  ->hman()->fill2d(this->alabel("EPosZ"), trueVertex.z(), energy-10770);
 
-	//  printSensors(clusters);
+	  //printSensors(clusters);
   }
 
   //Hist2d to find the cut
@@ -398,6 +409,8 @@ void petAnalysis::reconstruction(std::vector<std::vector<gate::Hit*> > planes, g
 
 	for(unsigned int i=0;i<6;i++){
 		if(planes[i].size()>0){
+//			std::cout << "Plane " << i << " active " << planesDirections[i] << std::endl;
+
 			signalPlanes.push_back(i);
 
 			barycenter->setPlane(planesDirections[i]);
@@ -406,6 +419,9 @@ void petAnalysis::reconstruction(std::vector<std::vector<gate::Hit*> > planes, g
 			points[i][1] = barycenter->getX2();
 			errors[i][0] = barycenter->getX1Err();
 			errors[i][1] = barycenter->getX2Err();
+
+//			std::cout << "x1: " << points[i][0] << " Var: " <<  errors[i][0] << std::endl;
+//			std::cout << "x2: " << points[i][1] << " Var: " <<  errors[i][1] << std::endl;
 		}
 	}
 	
