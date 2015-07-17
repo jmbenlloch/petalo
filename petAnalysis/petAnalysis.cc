@@ -41,7 +41,7 @@ bool petAnalysis::initialize(){
     ->hman()->h1(this->alabel("EnergyCompt"),"Energy Compton SiPM",500,0,20000);
 
   gate::Centella::instance()
-    ->hman()->h1(this->alabel("z"),"Event position",30000,-50,50);
+    ->hman()->h1(this->alabel("z"),"Event position",30000,0,50);
 
   gate::Centella::instance()
     ->hman()->h1(this->alabel("Compton"),"Number of Compton interactions",10,0,10);
@@ -187,6 +187,14 @@ bool petAnalysis::initialize(){
   gate::Centella::instance()
 	  ->hman()->h1(this->alabel("zReconsRatio"),"zRecons-zTrue using ratio",100,-25,25);
 
+  //New Plots
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("phot150"),"Phot cluster",8,-25,25,8,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("compt1"),"Compton 1",8,-25,25,8,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("noise"),"Compton 2",8,-25,25,8,-25,25);
+
   //Position studies
   gate::Centella::instance()
 	  ->hman()->h2(this->alabel("xPosZ"),"xRecons-xTrue",100,-25,25,100,-15,15);
@@ -230,6 +238,9 @@ bool petAnalysis::initialize(){
   store("photoE",0);
   store("photoWall",0);
   store("comptWall",0);
+
+  store("photFound",0);
+  store("noiseFound",0);
 
   store("cut",CUT);
 
@@ -283,8 +294,9 @@ bool petAnalysis::execute(gate::Event& evt){
 	  ->hman()->fill2d(this->alabel("xz"),trueVertex.x(),trueVertex.z());
   gate::Centella::instance()
 	  ->hman()->fill2d(this->alabel("yz"),trueVertex.y(),trueVertex.z());
+  //We change scale from -25,25 to 0-50
   gate::Centella::instance()
-	  ->hman()->fill(this->alabel("z"),trueVertex.z());
+	  ->hman()->fill(this->alabel("z"),trueVertex.z() + 25);
 
  //Try only events with photoelectric and one vertex
   if(firstDaughter.GetCreatorProc() == std::string("phot") 
@@ -305,6 +317,88 @@ bool petAnalysis::execute(gate::Event& evt){
 	  //Classify sensor hits per planes
 	  std::vector<std::vector<gate::Hit*> > planes(6);
 	  splitHitsPerPlane(evt,planes);
+
+
+	  /////////// NEW PLOT ///////
+	  
+	  int photFound = fetch_istore("photFound");
+
+	  std::vector<gate::Hit*> hits(planes[0]);
+	  gate::Hit* max = *std::max_element(hits.begin(),hits.end(),chargeOrderSensorsAsc);
+
+	  //Event near the center
+/*	  if(trueVertex.x() > -5 && trueVertex.x() < 5 &&
+			  trueVertex.y() > -5 && trueVertex.y() < 5 &&
+			  trueVertex.z() < -15){
+		  std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
+		  if(photFound==0){
+			  bool flagPhot = false;
+			  //	  for(unsigned int j=0;j<planes[0].size();j++){
+			  //		  if(planes[0][j]->GetAmplitude() > 150){
+			  if(max->GetAmplitude() > 150 && max->GetAmplitude() < 500){
+				  std::cout << "photFound\n";
+				  flagPhot = true;
+				  fstore("photFound",1);
+			  }
+			  //	  }
+			  if(flagPhot){
+				  for(unsigned int j=0;j<planes[0].size();j++){
+					  gate::Centella::instance()
+						  ->hman()->fill2d(this->alabel("phot150"),planes[0][j]->GetPosition().x(),planes[0][j]->GetPosition().y(),planes[0][j]->GetAmplitude());
+				  }
+			  }
+		  }
+	  }
+*/
+
+	//////////
+//	  if(trueVertex.x() > -5 && trueVertex.x() < 5 &&
+//			  trueVertex.y() > -5 && trueVertex.y() < 5 &&
+//			  trueVertex.z() > -5 && trueVertex.z() < 5){
+	  if(trueVertex.x() > -5 && trueVertex.x() < 5 &&
+			  trueVertex.y() > -5 && trueVertex.y() < 5 &&
+			  trueVertex.z() > 15){
+		  std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
+		  if(photFound==0){
+/*			  bool flagPhot = false;
+			  //	  for(unsigned int j=0;j<planes[0].size();j++){
+			  //		  if(planes[0][j]->GetAmplitude() > 150){
+			  if(max->GetAmplitude() > 150 && max->GetAmplitude() < 500){
+				  std::cout << "photFound\n";
+				  flagPhot = true;
+				  fstore("photFound",1);
+			  }
+			  //	  }*/
+//			  if(flagPhot){
+				  fstore("photFound",1);
+				  std::cout << "photFound\n";
+				  for(unsigned int j=0;j<planes[0].size();j++){
+					  gate::Centella::instance()
+						  ->hman()->fill2d(this->alabel("phot150"),planes[0][j]->GetPosition().x(),planes[0][j]->GetPosition().y(),planes[0][j]->GetAmplitude());
+				  }
+//			  }
+		  }
+	  }
+	/////////
+
+	  int noiseFound = fetch_istore("noiseFound");
+	  if(noiseFound==0){
+		  bool flagNoise = false;
+		  if(max->GetAmplitude() < 50){
+			  std::cout << "noiseFound\n";
+			  flagNoise = true;
+			  fstore("noiseFound",1);
+		  }
+		  if(flagNoise){
+			  for(unsigned int j=0;j<planes[0].size();j++){
+				  gate::Centella::instance()
+					  ->hman()->fill2d(this->alabel("noise"),planes[0][j]->GetPosition().x(),planes[0][j]->GetPosition().y(),planes[0][j]->GetAmplitude());
+			  }
+		  }
+	  }
+	  ////////////////////////////
+
+
 
 	  //zRatio
 	  gate::Centella::instance()
