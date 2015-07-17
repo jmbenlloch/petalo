@@ -28,6 +28,7 @@ class petAnalysis : public gate::IAlgo {
   
   //Position reconstruction using barycenter
   void reconstruction(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& pt);
+  void reconstructionComplete(std::vector<std::vector<gate::Hit*> > planesComplete, std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& pt);
   void reconstructionCoronna0(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& pt, double thresholdMax, double thresholdNeighbours);
 
   void reconstructionCorrected(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& pt);
