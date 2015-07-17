@@ -22,7 +22,7 @@ void positionPlots(){
 	petAnalysis_z->SetTitle("Proportion of events in Z position");
 	petAnalysis_z->Rebin(100);
 	petAnalysis_z->ComputeIntegral();
-	petAnalysis_z->SetAxisRange(0.,50.,"X");
+//	petAnalysis_z->SetAxisRange(0.,50.,"X");
 	Double_t *integral = petAnalysis_z->GetIntegral();
 	petAnalysis_z->SetContent(integral);
 	petAnalysis_z->GetXaxis()->SetTitle("z (mm)");
