@@ -115,6 +115,8 @@ bool petAnalysis::initialize(){
   gate::Centella::instance()
 	  ->hman()->h2(this->alabel("xPosX"),"xRecons-xTrue",100,-25,25,100,-15,15);
   gate::Centella::instance()
+	  ->hman()->h2(this->alabel("xPosXCorrected"),"xRecons-xTrue",100,-25,25,100,-15,15);
+  gate::Centella::instance()
 	  ->hman()->h2(this->alabel("xPosY"),"xRecons-xTrue",100,-25,25,100,-15,15);
   gate::Centella::instance()
 	  ->hman()->h2(this->alabel("xPosZ"),"xRecons-xTrue",100,-25,25,100,-15,15);
@@ -211,7 +213,9 @@ bool petAnalysis::execute(gate::Event& evt){
   if(firstDaughter.GetCreatorProc() == std::string("phot") 
 		  && firstDaughter.GetDaughters().size()==0){
 
-	  std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
+	  //std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
+
+
 
 	  //Energy
 	  int energy = 0;
@@ -222,6 +226,12 @@ bool petAnalysis::execute(gate::Event& evt){
 	  //Classify sensor hits per planes
 	  std::vector<std::vector<gate::Hit*> > planes(6);
 	  splitHitsPerPlane(evt,planes);
+
+	  //Apply cut
+	  std::vector<std::vector<gate::Hit*> > planesCut(6);
+	  for(unsigned int i=0; i<6;i++){
+		  applyCut(planes[i], 0.65,planesCut[i]);
+	  }
 
 	  //zRatio
 	  gate::Centella::instance()
@@ -242,8 +252,8 @@ bool petAnalysis::execute(gate::Event& evt){
 	  std::vector<std::vector<gate::Hit*> > clusters(6);
 	  std::vector<std::vector<gate::Hit*> > clusters2(6);
 	  std::vector<std::vector<gate::Hit*> > clusters0(6);
-	  findCluster->findCoronnaAllPlanes(planes,clusters,1,80,80);
-	  findCluster->findCoronnaAllPlanes(planes,clusters2,2,80,80);
+	  findCluster->findCoronnaAllPlanes(planes,clusters,1,100,100);
+	  findCluster->findCoronnaAllPlanes(planes,clusters2,2,100,100);
 	  //findCluster->findCoronnaAllPlanes(planes,clusters0,0,80,80);
 
 	  gate::Point3D reconsPointCoronna; 
@@ -253,7 +263,8 @@ bool petAnalysis::execute(gate::Event& evt){
 	  gate::Point3D reconsPointCorrected; 
 	  //reconstruction(clusters,reconsPointCoronna);
 
-	  reconstructionComplete(planes,clusters,reconsPointCoronna);
+	  //reconstructionComplete(planes,clusters,reconsPointCoronna);
+	  reconstructionComplete(planesCut,clusters,reconsPointCoronna);
 
 	  //reconstruction(clusters2,reconsPointCoronna2);
 	//  reconstruction(clusters0,reconsPointCoronna0);
@@ -264,11 +275,16 @@ bool petAnalysis::execute(gate::Event& evt){
 	  std::vector<std::vector<gate::Hit*> > planes2(6);
 	  for(unsigned int i=0;i<clusters.size();i++){
 		  if(clusters[i].size() > 0){
-			  planes2[i] = planes[i];
+			  planes2[i] = planesCut[i];
 		  }
 	  }
 	  bestPointRecons(planes2,trueVertex,reconsPointBest);
-	  reconstructionCorrected(clusters,reconsPointBest);
+
+	  reconsPointCorrected.x(reconsPointBest.x());
+	  reconsPointCorrected.y(reconsPointBest.y());
+	  reconsPointCorrected.z(reconsPointBest.z());
+	  reconstructionCorrected(clusters,reconsPointCorrected);
+
 	  //////
 	  //bestPointRecons(clusters,trueVertex,reconsPointBest);
 
@@ -293,9 +309,9 @@ bool petAnalysis::execute(gate::Event& evt){
 		  gate::Centella::instance()
 			  ->hman()->fill(this->alabel("zCoronna1"), reconsPointCoronna.z() - trueVertex.z());
 	  }
-	  std::cout << "xC1: " << reconsPointCoronna.x() - trueVertex.x() << std::endl;
+/*	  std::cout << "xC1: " << reconsPointCoronna.x() - trueVertex.x() << std::endl;
 	  std::cout << "yC1: " << reconsPointCoronna.y() - trueVertex.y() << std::endl;
-	  std::cout << "zC1: " << reconsPointCoronna.z() - trueVertex.z() << std::endl;
+	  std::cout << "zC1: " << reconsPointCoronna.z() - trueVertex.z() << std::endl;*/
 
 	  gate::Centella::instance()
 		  ->hman()->fill(this->alabel("xCoronna2"), reconsPointCoronna2.x() - trueVertex.x());
@@ -319,16 +335,21 @@ bool petAnalysis::execute(gate::Event& evt){
 		  gate::Centella::instance()
 			  ->hman()->fill(this->alabel("zBest"), reconsPointBest.z() - trueVertex.z());
 	  }
-	  std::cout << "xBest: " << reconsPointBest.x() - trueVertex.x() << std::endl;
+/*	  std::cout << "xBest: " << reconsPointBest.x() - trueVertex.x() << std::endl;
 	  std::cout << "yBest: " << reconsPointBest.y() - trueVertex.y() << std::endl;
-	  std::cout << "zBest: " << reconsPointBest.z() - trueVertex.z() << std::endl;
+	  std::cout << "zBest: " << reconsPointBest.z() - trueVertex.z() << std::endl;*/
 
-	  gate::Centella::instance()
-		  ->hman()->fill(this->alabel("xCorrected"), reconsPointCorrected.x() - trueVertex.x());
-	  gate::Centella::instance()
-		  ->hman()->fill(this->alabel("yCorrected"), reconsPointCorrected.y() - trueVertex.y());
-	  gate::Centella::instance()
-		  ->hman()->fill(this->alabel("zCorrected"), reconsPointCorrected.z() - trueVertex.z());
+	  if(!(std::isnan(reconsPointCoronna.x()) || std::isnan(reconsPointCoronna.y()) || std::isnan(reconsPointCoronna.z()))){
+		  gate::Centella::instance()
+			  ->hman()->fill(this->alabel("xCorrected"), reconsPointCorrected.x() - trueVertex.x());
+		  gate::Centella::instance()
+			  ->hman()->fill(this->alabel("yCorrected"), reconsPointCorrected.y() - trueVertex.y());
+		  gate::Centella::instance()
+			  ->hman()->fill(this->alabel("zCorrected"), reconsPointCorrected.z() - trueVertex.z());
+//		  std::cout << "xCorrected: " << reconsPointCorrected.x() - trueVertex.x() << std::endl;
+//		  std::cout << "yCorrected: " << reconsPointCorrected.y() - trueVertex.y() << std::endl;
+//		  std::cout << "zCorrected: " << reconsPointCorrected.z() - trueVertex.z() << std::endl;
+	  }
 
 	  //chargeCluster
 	  for(unsigned int i=0;i<6;i++){
@@ -346,6 +367,8 @@ bool petAnalysis::execute(gate::Event& evt){
 	  if(!(std::isnan(reconsPointCoronna.x()) || std::isnan(reconsPointCoronna.y()) || std::isnan(reconsPointCoronna.z()))){
 		  gate::Centella::instance()
 			  ->hman()->fill2d(this->alabel("xPosX"), trueVertex.x(), reconsPointBest.x()-trueVertex.x());
+		  gate::Centella::instance()
+			  ->hman()->fill2d(this->alabel("xPosXCorrected"), trueVertex.x(), reconsPointCorrected.x()-trueVertex.x());
 		  gate::Centella::instance()
 			  ->hman()->fill2d(this->alabel("xPosY"), trueVertex.y(), reconsPointBest.x()-trueVertex.x());
 		  gate::Centella::instance()
@@ -698,7 +721,7 @@ void petAnalysis::bestPointRecons(std::vector<std::vector<gate::Hit*> > planes, 
 
 	for(unsigned int i=0;i<6;i++){
 		if(planes[i].size()>0){
-			std::cout << "one more plane" << i << std::endl;
+//			std::cout << "one more plane" << i << std::endl;
 			barycenter->setPlane(planesDirections[i]);
 			barycenter->computePosition(planes[i]);
 			switch(i){
@@ -732,7 +755,7 @@ void petAnalysis::bestPointRecons(std::vector<std::vector<gate::Hit*> > planes, 
 
 	error = 100000.;
 	for(unsigned int i=0;i<x.size();i++){
-		std::cout << "\t x: " << x[i] << std::endl;
+//		std::cout << "\t x: " << x[i] << std::endl;
 		if(std::abs(x[i] - truePt.x()) < error){
 			pt.x(x[i]);
 			error = std::abs(x[i] - truePt.x());
@@ -740,7 +763,7 @@ void petAnalysis::bestPointRecons(std::vector<std::vector<gate::Hit*> > planes, 
 	}
 	error = 100000.;
 	for(unsigned int i=0;i<y.size();i++){
-		std::cout << "\t y: " << y[i] << std::endl;
+//		std::cout << "\t y: " << y[i] << std::endl;
 		if(std::abs(y[i] - truePt.y()) < error){
 			pt.y(y[i]);
 			error = std::abs(y[i] - truePt.y());
@@ -748,14 +771,14 @@ void petAnalysis::bestPointRecons(std::vector<std::vector<gate::Hit*> > planes, 
 	}
 	error = 100000.;
 	for(unsigned int i=0;i<z.size();i++){
-		std::cout << "\t z: " << z[i] << std::endl;
+//		std::cout << "\t z: " << z[i] << std::endl;
 		if(std::abs(z[i] - truePt.z()) < error){
 			pt.z(z[i]);
 			error = std::abs(z[i] - truePt.z());
 		}
 	}
 
-	std::cout << "Best x: " << pt.x() << "\t y: " << pt.y() << "\t z: " << pt.z() << std::endl;
+//	std::cout << "Best x: " << pt.x() << "\t y: " << pt.y() << "\t z: " << pt.z() << std::endl;
 }
 
 double petAnalysis::totalCharge(std::vector<gate::Hit*> plane){
@@ -885,20 +908,20 @@ double petAnalysis::zReconsRatio(double ratio){
 
 void petAnalysis::reconstructionCorrected(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& pt){
 	//reconstruction(planes,pt);
-	double x[100] = {12, 12.15, 11.4879, 10.9, 12.1891, 11.5319, 10.0033, 9.63353, 8.475, 7.81579, 7.87358, 7.55286, 8.1619, 7.91803, 6.88302, 6.77022, 6.15, 6.06735, 5.83611, 5.41429, 5.36224, 4.98806, 4.64795, 4.37586, 4.35594, 3.978, 3.9934, 3.62209, 3.23731, 2.96405, 2.80385, 2.61761, 2.35714, 2.17358, 2.1063, 2.00693, 1.75357, 1.57973, 1.5698, 1.48486, 1.29911, 1.05, 0.973333, 0.771649, 0.591322, 0.55, 0.295455, 0.219, 0.0589888, 0.035, 0.0159574, -0.0857143, -0.207353, -0.311765, -0.511765, -0.702101, -0.891573, -0.906522, -1.16803, -1.26404, -1.43625, -1.53056, -1.72394, -1.84429, -1.67182, -2.04174, -2.31667, -2.56402, -2.81923, -3.08697, -3.12078, -3.20323, -3.3622, -4.01422, -4.07804, -4.11857, -4.48767, -5.06584, -4.82107, -5.6819, -5.62563, -5.7, -6.12025, -7.134, -6.96522, -7.51364, -7.45522, -7.90854, -7.98478, -8.38056, -9.31, -10.0995, -9.96045, -10.6576, -10.98, -10.2946, -10.5763, -10.1283, -11.8607, -11.01};
-	double y[100] = { 0, 13.75, 11.3192, 10.6827, 10.4437, 10.0034, 10.081, 10.4089, 9.39615, 9.24231, 9.1067, 8.33842, 7.67256, 6.96176, 7.73919, 7.101, 6.4703, 6.40227, 5.81557, 5.90682, 5.2719, 4.73571, 4.92059, 4.5925, 4.31907, 3.87429, 3.62339, 3.3468, 3.33425, 3.06509, 3.03273, 2.55496, 2.46933, 2.25882, 1.79536, 1.98835, 1.78902, 1.72253, 1.54143, 1.37797, 1.32303, 1.11923, 0.992308, 0.758108, 0.587615, 0.309783, 0.295545, 0.242, 0.161811, -0.012069, 0.0472222, -0.0675824, -0.198913, -0.316957, -0.414179, -0.583696, -0.84375, -1.025, -1.18947, -1.32624, -1.5, -1.61165, -1.53367, -1.66121, -1.64586, -2.11634, -2.45149, -2.26957, -2.60693, -2.9388, -3.22941, -3.20122, -3.6325, -3.80081, -3.88404, -3.93443, -4.48404, -4.63767, -5.10506, -4.96463, -5.68061, -6.04371, -5.7197, -6.41096, -7.20116, -7.52857, -7.13313, -7.44474, -7.90922, -7.989, -7.91, -8.502, -10.066, -9.76111, -10.7541, -10.8392, -10.3263, -10.8346, -12.2022, -12.51};
-	double z[100] = {10.8273, 11.6021, 11.1089, 10.9844, 10.8504, 10.493, 9.83265, 9.63533, 9.58622, 8.874, 8.4709, 8.01089, 8.1956, 7.67775, 7.13182, 7.34534, 6.67857, 6.60938, 6.41369, 6.09431, 5.65164, 5.62762, 5.02852, 4.77, 5.0325, 4.21887, 4.01918, 3.90469, 3.8125, 3.45, 3.25714, 3.09545, 2.79393, 2.5883, 2.4283, 2.25345, 2.10789, 1.99521, 1.68043, 1.6067, 1.45141, 1.35517, 1.14583, 1.01418, 0.866129, 0.597458, 0.45, 0.361475, 0.0954545, 0.125676, -0.0676471, 0.00849057, -0.132857, -0.454545, -0.482432, -0.772642, -0.897059, -1.08158, -1.19211, -1.32143, -1.50238, -1.74, -1.6, -1.82, -2.04565, -2.00921, -2.43103, -2.5911, -2.72931, -3.09286, -3.2981, -3.50217, -3.60692, -3.81462, -4.63235, -4.34492, -5.20574, -4.90851, -5.15333, -5.27561, -5.34623, -6.16286, -6.2537, -6.70465, -6.43621, -7.43427, -6.46644, -7.68462, -7.68529, -7.46579, -7.77923, -8.57466, -10.0254, -10.5868, -9.85, -9.71939, -9.82273, -10.5854, -11.8914, -11.406};
+	double x[100] = {3.26053, 3.10714, 2.16429, 1.59545, 1.51364, 1.02857, 0.184177, -0.24375, -0.203933, -0.126316, -0.530769, -0.644845, -1.05826, -0.847143, -0.99375, -1.53608, -1.14487, -1.26522, -1.60189, -1.58739, -1.55, -1.66071, -1.62333, -1.28168, -1.10862, -0.788182, -1.2314, -0.9, -0.222414, 0.141964, -0.112963, -0.0818182, -0.316071, -0.654545, -0.62449, -0.409375, -0.109322, 0.0291667, -0.167391, 0.075, 0.2925, 0.514286, 0.36, 0.106522, -0.290964, -0.55, -0.332432, -0.182877, -0.0282609, 0.117073, -0.12, 0.120732, 0.0634615, 0.571739, 0.760169, 0.231481, -0.138, -0.353774, -0.45, 0.0791339, -0.322131, -0.107143, -0.03, -0.21338, 0.418605, 0.0695876, 0.638298, 0.483803, 0.0836842, 0.243976, -0.0393443, -0.394444, 0.460909, 0.981325, 0.760976, 1.30446, 0.86, 1.52838, 1.54245, 1.91075, 1.78761, 1.21696, 1.47414, 1.77432, 1.33554, 1.09815, 0.943701, 0.856931, 0.992857, 0.564433, 0.194444, 0.231481, 0.22, -0.376087, -0.881818, -1.22705, -1.655, -2.22857, -2.62, -3.1};
+	double y[100] = {4.65, 2.50263, 2.32241, 1.65545, 1.34333, 0.894828, 0.232143, -0.173529, -0.162857, -0.257767, -0.385955, -0.828571, -0.698276, -0.734375, -1.416, -1.10488, -1.16186, -1.46217, -1.54515, -1.75345, -1.77927, -1.31038, -1.79656, -1.05309, -0.954, -0.532569, -0.847895, -0.693243, -0.280303, 0.028626, -0.114894, -0.156316, -0.512637, -0.764851, -0.576923, -0.312353, -0.087931, -0.0933962, 0.05, -0.257407, -0.0590909, 0.885294, 0.4, 0.0418033, -0.153409, -0.702632, -0.206, -0.00692308, 0.087, 0.037013, -0.0117978, 0.0401408, 0.179508, 0.262048, 0.540323, 0.295714, -0.155357, -0.309375, -0.36039, -0.1125, 0.213158, 0.00375, 0.0923077, 0.338, 0.401786, 0.732609, 0.79382, 0.552778, 0.102632, 0.135437, -0.391667, 0.169091, 0.303125, 0.340385, 0.885366, 1.3, 1.17, 1.9, 1.8075, 1.44189, 1.89275, 1.62039, 0.821739, 1.48433, 1.5275, 1.38214, 0.948795, 0.640141, 0.590426, 0.575275, 0.258333, 0.478, 0.0258621, -0.271519, -0.915957, -1.23197, -1.59545, -1.98462, -2.625, -3.27857};
+	double z[100] = {3.2093, 2.64867, 2.12368, 1.67945, 1.12754, 0.747235, 0.189267, -0.281429, -0.219355, -0.321642, -0.621204, -0.759626, -0.778402, -0.968, -1.06856, -1.52195, -1.18091, -1.46716, -2.13462, -1.78617, -1.59615, -1.97069, -1.6475, -1.40649, -1.5544, -0.765126, -0.726522, -0.456316, -0.175, 0.0994737, -0.0966667, -0.198214, -0.535714, -0.375, -0.246154, -0.628723, -0.219767, -0.0352941, 0.140909, 0.327551, 0.1, 0.0964286, 0.339796, 0.0681818, -0.0807692, -0.391935, -0.45, -0.131818, 0.107143, 0.125, -0.046875, 0.15, -0.13, 0.318, 0.25, 0.111538, 0.05, -0.2, -0.5625, 0.3525, -0.0409091, 0.205814, 0.1, 0.2475, 0.855882, 0.596939, 0.75, 0.385294, 0.113793, -0.028125, 0.3, 0.0336735, 0.162245, 0.935714, 1.165, 0.8025, 1.69667, 1.71923, 1.97763, 1.658, 1.525, 1.82077, 1.3911, 1.32917, 0.76875, 1.05, 0.542647, 0.774658, 0.85, 0.371053, 0.105, 0.0232394, 0.223585, -0.185294, -0.65, -1.09038, -1.67113, -2.2097, -2.52188, -3.17951};
 
 	TH1* hist = gate::Centella::instance()->hman()->operator[]("petAnalysis_xPosX");
 	int xIndex = hist->GetXaxis()->FindBin(pt.x());
 	int yIndex = hist->GetXaxis()->FindBin(pt.y());
 	int zIndex = hist->GetXaxis()->FindBin(pt.z());
 
-	std::cout << "xPre: " << pt.x() << "\t yPre: " << pt.y() << "\t zPre: " << pt.z() << std::endl;
+//	std::cout << "xPre: " << pt.x() << "\t yPre: " << pt.y() << "\t zPre: " << pt.z() << std::endl;
 	pt.x(pt.x() - x[xIndex]);
 	pt.y(pt.y() - y[yIndex]);
 	pt.z(pt.z() - z[zIndex]);
-	std::cout << "xPost: " << pt.x() << "\t yPost: " << pt.y() << "\t zPost: " << pt.z() << std::endl;
+//	std::cout << "xPost: " << pt.x() << "\t yPost: " << pt.y() << "\t zPost: " << pt.z() << std::endl;
 }
 
 void petAnalysis::printSensors(std::vector<std::vector<gate::Hit*> >& planes){
@@ -1135,7 +1158,7 @@ void petAnalysis::reconstructionComplete(std::vector<std::vector<gate::Hit*> > p
 
 	for(unsigned int i=0;i<6;i++){
 		if(planes[i].size()>0){
-			std::cout << "Plane " << i << " active " << planesDirections[i] << std::endl;
+//			std::cout << "Plane " << i << " active " << planesDirections[i] << std::endl;
 
 			signalPlanes.push_back(i);
 
@@ -1146,8 +1169,8 @@ void petAnalysis::reconstructionComplete(std::vector<std::vector<gate::Hit*> > p
 			errors[i][0] = barycenter->getX1Err();
 			errors[i][1] = barycenter->getX2Err();
 
-			std::cout << "x1: " << points[i][0] << " Var: " <<  errors[i][0] << std::endl;
-			std::cout << "x2: " << points[i][1] << " Var: " <<  errors[i][1] << std::endl;
+//			std::cout << "x1: " << points[i][0] << " Var: " <<  errors[i][0] << std::endl;
+//			std::cout << "x2: " << points[i][1] << " Var: " <<  errors[i][1] << std::endl;
 		}
 	}
 	
@@ -1162,7 +1185,7 @@ void petAnalysis::reconstructionComplete(std::vector<std::vector<gate::Hit*> > p
 	pt.x(point[0]/norm[0]);
 	pt.y(point[1]/norm[1]);
 	pt.z(point[2]/norm[2]);
-	std::cout << "x: " << point[0] << "\t y: " << point[1] << "\t z: " << point[2] << std::endl;
-	std::cout << "xVar: " << norm[0] << "\t yVar: " << norm[1] << "\t zVar: " << norm[2] << std::endl;
-	std::cout << "x: " << pt.x() << "\t y: " << pt.y() << "\t z: " << pt.z() << std::endl;
+//	std::cout << "x: " << point[0] << "\t y: " << point[1] << "\t z: " << point[2] << std::endl;
+//	std::cout << "xVar: " << norm[0] << "\t yVar: " << norm[1] << "\t zVar: " << norm[2] << std::endl;
+//	std::cout << "x: " << pt.x() << "\t y: " << pt.y() << "\t z: " << pt.z() << std::endl;
 }
