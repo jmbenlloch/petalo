@@ -240,6 +240,7 @@ bool petAnalysis::initialize(){
   store("comptWall",0);
 
   store("photFound",0);
+  store("comptFound",0);
   store("noiseFound",0);
 
   store("cut",CUT);
@@ -297,6 +298,47 @@ bool petAnalysis::execute(gate::Event& evt){
   //We change scale from -25,25 to 0-50
   gate::Centella::instance()
 	  ->hman()->fill(this->alabel("z"),trueVertex.z() + 25);
+
+  
+  /////////////
+  /////////////
+  if(firstDaughter.GetCreatorProc() == std::string("compt")){
+//  if(firstDaughter.GetCreatorProc() == std::string("compt") && evt.GetEventID() != 6){
+//  if(firstDaughter.GetCreatorProc() == std::string("compt") && evt.GetEventID() != 6 && evt.GetEventID() != 15){
+	  int comptFound = fetch_istore("comptFound");
+	  std::vector<std::vector<gate::Hit*> > planes(6);
+	  splitHitsPerPlane(evt,planes);
+
+	  std::vector<gate::Hit*> hits(planes[0]);
+	  gate::Hit* max = *std::max_element(hits.begin(),hits.end(),chargeOrderSensorsAsc);
+
+	  if(comptFound==0){
+		  bool flagCompt = false;
+		  if(max->GetAmplitude() > 100){
+
+			  for(unsigned int j=0;j<planes[0].size();j++){
+				  if(planes[0][j]->GetAmplitude() > 100 && 
+			  			distance(max->GetPosition(), planes[0][j]->GetPosition()) >= 10){
+					  std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
+					  std::cout << "comptFound\n";
+					  flagCompt = true;
+					  fstore("comptFound",1);
+					  break;
+				  }
+			  }
+			  if(flagCompt){
+				  for(unsigned int j=0;j<planes[0].size();j++){
+					  gate::Centella::instance()
+						  ->hman()->fill2d(this->alabel("compt1"),planes[0][j]->GetPosition().x(),planes[0][j]->GetPosition().y(),planes[0][j]->GetAmplitude());
+				  }
+			  }
+
+		  }
+
+	  }
+  }
+  //////////////
+  //////////////
 
  //Try only events with photoelectric and one vertex
   if(firstDaughter.GetCreatorProc() == std::string("phot") 
@@ -930,7 +972,7 @@ bool petAnalysis::chargeOrderSensorsAsc(const gate::Hit* s1, const gate::Hit* s2
 	return (s1->GetAmplitude() < s2->GetAmplitude()) ;
 }
 
-double petAnalysis::distance(gate::Point3D& p1, gate::Point3D& p2){
+double petAnalysis::distance(const gate::Point3D& p1, const gate::Point3D& p2){
 	double x = (p1.x() - p2.x());
 	double y = (p1.y() - p2.y());
 	double z = (p1.z() - p2.z());

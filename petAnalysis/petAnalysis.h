@@ -46,7 +46,7 @@ class petAnalysis : public gate::IAlgo {
   static bool chargeOrderSensorsAsc(const gate::Hit* s1, const gate::Hit* s2);
   static bool chargeOrderPlanesDesc(std::pair<int,double> s1, std::pair<int,double> s2);
   //Compute distance between two Point3D
-  double distance(gate::Point3D& p1, gate::Point3D& p2);
+  double distance(const gate::Point3D& p1, const gate::Point3D& p2);
   void hist2dEvent(gate::Event& evt);
   void hist2dHits(gate::Event& evt);
   void splitHitsPerPlane(gate::Event& evt, std::vector<std::vector<gate::Hit*> >& planes);

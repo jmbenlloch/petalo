@@ -42,7 +42,7 @@ petalo_prod/petalo.6_64.009.next
 CNTJob SAVE I 0
 
 #---------- NUMBER OF EVENTS TO ANALYZE ----------#
-CNTJob NEVENTS I 10000
+CNTJob NEVENTS I 1000
 
 #---------- FIRST EVENT TO ANALYZE ----------#
 CNTJob FEVENT I 0
