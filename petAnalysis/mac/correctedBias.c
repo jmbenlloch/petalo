@@ -69,9 +69,9 @@ void correctedBias(){
 	petAnalysis_zBest->Draw();
 
 
-	petAnalysis_xCorrected->SetTitle("xRecons - xTrue (corrected)");
-	petAnalysis_yCorrected->SetTitle("yRecons - yTrue (corrected)");
-	petAnalysis_zCorrected->SetTitle("zRecons - zTrue (corrected)");
+	petAnalysis_xCorrected->SetTitle("xRecons - xTrue (-25 to 25)");
+	petAnalysis_yCorrected->SetTitle("yRecons - yTrue (-25 to 25)");
+	petAnalysis_zCorrected->SetTitle("zRecons - zTrue (-25 to 25)");
 
 	petAnalysis_xCorrected->SetAxisRange(-20.,20.,"X");
 	petAnalysis_xCorrected->GetXaxis()->SetTitle("#Deltax (mm)");

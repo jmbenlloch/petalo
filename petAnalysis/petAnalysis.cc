@@ -41,6 +41,11 @@ bool petAnalysis::initialize(){
     ->hman()->h1(this->alabel("z"),"Event position",30000,-50,50);
 
   gate::Centella::instance()
+    ->hman()->h2(this->alabel("maxChargeZ_p0"),"Max SiPM Charge (Plane 0)",100,-25,25,100,0,2000);
+  gate::Centella::instance()
+    ->hman()->h2(this->alabel("maxChargeZ_p2"),"Max SiPM Charge (Plane 0)",100,-25,25,100,0,2000);
+
+  gate::Centella::instance()
     ->hman()->h1(this->alabel("Compton"),"Number of Compton interactions",10,0,10);
 
   gate::Centella::instance()
@@ -50,39 +55,39 @@ bool petAnalysis::initialize(){
     ->hman()->h1(this->alabel("XeGammaEnergy"),"Xe Gamma Energy",30000,0,1);
 
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("xBest"),"x-x0 best",100,-50,50);
+	  ->hman()->h1(this->alabel("xBest"),"x-x0 best",100,-25,25);
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("yBest"),"y-y0 best",100,-50,50);
+	  ->hman()->h1(this->alabel("yBest"),"y-y0 best",100,-25,25);
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("zBest"),"z-z0 best",100,-50,50);
+	  ->hman()->h1(this->alabel("zBest"),"z-z0 best",100,-25,25);
   
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("xCorrected"),"x-x0 best",100,-50,50);
+	  ->hman()->h1(this->alabel("xCorrected"),"x-x0 best",100,-25,25);
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("yCorrected"),"y-y0 best",100,-50,50);
+	  ->hman()->h1(this->alabel("yCorrected"),"y-y0 best",100,-25,25);
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("zCorrected"),"z-z0 best",100,-50,50);
+	  ->hman()->h1(this->alabel("zCorrected"),"z-z0 best",100,-25,25);
 
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("xCoronna0"),"x-x0 coronna0",100,-50,50);
+	  ->hman()->h1(this->alabel("xCoronna0"),"x-x0 coronna0",100,-25,25);
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("yCoronna0"),"y-y0 coronna0",100,-50,50);
+	  ->hman()->h1(this->alabel("yCoronna0"),"y-y0 coronna0",100,-25,25);
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("zCoronna0"),"z-z0 coronna0",100,-50,50);
+	  ->hman()->h1(this->alabel("zCoronna0"),"z-z0 coronna0",100,-25,25);
 
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("xCoronna1"),"x-x0 coronna1",100,-50,50);
+	  ->hman()->h1(this->alabel("xCoronna1"),"x-x0 coronna1",100,-25,25);
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("yCoronna1"),"y-y0 coronna1",100,-50,50);
+	  ->hman()->h1(this->alabel("yCoronna1"),"y-y0 coronna1",100,-25,25);
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("zCoronna1"),"z-z0 coronna1",100,-50,50);
+	  ->hman()->h1(this->alabel("zCoronna1"),"z-z0 coronna1",100,-25,25);
 
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("xCoronna2"),"x-x0 coronna2",100,-50,50);
+	  ->hman()->h1(this->alabel("xCoronna2"),"x-x0 coronna2",100,-25,25);
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("yCoronna2"),"y-y0 coronna2",100,-50,50);
+	  ->hman()->h1(this->alabel("yCoronna2"),"y-y0 coronna2",100,-25,25);
   gate::Centella::instance()
-	  ->hman()->h1(this->alabel("zCoronna2"),"z-z0 coronna2",100,-50,50);
+	  ->hman()->h1(this->alabel("zCoronna2"),"z-z0 coronna2",100,-25,25);
 
   for(unsigned int i=0;i<6;i++){
 	  string histName = "SiPM" + gate::to_string(i);
@@ -108,6 +113,8 @@ bool petAnalysis::initialize(){
   //2Planes Z recons
   gate::Centella::instance()
 	  ->hman()->h2(this->alabel("zRatio"),"Charge Ratio Plane 0 & Plane 2",100,-25,25,100,0,10);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("zRatioMax"),"Charge Ratio (max SiPM) Plane 0 & Plane 2",100,-25,25,100,0,50);
   gate::Centella::instance()
 	  ->hman()->h1(this->alabel("zReconsRatio"),"zRecons-zTrue using ratio",100,-25,25);
 
@@ -210,8 +217,14 @@ bool petAnalysis::execute(gate::Event& evt){
 	  ->hman()->fill(this->alabel("z"),trueVertex.z());
 
  //Try only events with photoelectric and one vertex
+//  if(firstDaughter.GetCreatorProc() == std::string("phot") 
+//		  && firstDaughter.GetDaughters().size()==0){
+
   if(firstDaughter.GetCreatorProc() == std::string("phot") 
-		  && firstDaughter.GetDaughters().size()==0){
+		  && firstDaughter.GetDaughters().size()==0 &&
+		  trueVertex.x() > -10 && trueVertex.x() < 10 &&
+		  trueVertex.y() > -10 && trueVertex.y() < 10){
+
 
 	  //std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
 
@@ -238,6 +251,16 @@ bool petAnalysis::execute(gate::Event& evt){
 		  ->hman()->fill2d(this->alabel("zRatio"),trueVertex.z(),totalCharge(planes[0])/totalCharge(planes[2]));
 	  gate::Centella::instance()
 		  ->hman()->fill(this->alabel("zReconsRatio"), zReconsRatio(totalCharge(planes[0])/totalCharge(planes[2])) - trueVertex.z());
+
+	  //Max SiPM Charge in function of Z
+	  gate::Hit* max_p0 = *std::max_element(planes[0].begin(),planes[0].end(),chargeOrderSensorsAsc);
+	  gate::Hit* max_p2 = *std::max_element(planes[2].begin(),planes[2].end(),chargeOrderSensorsAsc);
+	  gate::Centella::instance()
+		  ->hman()->fill2d(this->alabel("maxChargeZ_p0"),trueVertex.z(),max_p0->GetAmplitude());
+	  gate::Centella::instance()
+		  ->hman()->fill2d(this->alabel("maxChargeZ_p2"),trueVertex.z(),max_p2->GetAmplitude());
+	  gate::Centella::instance()
+		  ->hman()->fill2d(this->alabel("zRatioMax"),trueVertex.z(),max_p0->GetAmplitude()/max_p2->GetAmplitude());
 
 	  //Energy
 	  gate::Centella::instance()
@@ -685,7 +708,8 @@ bool petAnalysis::nearPlane(gate::Point3D& pt, double distance){
 //	return (std::abs(pt.x() - 50.575) <= distance) || (std::abs(pt.x() + 50.575) <= distance) ||
 //	(std::abs(pt.y() - 50.575) <= distance) || (std::abs(pt.y() + 50.575) <= distance) ||
 //	(std::abs(pt.z() - 50.575) <= distance) || (std::abs(pt.z() + 50.575) <= distance);
-	return (std::abs(pt.z() + 25.575) <= distance);
+	return (std::abs(pt.x() - 25.575) <= distance) || (std::abs(pt.x() + 25.575) <= distance) ||
+	(std::abs(pt.y() - 25.575) <= distance) || (std::abs(pt.y() + 25.575) <= distance);
 }
 
 void petAnalysis::fillComptonHist(gate::MCParticle& primary){
