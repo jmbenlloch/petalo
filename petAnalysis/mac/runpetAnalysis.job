@@ -88,4 +88,4 @@ CNTJob BROWSER I 0
 
 #---------- Algorithm parameters ----------#
 petAnalysis LAN S c++
-
+petAnalysis CONF S LXSC2_64
