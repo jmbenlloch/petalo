@@ -30,6 +30,7 @@ class petAnalysis : public gate::IAlgo {
   void reconstruction(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& pt);
   void reconstructionComplete(std::vector<std::vector<gate::Hit*> > planesComplete, std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& pt);
   void reconstructionCoronna0(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& pt, double thresholdMax, double thresholdNeighbours);
+  void newReconsAlgorithm(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& truePt);
 
   void reconstructionCorrected(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& pt);
   void reconstructionNoNorm(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& pt);

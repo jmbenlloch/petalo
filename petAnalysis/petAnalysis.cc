@@ -60,6 +60,59 @@ bool petAnalysis::initialize(){
 	  ->hman()->h1(this->alabel("yBest"),"y-y0 best",100,-25,25);
   gate::Centella::instance()
 	  ->hman()->h1(this->alabel("zBest"),"z-z0 best",100,-25,25);
+
+  //Z region
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("xPlane0"),"xRecons - xTrue  (Plane 0)",100,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("xPlane2"),"xRecons - xTrue (Plane 2)",100,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("yPlane0"),"yRecons - yTrue  (Plane 0)",100,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("yPlane2"),"yRecons - yTrue (Plane 2)",100,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("xAvg02"),"xRecons - xTrue (Avg.)",100,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("yAvg02"),"yRecons - yTrue (Avg)",100,-25,25);
+
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("xPlane0_2505"),"xRecons - xTrue  (Plane 0)",100,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("xPlane2_2505"),"xRecons - xTrue (Plane 2)",100,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("yPlane0_2505"),"yRecons - yTrue  (Plane 0)",100,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("yPlane2_2505"),"yRecons - yTrue (Plane 2)",100,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("xAvg02_2505"),"xRecons - xTrue (Avg.)",100,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("yAvg02_2505"),"yRecons - yTrue (Avg)",100,-25,25);
+
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("xPlane0_0505"),"xRecons - xTrue  (Plane 0)",100,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("xPlane2_0505"),"xRecons - xTrue (Plane 2)",100,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("yPlane0_0505"),"yRecons - yTrue  (Plane 0)",100,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("yPlane2_0505"),"yRecons - yTrue (Plane 2)",100,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("xAvg02_0505"),"xRecons - xTrue (Avg.)",100,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("yAvg02_0505"),"yRecons - yTrue (Avg)",100,-25,25);
+
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("xPlane0_0525"),"xRecons - xTrue  (Plane 0)",100,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("xPlane2_0525"),"xRecons - xTrue (Plane 2)",100,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("yPlane0_0525"),"yRecons - yTrue  (Plane 0)",100,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("yPlane2_0525"),"yRecons - yTrue (Plane 2)",100,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("xAvg02_0525"),"xRecons - xTrue (Avg.)",100,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h1(this->alabel("yAvg02_0525"),"yRecons - yTrue (Avg)",100,-25,25);
   
   gate::Centella::instance()
 	  ->hman()->h1(this->alabel("xCorrected"),"x-x0 best",100,-25,25);
@@ -129,6 +182,8 @@ bool petAnalysis::initialize(){
 	  ->hman()->h2(this->alabel("xPosZ"),"xRecons-xTrue",100,-25,25,100,-15,15);
   gate::Centella::instance()
 	  ->hman()->h2(this->alabel("yPosY"),"yRecons-yTrue",100,-25,25,100,-15,15);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("yPosYCorrected"),"yRecons-yTrue",100,-25,25,100,-15,15);
   gate::Centella::instance()
 	  ->hman()->h2(this->alabel("yPosZ"),"yRecons-yTrue",100,-25,25,100,-15,15);
   gate::Centella::instance()
@@ -222,8 +277,8 @@ bool petAnalysis::execute(gate::Event& evt){
 
   if(firstDaughter.GetCreatorProc() == std::string("phot") 
 		  && firstDaughter.GetDaughters().size()==0 &&
-		  trueVertex.x() > -10 && trueVertex.x() < 10 &&
-		  trueVertex.y() > -10 && trueVertex.y() < 10){
+		  trueVertex.x() > -20 && trueVertex.x() < 20 &&
+		  trueVertex.y() > -20 && trueVertex.y() < 20){
 
 
 	  //std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
@@ -245,6 +300,9 @@ bool petAnalysis::execute(gate::Event& evt){
 	  for(unsigned int i=0; i<6;i++){
 		  applyCut(planes[i], 0.65,planesCut[i]);
 	  }
+
+	  //Resolution in function of Z
+	  newReconsAlgorithm(planesCut,trueVertex);
 
 	  //zRatio
 	  gate::Centella::instance()
@@ -322,8 +380,7 @@ bool petAnalysis::execute(gate::Event& evt){
 	  }*/
 
 	  fstore("totalEvents",fetch_istore("totalEvents")+1);
-	  if(!(std::isnan(reconsPointCoronna.x()) || std::isnan(reconsPointCoronna.y()) || std::isnan(reconsPointCoronna.z()))){
-//	  if(!(std::isnan(reconsPointCoronna.x()) || std::isnan(reconsPointCoronna.y()))){
+	  if(!(std::isnan(reconsPointCoronna.x()) || std::isnan(reconsPointCoronna.y()))){
 		  fstore("reconsEvents",fetch_istore("reconsEvents")+1);
 		  gate::Centella::instance()
 			  ->hman()->fill(this->alabel("xCoronna1"), reconsPointCoronna.x() - trueVertex.x());
@@ -350,7 +407,7 @@ bool petAnalysis::execute(gate::Event& evt){
 	  gate::Centella::instance()
 		  ->hman()->fill(this->alabel("zCoronna0"), reconsPointCoronna0.z() - trueVertex.z());
 
-	  if(!(std::isnan(reconsPointCoronna.x()) || std::isnan(reconsPointCoronna.y()) || std::isnan(reconsPointCoronna.z()))){
+	  if(!(std::isnan(reconsPointCoronna.x()) || std::isnan(reconsPointCoronna.y()))){
 		  gate::Centella::instance()
 			  ->hman()->fill(this->alabel("xBest"), reconsPointBest.x() - trueVertex.x());
 		  gate::Centella::instance()
@@ -362,7 +419,7 @@ bool petAnalysis::execute(gate::Event& evt){
 	  std::cout << "yBest: " << reconsPointBest.y() - trueVertex.y() << std::endl;
 	  std::cout << "zBest: " << reconsPointBest.z() - trueVertex.z() << std::endl;*/
 
-	  if(!(std::isnan(reconsPointCoronna.x()) || std::isnan(reconsPointCoronna.y()) || std::isnan(reconsPointCoronna.z()))){
+	  if(!(std::isnan(reconsPointCoronna.x()) || std::isnan(reconsPointCoronna.y()))){
 		  gate::Centella::instance()
 			  ->hman()->fill(this->alabel("xCorrected"), reconsPointCorrected.x() - trueVertex.x());
 		  gate::Centella::instance()
@@ -387,11 +444,13 @@ bool petAnalysis::execute(gate::Event& evt){
 	  }
 
 	  //Bias
-	  if(!(std::isnan(reconsPointCoronna.x()) || std::isnan(reconsPointCoronna.y()) || std::isnan(reconsPointCoronna.z()))){
+	  if(!(std::isnan(reconsPointCoronna.x()) || std::isnan(reconsPointCoronna.y()))){
 		  gate::Centella::instance()
 			  ->hman()->fill2d(this->alabel("xPosX"), trueVertex.x(), reconsPointBest.x()-trueVertex.x());
 		  gate::Centella::instance()
 			  ->hman()->fill2d(this->alabel("xPosXCorrected"), trueVertex.x(), reconsPointCorrected.x()-trueVertex.x());
+		  gate::Centella::instance()
+			  ->hman()->fill2d(this->alabel("yPosYCorrected"), trueVertex.y(), reconsPointCorrected.y()-trueVertex.y());
 		  gate::Centella::instance()
 			  ->hman()->fill2d(this->alabel("xPosY"), trueVertex.y(), reconsPointBest.x()-trueVertex.x());
 		  gate::Centella::instance()
@@ -932,19 +991,16 @@ double petAnalysis::zReconsRatio(double ratio){
 
 void petAnalysis::reconstructionCorrected(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& pt){
 	//reconstruction(planes,pt);
-	double x[100] = {3.26053, 3.10714, 2.16429, 1.59545, 1.51364, 1.02857, 0.184177, -0.24375, -0.203933, -0.126316, -0.530769, -0.644845, -1.05826, -0.847143, -0.99375, -1.53608, -1.14487, -1.26522, -1.60189, -1.58739, -1.55, -1.66071, -1.62333, -1.28168, -1.10862, -0.788182, -1.2314, -0.9, -0.222414, 0.141964, -0.112963, -0.0818182, -0.316071, -0.654545, -0.62449, -0.409375, -0.109322, 0.0291667, -0.167391, 0.075, 0.2925, 0.514286, 0.36, 0.106522, -0.290964, -0.55, -0.332432, -0.182877, -0.0282609, 0.117073, -0.12, 0.120732, 0.0634615, 0.571739, 0.760169, 0.231481, -0.138, -0.353774, -0.45, 0.0791339, -0.322131, -0.107143, -0.03, -0.21338, 0.418605, 0.0695876, 0.638298, 0.483803, 0.0836842, 0.243976, -0.0393443, -0.394444, 0.460909, 0.981325, 0.760976, 1.30446, 0.86, 1.52838, 1.54245, 1.91075, 1.78761, 1.21696, 1.47414, 1.77432, 1.33554, 1.09815, 0.943701, 0.856931, 0.992857, 0.564433, 0.194444, 0.231481, 0.22, -0.376087, -0.881818, -1.22705, -1.655, -2.22857, -2.62, -3.1};
-	double y[100] = {4.65, 2.50263, 2.32241, 1.65545, 1.34333, 0.894828, 0.232143, -0.173529, -0.162857, -0.257767, -0.385955, -0.828571, -0.698276, -0.734375, -1.416, -1.10488, -1.16186, -1.46217, -1.54515, -1.75345, -1.77927, -1.31038, -1.79656, -1.05309, -0.954, -0.532569, -0.847895, -0.693243, -0.280303, 0.028626, -0.114894, -0.156316, -0.512637, -0.764851, -0.576923, -0.312353, -0.087931, -0.0933962, 0.05, -0.257407, -0.0590909, 0.885294, 0.4, 0.0418033, -0.153409, -0.702632, -0.206, -0.00692308, 0.087, 0.037013, -0.0117978, 0.0401408, 0.179508, 0.262048, 0.540323, 0.295714, -0.155357, -0.309375, -0.36039, -0.1125, 0.213158, 0.00375, 0.0923077, 0.338, 0.401786, 0.732609, 0.79382, 0.552778, 0.102632, 0.135437, -0.391667, 0.169091, 0.303125, 0.340385, 0.885366, 1.3, 1.17, 1.9, 1.8075, 1.44189, 1.89275, 1.62039, 0.821739, 1.48433, 1.5275, 1.38214, 0.948795, 0.640141, 0.590426, 0.575275, 0.258333, 0.478, 0.0258621, -0.271519, -0.915957, -1.23197, -1.59545, -1.98462, -2.625, -3.27857};
-	double z[100] = {3.2093, 2.64867, 2.12368, 1.67945, 1.12754, 0.747235, 0.189267, -0.281429, -0.219355, -0.321642, -0.621204, -0.759626, -0.778402, -0.968, -1.06856, -1.52195, -1.18091, -1.46716, -2.13462, -1.78617, -1.59615, -1.97069, -1.6475, -1.40649, -1.5544, -0.765126, -0.726522, -0.456316, -0.175, 0.0994737, -0.0966667, -0.198214, -0.535714, -0.375, -0.246154, -0.628723, -0.219767, -0.0352941, 0.140909, 0.327551, 0.1, 0.0964286, 0.339796, 0.0681818, -0.0807692, -0.391935, -0.45, -0.131818, 0.107143, 0.125, -0.046875, 0.15, -0.13, 0.318, 0.25, 0.111538, 0.05, -0.2, -0.5625, 0.3525, -0.0409091, 0.205814, 0.1, 0.2475, 0.855882, 0.596939, 0.75, 0.385294, 0.113793, -0.028125, 0.3, 0.0336735, 0.162245, 0.935714, 1.165, 0.8025, 1.69667, 1.71923, 1.97763, 1.658, 1.525, 1.82077, 1.3911, 1.32917, 0.76875, 1.05, 0.542647, 0.774658, 0.85, 0.371053, 0.105, 0.0232394, 0.223585, -0.185294, -0.65, -1.09038, -1.67113, -2.2097, -2.52188, -3.17951};
+	double x[100] = {6.65, 6.34286, 5.895, 4.58684, 2.67381, 3.106, 2.43375, 2.15745, 1.64496, 0.840566, 0.455825, 1.41545, 0.819925, 0.142969, 0.387097, 0.208537, -0.31875, -0.0206422, -0.643069, -0.327465, -0.974476, -0.928528, -1.01063, -0.880435, -1.03966, -1.49589, -0.737574, -1.18953, -0.745349, -1.66655, -1.03855, -0.458772, -1.50315, -1.34016, -1.01646, -1.56397, -0.856329, -1.02588, -0.414286, -0.276623, -0.984706, -0.505814, -0.67028, -0.956962, -1.05211, -0.503039, -0.499206, -0.32551, -0.525497, -0.142357, 0.297594, 0.0875839, 0.266547, 0.594706, 0.759146, 0.732692, 0.501111, 0.607447, 0.670118, 0.441781, 1.17857, 1.1197, 1.13978, 0.889888, 1.25602, 1.16525, 1.686, 1.07284, 0.618153, 0.705705, 0.580986, 0.684307, 0.535345, 0.640909, 0.893284, 0.482558, 0.979839, 1.26676, 0.855236, 0.905474, 0.729699, 0.426923, -0.0738462, 0.0923077, -0.359677, -1.00161, -0.818293, -0.13209, -0.0508696, -0.307576, -1.03902, -1.65632, -2.0569, -1.19063, -2.92579, -3.40556, -2.8125, -5.61818, -5.86034, -9.15};
+	double y[100] = {5.75, 6.87632, 5.36591, 4.5375, 2.23475, 2.73667, 2.67371, 3.65676, 1.42037, 1.23641, 0.0606383, 0.791739, 0.706311, 0.39, 0.708716, 0.398, 0.454959, -0.329508, 0.388235, -0.237591, -0.801282, -1.29386, -1.011, -1.42192, -1.5, -1.23824, -0.9612, -0.820213, -0.686424, -0.717033, -0.723103, -1.32614, -1.67416, -1.36554, -1.2375, -1.62325, -0.970958, -1.26453, -0.409756, -0.49491, -0.104348, -0.705484, -0.378947, -0.752098, -0.883884, -0.313125, -0.476946, -0.290559, -0.518852, -0.188298, -0.25443, 0.510448, 0.483103, 0.615341, 0.617702, 0.515455, 0.427273, 0.549351, 0.0881679, 0.627273, 0.417939, 0.446429, 0.677778, 1.05182, 1.59079, 1.22778, 1.30325, 1.13621, 0.960909, 1.06034, 0.936486, 1.15599, 0.646226, 0.960366, 1.41187, 0.859701, 1.14695, 1.01301, 1.23857, 1.24339, 0.567568, 0.37953, -0.0835714, 0.046063, 0.217969, -0.514748, -0.916337, -1.10515, -0.703398, -1.61897, -0.177966, -1.46667, -3.27794, -2.06154, -2.73261, -4.44818, -3.19219, -5.08333, -6.225, -6.125};
 
 	TH1* hist = gate::Centella::instance()->hman()->operator[]("petAnalysis_xPosX");
 	int xIndex = hist->GetXaxis()->FindBin(pt.x());
 	int yIndex = hist->GetXaxis()->FindBin(pt.y());
-	int zIndex = hist->GetXaxis()->FindBin(pt.z());
 
 //	std::cout << "xPre: " << pt.x() << "\t yPre: " << pt.y() << "\t zPre: " << pt.z() << std::endl;
 	pt.x(pt.x() - x[xIndex]);
 	pt.y(pt.y() - y[yIndex]);
-	pt.z(pt.z() - z[zIndex]);
 //	std::cout << "xPost: " << pt.x() << "\t yPost: " << pt.y() << "\t zPost: " << pt.z() << std::endl;
 }
 
@@ -1213,3 +1269,104 @@ void petAnalysis::reconstructionComplete(std::vector<std::vector<gate::Hit*> > p
 //	std::cout << "xVar: " << norm[0] << "\t yVar: " << norm[1] << "\t zVar: " << norm[2] << std::endl;
 //	std::cout << "x: " << pt.x() << "\t y: " << pt.y() << "\t z: " << pt.z() << std::endl;
 }
+
+
+
+void petAnalysis::newReconsAlgorithm(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& truePt){
+	gate::Hit* maxP0 = *std::max_element(planes[0].begin(),planes[0].end(),chargeOrderSensorsAsc);
+	gate::Hit* maxP2 = *std::max_element(planes[2].begin(),planes[2].end(),chargeOrderSensorsAsc);
+	util::barycenterAlgorithm* barycenter = new util::barycenterAlgorithm();
+	barycenter->setPlane("xy");
+
+	double x0,y0,x2,y2;
+	double x0Err,y0Err,x2Err,y2Err;
+	double x,y;
+
+	if(maxP0->GetAmplitude() > 100){
+		barycenter->computePosition(planes[0]);
+		x0 = barycenter->getX1();
+		y0 = barycenter->getX2();
+		x0Err = barycenter->getX1Err();
+		y0Err = barycenter->getX2Err();
+		gate::Centella::instance()
+			->hman()->fill(this->alabel("xPlane0"), x0 - truePt.x());
+		gate::Centella::instance()
+			->hman()->fill(this->alabel("yPlane0"), y0 - truePt.y());
+		if(truePt.z() < -5){
+			gate::Centella::instance()
+				->hman()->fill(this->alabel("xPlane0_2505"), x0 - truePt.x());
+			gate::Centella::instance()
+				->hman()->fill(this->alabel("yPlane0_2505"), y0 - truePt.y());
+		}
+		if(truePt.z() > -5 && truePt.z() < 5){
+			gate::Centella::instance()
+				->hman()->fill(this->alabel("xPlane0_0505"), x0 - truePt.x());
+			gate::Centella::instance()
+				->hman()->fill(this->alabel("yPlane0_0505"), y0 - truePt.y());
+		}
+		if(truePt.z() > 5){
+			gate::Centella::instance()
+				->hman()->fill(this->alabel("xPlane0_0525"), x0 - truePt.x());
+			gate::Centella::instance()
+				->hman()->fill(this->alabel("yPlane0_0525"), y0 - truePt.y());
+		}
+	}
+	if(maxP2->GetAmplitude() > 100){
+		barycenter->computePosition(planes[2]);
+		x2 = barycenter->getX1();
+		y2 = barycenter->getX2();
+		x2Err = barycenter->getX1Err();
+		y2Err = barycenter->getX2Err();
+		gate::Centella::instance()
+			->hman()->fill(this->alabel("xPlane2"), x2 - truePt.x());
+		gate::Centella::instance()
+			->hman()->fill(this->alabel("yPlane2"), y2 - truePt.y());
+		if(truePt.z() < -5){
+			gate::Centella::instance()
+				->hman()->fill(this->alabel("xPlane2_2505"), x2 - truePt.x());
+			gate::Centella::instance()
+				->hman()->fill(this->alabel("yPlane2_2505"), y2 - truePt.y());
+		}
+		if(truePt.z() > -5 && truePt.z() < 5){
+			gate::Centella::instance()
+				->hman()->fill(this->alabel("xPlane2_0505"), x2 - truePt.x());
+			gate::Centella::instance()
+				->hman()->fill(this->alabel("yPlane2_0505"), y2 - truePt.y());
+		}
+		if(truePt.z() > 5){
+			gate::Centella::instance()
+				->hman()->fill(this->alabel("xPlane2_0525"), x2 - truePt.x());
+			gate::Centella::instance()
+				->hman()->fill(this->alabel("yPlane2_0525"), y2 - truePt.y());
+		}
+	}
+	if(maxP0->GetAmplitude() > 100 && maxP2->GetAmplitude() > 100){
+		x = x0/std::pow(x0Err,2) + x2/std::pow(x2Err,2);
+		y = y0/std::pow(x0Err,2) + y2/std::pow(x2Err,2);
+		x = x / (std::pow(x0Err,-2) + std::pow(x2Err,-2));
+		y = y / (std::pow(y0Err,-2) + std::pow(y2Err,-2));
+		gate::Centella::instance()
+			->hman()->fill(this->alabel("xAvg02"), x - truePt.x());
+		gate::Centella::instance()
+			->hman()->fill(this->alabel("yAvg02"), y - truePt.y());
+		if(truePt.z() < -5){
+			gate::Centella::instance()
+				->hman()->fill(this->alabel("xAvg02_2505"), x - truePt.x());
+			gate::Centella::instance()
+				->hman()->fill(this->alabel("yAvg02_2505"), y - truePt.y());
+		}
+		if(truePt.z() > -5 && truePt.z() < 5){
+			gate::Centella::instance()
+				->hman()->fill(this->alabel("xAvg02_0505"), x - truePt.x());
+			gate::Centella::instance()
+				->hman()->fill(this->alabel("yAvg02_0505"), y - truePt.y());
+		}
+		if(truePt.z() > 5){
+			gate::Centella::instance()
+				->hman()->fill(this->alabel("xAvg02_0525"), x - truePt.x());
+			gate::Centella::instance()
+				->hman()->fill(this->alabel("yAvg02_0525"), y - truePt.y());
+		}
+	}
+}
+
