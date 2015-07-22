@@ -146,6 +146,49 @@ bool petAnalysis::finalize(){
   int nevt = gate::int_from_string(run->fetch_sstore("num_events"));
   _m.message("Number of generated events in file:",nevt,gate::NORMAL);
 
+  std::vector<double> sigmaX(20),sigmaY(20),sigmaAvg(20);
+  for(unsigned int i=0;i<20;i++){
+	  string nameX = "petAnalysis_x_" + gate::to_string(5*i);
+	  string nameY = "petAnalysis_y_" + gate::to_string(5*i);
+	  TF1* gauF = new TF1("gauF","gaus",-50,50);
+
+	  TH1* histX = gate::Centella::instance()->hman()->operator[](nameX);
+	  histX->Fit("gauF","","e",-15,15);
+	  sigmaX[i] = gauF->GetParameter(2);
+
+	  TH1* histY = gate::Centella::instance()->hman()->operator[](nameY);
+	  histY->Fit("gauF","","e",-15,15);
+	  sigmaY[i] = gauF->GetParameter(2);
+
+	  sigmaAvg[i] = (sigmaX[i] + sigmaY[i])/2.0;
+  }
+
+  /////////////
+  for(unsigned int i=0;i<20;i++){
+	  std::cout << "x_" << i*0.05 << ": " << sigmaX[i] << std::endl;
+  }
+  for(unsigned int i=0;i<20;i++){
+	  std::cout << "y_" << i*0.05 << ": " << sigmaY[i] << std::endl;
+  }
+  /////////////
+
+  int indexBest = std::min_element(sigmaAvg.begin(), sigmaAvg.end()) - sigmaAvg.begin();
+  string nameX = "petAnalysis_x_" + gate::to_string(5*indexBest);
+  string nameY = "petAnalysis_y_" + gate::to_string(5*indexBest);
+  string nameZ = "petAnalysis_z_" + gate::to_string(5*indexBest);
+
+  int nBins = gate::Centella::instance()->hman()->operator[]("petAnalysis_xBest")->GetNbinsX();
+  //Copy best hist to xBest,yBest,zBest
+  for(int i=0;i<nBins;i++){
+	  gate::Centella::instance()->hman()->operator[]("petAnalysis_xBest")->SetBinContent(i,gate::Centella::instance()->hman()->operator[](nameX)->GetBinContent(i));
+	  gate::Centella::instance()->hman()->operator[]("petAnalysis_yBest")->SetBinContent(i,gate::Centella::instance()->hman()->operator[](nameY)->GetBinContent(i));
+	  gate::Centella::instance()->hman()->operator[]("petAnalysis_zBest")->SetBinContent(i,gate::Centella::instance()->hman()->operator[](nameZ)->GetBinContent(i));
+  }
+
+/*  std::cout << "Cut minValue (avg): " << 0.05*(std::min_element(sigmaAvg.begin(), sigmaAvg.end()) - sigmaAvg.begin()) << std::endl;
+  std::cout << "Cut minValue (x): " << 0.05*(std::min_element(sigmaX.begin(), sigmaX.end()) - sigmaX.begin()) << std::endl;
+  std::cout << "Cut minValue (y): " << 0.05*(std::min_element(sigmaY.begin(), sigmaY.end()) - sigmaY.begin()) << std::endl;*/
+
   return true;
 
 }
