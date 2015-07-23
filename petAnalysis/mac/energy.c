@@ -1,5 +1,4 @@
 void energy(){
-//	gStyle->SetOptStat(kFALSE);
 
 	gStyle->SetOptFit(1);
 	gStyle->SetOptStat(1110);

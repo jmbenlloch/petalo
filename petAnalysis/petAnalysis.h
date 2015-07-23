@@ -46,6 +46,7 @@ class petAnalysis : public gate::IAlgo {
   double planeCharge(std::vector<gate::Hit*> plane);
   void computeBarycenters(std::vector<std::vector<gate::Hit*> > planes, std::vector<std::vector<double> >& points, std::vector<std::vector<double> >& errors);
   double zReconsRatio(double ratio);
+  void chargeHist2d(std::vector<std::vector<gate::Hit*> > planes);
 
 
   //! finalize algorithm

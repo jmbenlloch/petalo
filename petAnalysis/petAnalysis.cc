@@ -64,6 +64,20 @@ bool petAnalysis::initialize(){
   gate::Centella::instance()
 	  ->hman()->h1(this->alabel("zReconsRatio"),"zRecons-zTrue using ratio " + fetch_sstore("CONF"),100,-25,25);
 
+  // SiPM Relative Charge
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPM_Plane0"),"SiPM Relative Charge Plane 0",64,0,64,100,0.,1.);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPM_Plane1"),"SiPM Relative Charge Plane 1",64,0,64,100,0.,1.);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPM_Plane2"),"SiPM Relative Charge Plane 2",64,0,64,100,0.,1.);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPM_Plane3"),"SiPM Relative Charge Plane 3",64,0,64,100,0.,1.);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPM_Plane4"),"SiPM Relative Charge Plane 4",64,0,64,100,0.,1.);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPM_Plane5"),"SiPM Relative Charge Plane 5",64,0,64,100,0.,1.);
+
   return true;
 
 }
@@ -99,6 +113,9 @@ bool petAnalysis::execute(gate::Event& evt){
 	  std::vector<std::vector<gate::Hit*> > planes(6);
 	  splitHitsPerPlane(evt,planes);
 
+	  //Charge histograms
+	  chargeHist2d(planes);
+
 	  //zRatio
 	  gate::Centella::instance()
 		  ->hman()->fill2d(this->alabel("zRatio"),trueVertex.z(),planeCharge(planes[0])/planeCharge(planes[2]));
@@ -130,7 +147,6 @@ bool petAnalysis::execute(gate::Event& evt){
 				  std::cout << "zBest: " << reconsPointBest.z() - trueVertex.z() << std::endl;*/
 	  }
 
-	  //  printSensors(planes);
   }
 
   return true;
@@ -163,14 +179,12 @@ bool petAnalysis::finalize(){
 	  sigmaAvg[i] = (sigmaX[i] + sigmaY[i])/2.0;
   }
 
-  /////////////
-  for(unsigned int i=0;i<20;i++){
+/*  for(unsigned int i=0;i<20;i++){
 	  std::cout << "x_" << i*0.05 << ": " << sigmaX[i] << std::endl;
   }
   for(unsigned int i=0;i<20;i++){
 	  std::cout << "y_" << i*0.05 << ": " << sigmaY[i] << std::endl;
-  }
-  /////////////
+  }*/
 
   int indexBest = std::min_element(sigmaAvg.begin(), sigmaAvg.end()) - sigmaAvg.begin();
   string nameX = "petAnalysis_x_" + gate::to_string(5*indexBest);
@@ -423,5 +437,21 @@ double petAnalysis::zReconsRatio(double ratio){
 		}
 	}
 	return z;
+}
+
+
+
+void petAnalysis::chargeHist2d(std::vector<std::vector<gate::Hit*> > planes){
+	std::vector<std::vector<gate::Hit*> >  sortedPlanes(planes);
+	for(unsigned int i=0; i<6;i++){
+		if(sortedPlanes[i].size() > 0){
+			std::sort(sortedPlanes[i].begin(), sortedPlanes[i].end(), petAnalysis::chargeOrderSensorsDesc);
+			for(unsigned int j=0; j<sortedPlanes[i].size();j++){
+				string histNameRel = "SiPM_Plane" + gate::to_string(i);
+				gate::Centella::instance()
+					->hman()->fill2d(this->alabel(histNameRel),j, sortedPlanes[i][j]->GetAmplitude() / sortedPlanes[i][0]->GetAmplitude());
+			}
+		}
+	}
 }
 
