@@ -122,4 +122,5 @@ void energy_analysis1(){
 	c1->Print("deliverables1/energy_6_64.pdf");
 	file->Close();
 
+	c1->Close();
 }
