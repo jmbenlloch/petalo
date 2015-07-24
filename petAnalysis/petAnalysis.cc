@@ -191,6 +191,8 @@ bool petAnalysis::finalize(){
   string nameY = "petAnalysis_y_" + gate::to_string(5*indexBest);
   string nameZ = "petAnalysis_z_" + gate::to_string(5*indexBest);
 
+  gate::Centella::instance()->logman().addLog("USER","bestCut",5*indexBest);
+
 /*  int nBins = gate::Centella::instance()->hman()->operator[]("petAnalysis_xBest")->GetNbinsX();
   //Copy best hist to xBest,yBest,zBest
   for(int i=0;i<nBins;i++){
