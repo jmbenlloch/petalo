@@ -1,0 +1,283 @@
+\documentclass{beamer}
+
+\mode<presentation>
+{
+  \usetheme{Warsaw}      % or try Darmstadt, Madrid, Warsaw, ...
+  \usecolortheme{default} % or try albatross, beaver, crane, ...
+  \usefonttheme{default}  % or try serif, structurebold, ...
+  \setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{caption}[numbered]
+} 
+
+\graphicspath{{/home/jmbenlloch/next/projects/petalo/petAnalysis/mac/deliverables1/}}
+\usepackage{changepage}
+\usepackage{booktabs}
+\RequirePackage[english,spanish,activeacute]{babel}
+\selectlanguage{spanish}
+\usepackage[utf8x]{inputenc}
+\setbeamertemplate{footline}[frame number]
+
+\title{Preliminar study of a PET scanner with liquid Xenon}
+\author[José María Benlloch Rodríguez]{José María Benlloch Rodríguez}
+\institute{NEXT Collaboration}
+\date{06 de Julio de 2014}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Energy 2 Planes}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.3]{energy_2_49.pdf}
+		 \end{column}
+		 \begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.3]{energy_2_64.pdf}
+		 \end{column}
+ \end{columns}
+ 		\begin{center} {\includegraphics[scale=0.3]{energy_2_64.pdf}} \end{center}
+\end{frame}
+
+\begin{frame}{Energy 4 Planes}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.3]{energy_4_64.pdf}
+		 \end{column}
+		 \begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.3]{energy_4_64.pdf}
+		 \end{column}
+ \end{columns}
+ 		\begin{center} {\includegraphics[scale=0.3]{energy_4_64.pdf}} \end{center}
+\end{frame}
+
+\begin{frame}{Energy 6 Planes}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.3]{energy_6_49.pdf}
+		 \end{column}
+		 \begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.3]{energy_6_64.pdf}
+		 \end{column}
+ \end{columns}
+ 		\begin{center} {\includegraphics[scale=0.3]{energy_6_64.pdf}} \end{center}
+\end{frame}
+
+\begin{frame}{Energy Resolution}
+\begin{center}
+\begin{itemize}
+\item Resolution (FWHM \%)
+\vspace{0.5 cm}
+\end{itemize}
+ \begin{tabular}{c|ccc|}
+  \toprule
+  %\multicolumn{1}{c}{SiPM\textbackslash Planes} & \multicolumn{1}{c}{\textbf{2 Planes}} & \multicolumn{1}{c}{\textbf{4 Planes}} & \multicolumn{1}{c}{\textbf{6 Planes}} \\
+  SiPM\textbackslash Planes & \textbf{2 Planes} & \textbf{4 Planes} & \textbf{6 Planes} \\
+   % \midrule
+   \hline
+  36 SiPM & - & 3.5 & 3.7 \\
+  49 SiPM & - & - & 3.0 \\
+  64 SiPM & - & 4.1 & 2.6 \\
+    \toprule
+ \end{tabular}
+\end{center}
+\end{frame}
+
+\begin{frame}{X Coordinate (2 Planes)}
+\begin{adjustwidth}{-1.5em}{-1.5em}
+	\includegraphics[scale=0.29]{xBest_2_49.pdf}
+	\includegraphics[scale=0.29]{xBest_2_49.pdf} \\
+	\begin{center} {\includegraphics[scale=0.3]{xBest_2_64.pdf}} \end{center}
+\end{adjustwidth}
+\end{frame}
+
+\begin{frame}{X Coordinate (4 Planes)}
+\begin{adjustwidth}{-1.5em}{-1.5em}
+	\includegraphics[scale=0.29]{xBest_4_64.pdf}
+	\includegraphics[scale=0.29]{xBest_4_64.pdf} \\
+	\begin{center} {\includegraphics[scale=0.3]{xBest_4_64.pdf}} \end{center}
+\end{adjustwidth}
+\end{frame}
+
+\begin{frame}{X Coordinate (6 Planes)}
+\begin{adjustwidth}{-1.5em}{-1.5em}
+	\includegraphics[scale=0.29]{xBest_6_49.pdf}
+	\includegraphics[scale=0.29]{xBest_6_49.pdf} \\
+	\begin{center} {\includegraphics[scale=0.3]{xBest_6_64.pdf}} \end{center}
+\end{adjustwidth}
+\end{frame}
+
+\begin{frame}{Y Coordinate (2 Planes)}
+\begin{adjustwidth}{-1.5em}{-1.5em}
+	\includegraphics[scale=0.29]{yBest_2_49.pdf}
+	\includegraphics[scale=0.29]{yBest_2_49.pdf} \\
+	\begin{center} {\includegraphics[scale=0.3]{yBest_2_64.pdf}} \end{center}
+\end{adjustwidth}
+\end{frame}
+
+\begin{frame}{Y Coordinate (4 Planes)}
+\begin{adjustwidth}{-1.5em}{-1.5em}
+	\includegraphics[scale=0.29]{yBest_4_64.pdf}
+	\includegraphics[scale=0.29]{yBest_4_64.pdf} \\
+	\begin{center} {\includegraphics[scale=0.3]{yBest_4_64.pdf}} \end{center}
+\end{adjustwidth}
+\end{frame}
+
+\begin{frame}{Y Coordinate (6 Planes)}
+\begin{adjustwidth}{-1.5em}{-1.5em}
+	\includegraphics[scale=0.29]{yBest_6_49.pdf}
+	\includegraphics[scale=0.29]{yBest_6_49.pdf} \\
+	\begin{center} {\includegraphics[scale=0.3]{yBest_6_64.pdf}} \end{center}
+\end{adjustwidth}
+\end{frame}
+
+\begin{frame}{Resolution in X and Y coordinates}
+\begin{center}
+\begin{itemize}
+\item Resolution in mm (sigmas)
+\item X Resolution:
+\vspace{0.5 cm}
+\end{itemize}
+ \begin{tabular}{c|ccc|}
+  \toprule
+  SiPM\textbackslash Planes & \textbf{2 Planes} & \textbf{4 Planes} & \textbf{6 Planes} \\
+   \hline
+  36 SiPM & - & - & -  \\
+  49 SiPM & 1.86 & - & 0.80\\
+  64 SiPM & 1.89 & 1.41 & 0.83 \\    \toprule
+ \end{tabular}
+\begin{itemize}
+\item Y Resolution:
+\vspace{0.5 cm}
+\end{itemize}
+ \begin{tabular}{c|ccc|}
+  \toprule
+  SiPM\textbackslash Planes & \textbf{2 Planes} & \textbf{4 Planes} & \textbf{6 Planes} \\
+   \hline
+  36 SiPM & - & - & -  \\
+  49 SiPM & 1.87 & - & 0.77\\
+  64 SiPM & 1.19 & 1.18 & 0.80 \\    \toprule
+ \end{tabular}
+\end{center}
+\end{frame}
+
+\begin{frame}{Z Coordinate (4 Planes)}
+\begin{adjustwidth}{-1.5em}{-1.5em}
+	\includegraphics[scale=0.29]{zBest_4_64.pdf}
+	\includegraphics[scale=0.29]{zBest_4_64.pdf} \\
+	\begin{center} {\includegraphics[scale=0.3]{zBest_4_64.pdf}} \end{center}
+\end{adjustwidth}
+\end{frame}
+
+\begin{frame}{Z Coordinate (6 Planes)}
+\begin{adjustwidth}{-1.5em}{-1.5em}
+	\includegraphics[scale=0.29]{zBest_6_49.pdf}
+	\includegraphics[scale=0.29]{zBest_6_49.pdf} \\
+	\begin{center} {\includegraphics[scale=0.3]{zBest_6_64.pdf}} \end{center}
+\end{adjustwidth}
+\end{frame}
+
+\begin{frame}{Resolution in Z using barycenter}
+\begin{center}
+\begin{itemize}
+\item Resolution in mm (sigmas)
+\vspace{0.5 cm}
+\end{itemize}
+ \begin{tabular}{c|cc|}
+  \toprule
+  SiPM\textbackslash Planes & \textbf{4 Planes} & \textbf{6 Planes} \\
+   \hline
+  36 SiPM & - & -  \\
+  49 SiPM & - & 0.87 \\
+  64 SiPM & 1.7 & 0.99 \\
+    \toprule
+ \end{tabular}
+\end{center}
+\end{frame}
+
+\begin{frame}{Z reconstructed using ratio (2 Planes)}
+\begin{adjustwidth}{-1.5em}{-1.5em}
+	\includegraphics[scale=0.29]{zRatio_2_49.pdf}
+	\includegraphics[scale=0.29]{zRatio_2_49.pdf} \\
+	\begin{center} {\includegraphics[scale=0.3]{zRatio_2_64.pdf}} \end{center}
+\end{adjustwidth}
+\end{frame}
+
+
+\begin{frame}{Z reconstructed using ratio (6 Planes)}
+\begin{adjustwidth}{-1.5em}{-1.5em}
+	\includegraphics[scale=0.29]{zRatio_6_49.pdf}
+	\includegraphics[scale=0.29]{zRatio_6_49.pdf} \\
+	\begin{center} {\includegraphics[scale=0.3]{zRatio_6_64.pdf}} \end{center}
+\end{adjustwidth}
+\end{frame}
+
+\begin{frame}{Resolution in Z using ratio}
+\begin{center}
+\begin{itemize}
+\item Resolution in mm (sigmas)
+\vspace{0.5 cm}
+\end{itemize}
+ \begin{tabular}{c|cc|}
+  \toprule
+  SiPM\textbackslash Planes & \textbf{2 Planes} & \textbf{6 Planes} \\
+   \hline
+  36 SiPM & - & -  \\
+  49 SiPM & 1.26 & 1.01 \\
+  64 SiPM & 1.24 & 0.98 \\
+    \toprule
+ \end{tabular}
+\end{center}
+\end{frame}
+
+\begin{frame}{Resolution in Z}
+\begin{center}
+\begin{itemize}
+\item Resolution in mm (sigmas)
+\item Z using barycenter
+\vspace{0.5 cm}
+\end{itemize}
+ \begin{tabular}{c|cc|}
+  \toprule
+  SiPM\textbackslash Planes & \textbf{2 Planes} & \textbf{6 Planes} \\
+   \hline
+  36 SiPM & - & -  \\
+  49 SiPM & 1.26 & 1.01 \\
+  64 SiPM & 1.24 & 0.98 \\
+    \toprule
+ \end{tabular}
+ 
+ \begin{itemize}
+ \item Z using ratio
+ \vspace{0.5 cm}
+ \end{itemize}
+ 
+  \begin{tabular}{c|cc|}
+   \toprule
+   SiPM\textbackslash Planes & \textbf{4 Planes} & \textbf{6 Planes} \\
+    \hline
+   36 SiPM & - & -  \\
+   49 SiPM & - & 0.87 \\
+   64 SiPM & 1.7 & 0.99 \\
+     \toprule
+  \end{tabular}
+\end{center}
+\end{frame}
+
+
+\begin{frame}{Best cuts}
+\begin{center}
+ \begin{tabular}{c|ccc|}
+  \toprule
+  SiPM\textbackslash Planes & \textbf{2 Planes} & \textbf{2 Planes} & \textbf{6 Planes} \\
+   \hline
+  36 SiPM & - & - & - \\
+  49 SiPM & 70\% & - & 60\% \\
+  64 SiPM & 75\% & 65\% & 50\% \\
+    \toprule
+ \end{tabular}
+\end{center}
+\end{frame}
+
+\end{document}

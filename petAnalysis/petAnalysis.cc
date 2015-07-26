@@ -80,18 +80,38 @@ bool petAnalysis::initialize(){
 	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane0"),"SiPM Charge Corona 2 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
   gate::Centella::instance()
 	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane2"),"SiPM Charge Corona 2 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
+  
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane0_NoSiPMMC"),"Charge without SiPMMC (Plane 0) " + fetch_sstore("CONF"),100,-25,25,1000,0,3000);
+	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane0_Norm"),"SiPM Charge Corona 1 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane2_NoSiPMMC"),"Charge without SiPMMC (Plane 2) " + fetch_sstore("CONF"),100,-25,25,1000,0,3000);
+	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane2_Norm"),"SiPM Charge Corona 1 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane0_NoSiPMMC_C1"),"Charge without SiPMMC+Cluster1 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,1000,0,3000);
+	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane0_Norm"),"SiPM Charge Corona 2 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane2_NoSiPMMC_C1"),"Charge without SiPMMC+Cluster1 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,1000,0,3000);
+	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane2_Norm"),"SiPM Charge Corona 2 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
+
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane0_NoSiPMMC_C2"),"Charge without SiPMMC+Cluster2 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,1000,0,3000);
+	  ->hman()->h2(this->alabel("Plane0_NoSiPMMC"),"Charge without SiPMMC (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane2_NoSiPMMC_C2"),"Charge without SiPMMC+Cluster2 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,1000,0,3000);
+	  ->hman()->h2(this->alabel("Plane2_NoSiPMMC"),"Charge without SiPMMC (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("Plane0_NoSiPMMC_C1"),"Charge without SiPMMC+Cluster1 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("Plane2_NoSiPMMC_C1"),"Charge without SiPMMC+Cluster1 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("Plane0_NoSiPMMC_C2"),"Charge without SiPMMC+Cluster2 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("Plane2_NoSiPMMC_C2"),"Charge without SiPMMC+Cluster2 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
+  
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("Plane0_NoSiPMMC_C1_Norm"),"Charge without SiPMMC+Cluster1 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("Plane2_NoSiPMMC_C1_Norm"),"Charge without SiPMMC+Cluster1 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("Plane0_NoSiPMMC_C2_Norm"),"Charge without SiPMMC+Cluster2 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("Plane2_NoSiPMMC_C2_Norm"),"Charge without SiPMMC+Cluster2 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
+
   gate::Centella::instance()
 	  ->hman()->h2(this->alabel("Plane0"),"Charge in Plane 0 " + fetch_sstore("CONF"),100,-25,25,2000,0,6500);
   gate::Centella::instance()
@@ -584,6 +604,16 @@ void petAnalysis::sipmmcHist(std::vector<std::vector<gate::Hit*> > planes, gate:
 	gate::Centella::instance()
 		->hman()->fill2d(this->alabel("SiPMMC_C2_Plane2"),trueVertex.z(),chargeC2[2]);
 
+	//Normalize with number of SiPM
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("SiPMMC_C1_Plane0_Norm"),trueVertex.z(),chargeC1[0]/clusters1.size());
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("SiPMMC_C1_Plane2_Norm"),trueVertex.z(),chargeC1[2]/clusters1.size());
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("SiPMMC_C2_Plane0_Norm"),trueVertex.z(),chargeC2[0]/clusters2.size());
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("SiPMMC_C2_Plane2_Norm"),trueVertex.z(),chargeC2[2]/clusters2.size());
+
 	gate::Centella::instance()
 		->hman()->fill2d(this->alabel("Plane0"),trueVertex.z(),chargePlanes[0]);
 	gate::Centella::instance()
@@ -601,4 +631,13 @@ void petAnalysis::sipmmcHist(std::vector<std::vector<gate::Hit*> > planes, gate:
 		->hman()->fill2d(this->alabel("Plane0_NoSiPMMC_C2"),trueVertex.z(), chargePlanes[0] - chargeC2[0]);
 	gate::Centella::instance()
 		->hman()->fill2d(this->alabel("Plane2_NoSiPMMC_C2"),trueVertex.z(), chargePlanes[2] - chargeC2[2]);
+
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("Plane0_NoSiPMMC_C1_Norm"),trueVertex.z(), chargePlanes[0] - chargeC1[0]/clusters1.size());
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("Plane2_NoSiPMMC_C1_Norm"),trueVertex.z(), chargePlanes[2] - chargeC1[2]/clusters1.size());
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("Plane0_NoSiPMMC_C2_Norm"),trueVertex.z(), chargePlanes[0] - chargeC2[0]/clusters2.size());
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("Plane2_NoSiPMMC_C2_Norm"),trueVertex.z(), chargePlanes[2] - chargeC2[2]/clusters2.size());
 }
