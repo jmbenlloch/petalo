@@ -48,7 +48,7 @@ class petAnalysis : public gate::IAlgo {
   double zReconsRatio(double ratio);
   void chargeHist2d(std::vector<std::vector<gate::Hit*> > planes);
   void sipmmcHist(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& trueVertex);
-
+  double totalCharge(std::vector<gate::Hit*> hits);
 
   //! finalize algorithm
   bool finalize();          

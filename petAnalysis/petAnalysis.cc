@@ -71,15 +71,15 @@ bool petAnalysis::initialize(){
   gate::Centella::instance()
 	  ->hman()->h2(this->alabel("SiPMMC_Plane0"),"SiPM Max Charge (Plane 0) " + fetch_sstore("CONF"),100,25,-25,1000,0,3000);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_Plane2"),"SiPM Max Charge (Plane 2) " + fetch_sstore("CONF"),50,25,-25,1000,0,3000);
+	  ->hman()->h2(this->alabel("SiPMMC_Plane2"),"SiPM Max Charge (Plane 2) " + fetch_sstore("CONF"),100,25,-25,1000,0,3000);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane0"),"SiPM Max Charge (Plane 0) " + fetch_sstore("CONF"),100,25,-25,1000,0,3000);
+	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane0"),"SiPM Charge Corona 1 (Plane 0) " + fetch_sstore("CONF"),100,25,-25,1000,0,3000);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane2"),"SiPM Max Charge (Plane 2) " + fetch_sstore("CONF"),100,25,-25,1000,0,3000);
+	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane2"),"SiPM Charge Corona 1 (Plane 2) " + fetch_sstore("CONF"),100,25,-25,1000,0,3000);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane0"),"SiPM Max Charge (Plane 0) " + fetch_sstore("CONF"),100,25,-25,1000,0,3000);
+	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane0"),"SiPM Charge Corona 2 (Plane 0) " + fetch_sstore("CONF"),100,25,-25,1000,0,3000);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane2"),"SiPM Max Charge (Plane 2) " + fetch_sstore("CONF"),100,25,-25,1000,0,3000);
+	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane2"),"SiPM Charge Corona 2 (Plane 2) " + fetch_sstore("CONF"),100,25,-25,1000,0,3000);
   gate::Centella::instance()
 	  ->hman()->h2(this->alabel("Plane0_NoSiPMMC"),"Charge without SiPMMC (Plane 0) " + fetch_sstore("CONF"),100,25,-25,1000,0,3000);
   gate::Centella::instance()
@@ -93,9 +93,12 @@ bool petAnalysis::initialize(){
   gate::Centella::instance()
 	  ->hman()->h2(this->alabel("Plane2_NoSiPMMC_C2"),"Charge without SiPMMC+Cluster2 (Plane 2) " + fetch_sstore("CONF"),100,25,-25,1000,0,3000);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane0"),"Charge in Plane 0 " + fetch_sstore("CONF"),100,25,-25,1000,0,3000);
+	  ->hman()->h2(this->alabel("Plane0"),"Charge in Plane 0 " + fetch_sstore("CONF"),100,25,-25,2000,0,6000);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane2"),"Charge in Plane 2 " + fetch_sstore("CONF"),100,25,-25,1000,0,3000);
+	  ->hman()->h2(this->alabel("Plane2"),"Charge in Plane 2 " + fetch_sstore("CONF"),100,25,-25,2000,0,6000);
+
+  store("photoCount",0);
+  store("comptCount",0);
 
   return true;
 }
@@ -121,9 +124,25 @@ bool petAnalysis::execute(gate::Event& evt){
   //True Vertex
   gate::Point3D trueVertex = firstDaughter.GetInitialVtx(); 
 
+  //Compton count
+  if(firstDaughter.GetCreatorProc() == std::string("compt") 
+	//	  && firstDaughter.GetDaughters().size()==1
+		  && firstDaughter.GetInitialVol() == "ACTIVE"
+		  && totalCharge(evt.GetMCSensHits()) > 8000){
+	  int comptCount = fetch_istore("comptCount");
+	  fstore("comptCount",comptCount+1);
+  }
+
  //Try only events with photoelectric and one vertex
+//  if(firstDaughter.GetCreatorProc() == std::string("phot") 
+//		  && firstDaughter.GetDaughters().size()==0){
   if(firstDaughter.GetCreatorProc() == std::string("phot") 
-		  && firstDaughter.GetDaughters().size()==0){
+		  && firstDaughter.GetDaughters().size()==0 
+		  && totalCharge(evt.GetMCSensHits()) > 8000 ){
+
+	  //Store fraction of photoelectric
+	  int photoCount = fetch_istore("photoCount");
+	  fstore("photoCount",photoCount+1);
 
 	  //std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
 
@@ -208,6 +227,8 @@ bool petAnalysis::finalize(){
   string nameY = "petAnalysis_y_" + gate::to_string(5*indexBest);
 
   gate::Centella::instance()->logman().addLog("USER","bestCut",5*indexBest);
+  gate::Centella::instance()->logman().addLog("USER","photoCount",fetch_istore("photoCount"));
+  gate::Centella::instance()->logman().addLog("USER","comptCount",fetch_istore("comptCount"));
 
 /*  int nBins = gate::Centella::instance()->hman()->operator[]("petAnalysis_xBest")->GetNbinsX();
   //Copy best hist to xBest,yBest,zBest
@@ -377,6 +398,14 @@ void petAnalysis::bestPointRecons(std::vector<std::vector<gate::Hit*> > planes, 
 	}
 
 //	std::cout << "Best x: " << pt.x() << "\t y: " << pt.y() << "\t z: " << pt.z() << std::endl;
+}
+
+double petAnalysis::totalCharge(std::vector<gate::Hit*> hits){
+	double total=0;
+	for(unsigned int i=0;i<hits.size();i++){
+		total += hits[i]->GetAmplitude();
+	}
+	return total;
 }
 
 double petAnalysis::planeCharge(std::vector<gate::Hit*> plane){
