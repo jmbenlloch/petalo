@@ -69,33 +69,41 @@ bool petAnalysis::initialize(){
 
   //SiPMMC as function of z
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_Plane0"),"SiPM Max Charge (Plane 0) " + fetch_sstore("CONF"),100,25,-25,1000,0,3000);
+	  ->hman()->h2(this->alabel("SiPMMC_Plane0"),"SiPM Max Charge (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_Plane2"),"SiPM Max Charge (Plane 2) " + fetch_sstore("CONF"),100,25,-25,1000,0,3000);
+	  ->hman()->h2(this->alabel("SiPMMC_Plane2"),"SiPM Max Charge (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane0"),"SiPM Charge Corona 1 (Plane 0) " + fetch_sstore("CONF"),100,25,-25,1000,0,3000);
+	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane0"),"SiPM Charge Corona 1 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane2"),"SiPM Charge Corona 1 (Plane 2) " + fetch_sstore("CONF"),100,25,-25,1000,0,3000);
+	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane2"),"SiPM Charge Corona 1 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane0"),"SiPM Charge Corona 2 (Plane 0) " + fetch_sstore("CONF"),100,25,-25,1000,0,3000);
+	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane0"),"SiPM Charge Corona 2 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane2"),"SiPM Charge Corona 2 (Plane 2) " + fetch_sstore("CONF"),100,25,-25,1000,0,3000);
+	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane2"),"SiPM Charge Corona 2 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane0_NoSiPMMC"),"Charge without SiPMMC (Plane 0) " + fetch_sstore("CONF"),100,25,-25,1000,0,3000);
+	  ->hman()->h2(this->alabel("Plane0_NoSiPMMC"),"Charge without SiPMMC (Plane 0) " + fetch_sstore("CONF"),100,-25,25,1000,0,3000);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane2_NoSiPMMC"),"Charge without SiPMMC (Plane 2) " + fetch_sstore("CONF"),100,25,-25,1000,0,3000);
+	  ->hman()->h2(this->alabel("Plane2_NoSiPMMC"),"Charge without SiPMMC (Plane 2) " + fetch_sstore("CONF"),100,-25,25,1000,0,3000);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane0_NoSiPMMC_C1"),"Charge without SiPMMC+Cluster1 (Plane 0) " + fetch_sstore("CONF"),100,25,-25,1000,0,3000);
+	  ->hman()->h2(this->alabel("Plane0_NoSiPMMC_C1"),"Charge without SiPMMC+Cluster1 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,1000,0,3000);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane2_NoSiPMMC_C1"),"Charge without SiPMMC+Cluster1 (Plane 2) " + fetch_sstore("CONF"),100,25,-25,1000,0,3000);
+	  ->hman()->h2(this->alabel("Plane2_NoSiPMMC_C1"),"Charge without SiPMMC+Cluster1 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,1000,0,3000);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane0_NoSiPMMC_C2"),"Charge without SiPMMC+Cluster2 (Plane 0) " + fetch_sstore("CONF"),100,25,-25,1000,0,3000);
+	  ->hman()->h2(this->alabel("Plane0_NoSiPMMC_C2"),"Charge without SiPMMC+Cluster2 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,1000,0,3000);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane2_NoSiPMMC_C2"),"Charge without SiPMMC+Cluster2 (Plane 2) " + fetch_sstore("CONF"),100,25,-25,1000,0,3000);
+	  ->hman()->h2(this->alabel("Plane2_NoSiPMMC_C2"),"Charge without SiPMMC+Cluster2 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,1000,0,3000);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane0"),"Charge in Plane 0 " + fetch_sstore("CONF"),100,25,-25,2000,0,6000);
+	  ->hman()->h2(this->alabel("Plane0"),"Charge in Plane 0 " + fetch_sstore("CONF"),100,-25,25,2000,0,6500);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane2"),"Charge in Plane 2 " + fetch_sstore("CONF"),100,25,-25,2000,0,6000);
+	  ->hman()->h2(this->alabel("Plane2"),"Charge in Plane 2 " + fetch_sstore("CONF"),100,-25,25,2000,0,6500);
+
+  //Energy distribution
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("xyEnergy"),"xy",100,-25,25,100,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("xzEnergy"),"xz",100,-25,25,100,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("yzEnergy"),"yz",100,-25,25,100,-25,25);
 
   store("photoCount",0);
   store("comptCount",0);
@@ -155,6 +163,15 @@ bool petAnalysis::execute(gate::Event& evt){
 
 	  //Charge histograms
 	  chargeHist2d(planes);
+
+	  //Energy distribution
+	  double energy = totalCharge(evt.GetMCSensHits());
+	  gate::Centella::instance()
+		  ->hman()->fill2d(this->alabel("xyEnergy"),trueVertex.x(),trueVertex.y(),energy);
+	  gate::Centella::instance()
+		  ->hman()->fill2d(this->alabel("xzEnergy"),trueVertex.x(),trueVertex.z(),energy);
+	  gate::Centella::instance()
+		  ->hman()->fill2d(this->alabel("yzEnergy"),trueVertex.y(),trueVertex.z(),energy);
 
 	  //zRatio
 	  gate::Centella::instance()
@@ -478,29 +495,39 @@ void petAnalysis::energyPhotCompt(gate::Event& evt){
 
 //Must be update for each case
 double petAnalysis::zReconsRatio(double ratio){
-	double ratios2_z2[40];
-	double ratios2_z3[60];
-	double ratios2_z4[80];
-	double ratios2_z5[100] = {1.86556, 1.85289, 1.81627, 1.78846, 1.78493, 1.73993, 1.75, 1.71221, 1.68512, 1.67117, 1.65769, 1.64313, 1.62394, 1.60115, 1.58216, 1.56194, 1.56026, 1.52786, 1.50802, 1.48767, 1.48294, 1.45776, 1.43457, 1.43051, 1.40761, 1.37722, 1.37313, 1.34653, 1.33877, 1.32772, 1.30695, 1.28504, 1.25714, 1.25221, 1.24211, 1.2244, 1.20361, 1.186, 1.17701, 1.15978, 1.15, 1.14773, 1.12761, 1.10662, 1.07695, 1.05957, 1.05, 1.05292, 1.04853, 1.03425, 1.00743, 0.988542, 0.969588, 0.954762, 0.95, 0.95, 0.94542, 0.939873, 0.892391, 0.890945, 0.870408, 0.857463, 0.854348, 0.85, 0.85, 0.842135, 0.823171, 0.807143, 0.780435, 0.766, 0.751563, 0.751408, 0.75, 0.75, 0.75, 0.746512, 0.733495, 0.736154, 0.695556, 0.680337, 0.658824, 0.674, 0.65, 0.653261, 0.65, 0.65, 0.65, 0.641358, 0.639474, 0.632278, 0.591111, 0.59625, 0.580488, 0.566129, 0.559259, 0.557692, 0.55, 0.559375, 0.553774, 0.548438};
+	double ratios2_z2[40] = {1.25, 1.23607, 1.2276, 1.20388, 1.20783, 1.19315, 1.18744, 1.17124, 1.15269, 1.13978, 1.11809, 1.1065, 1.09767, 1.06979, 1.06548, 1.05759, 1.05063, 1.0434, 1.04241, 1.02402, 1.00759, 0.996875, 0.967219, 0.959259, 0.952198, 0.950725, 0.947436, 0.937079, 0.924054, 0.918889};
+	double ratios2_z3[60] = {1.51, 1.435, 1.426, 1.39255, 1.38953, 1.36842, 1.33793, 1.32885, 1.31818, 1.30128, 1.29118, 1.27571, 1.2475, 1.24111, 1.23571, 1.205, 1.19773, 1.18947, 1.16163, 1.15313, 1.14091, 1.13947, 1.12442, 1.10714, 1.075, 1.0575, 1.05323, 1.05, 1.05, 1.03421, 1.00313, 0.985484, 0.971739, 0.95, 0.953571, 0.95, 0.946667, 0.932143, 0.925, 0.885, 0.874138, 0.877586, 0.85, 0.85, 0.84697, 0.8375, 0.822727, 0.816667, 0.783333, 0.8, 0.782143, 0.790741, 0.75, 0.753846, 0.754167, 0.733333, 0.745238, 0.743333, 0.716667, 0.690909};
+	double ratios2_z4[80] = {1.64211, 1.60769, 1.58801, 1.56278, 1.55812, 1.5251, 1.52488, 1.48744, 1.49459, 1.47769, 1.44801, 1.43564, 1.41747, 1.40481, 1.39052, 1.37195, 1.35944, 1.33555, 1.33009, 1.30196, 1.29475, 1.2742, 1.26105, 1.24628, 1.24241, 1.21957, 1.19497, 1.17833, 1.16769, 1.15207, 1.14789, 1.1372, 1.12735, 1.0956, 1.06859, 1.06318, 1.05129, 1.04478, 1.03976, 1.02669, 1.01277, 0.984711, 0.966456, 0.955797, 0.950769, 0.94916, 0.947436, 0.934043, 0.919828, 0.884146, 0.874, 0.8548, 0.851869, 0.85, 0.85, 0.844309, 0.834034, 0.814211, 0.800877, 0.791584, 0.768919, 0.752609, 0.753419, 0.75, 0.748889, 0.746429, 0.733607, 0.723469, 0.710177, 0.699425, 0.693836, 0.668391, 0.663793, 0.668033, 0.659184, 0.65, 0.655455, 0.651266, 0.641589, 0.619737};
+	double ratios2_z5[100] = {1.86935, 1.85418, 1.81627, 1.78846, 1.78493, 1.73993, 1.75, 1.71221, 1.68512, 1.67117, 1.65769, 1.64313, 1.62394, 1.60115, 1.58216, 1.56194, 1.56026, 1.52786, 1.50802, 1.48767, 1.48294, 1.45776, 1.43457, 1.43051, 1.40761, 1.37722, 1.37313, 1.34653, 1.33877, 1.32772, 1.30695, 1.28504, 1.25714, 1.25221, 1.24211, 1.2244, 1.20361, 1.186, 1.17701, 1.15978, 1.15, 1.14773, 1.12761, 1.10662, 1.07695, 1.05957, 1.05, 1.05292, 1.04853, 1.03425, 1.00743, 0.988542, 0.969588, 0.954762, 0.95, 0.95, 0.94542, 0.939873, 0.892391, 0.890945, 0.870408, 0.857463, 0.854348, 0.85, 0.85, 0.842135, 0.823171, 0.807143, 0.780435, 0.766, 0.751563, 0.751408, 0.75, 0.75, 0.75, 0.746512, 0.733495, 0.736154, 0.695556, 0.680337, 0.658824, 0.674, 0.65, 0.653261, 0.65, 0.65, 0.65, 0.641358, 0.639474, 0.632278, 0.591111, 0.59625, 0.580488, 0.566129, 0.559259, 0.557692, 0.55, 0.559375, 0.553774, 0.548438};
 
 	double*  ratios;
+	int bins=0;
+	double offset=0.;
 	if(fetch_sstore("CONF") == "LXSC2_Z2"){
 		ratios = ratios2_z2;
+		bins = 40;
+		offset = 15.;
 	}
 	if(fetch_sstore("CONF") == "LXSC2_Z3"){
 		ratios = ratios2_z3;
+		bins = 60;
+		offset = 10.;
 	}
 	if(fetch_sstore("CONF") == "LXSC2_Z4"){
 		ratios = ratios2_z4;
+		bins = 80;
+		offset = 5.;
 	}
 	if(fetch_sstore("CONF") == "LXSC2_Z5"){
 		ratios = ratios2_z5;
+		bins = 100;
+		offset = 0.;
 	}
 
 	double z;
-	for(unsigned int i=0;i<100;i++){
+	for(int i=0;i<bins;i++){
 		if(ratio >= ratios[i]){
-			z = -24.75 + 0.5*i;
+			z = -24.75 + offset + 0.5*i;
 			break;
 		}
 	}
