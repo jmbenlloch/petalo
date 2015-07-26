@@ -78,6 +78,14 @@ bool petAnalysis::initialize(){
   gate::Centella::instance()
 	  ->hman()->h2(this->alabel("SiPM_Plane5"),"SiPM Relative Charge Plane 5",64,0,64,100,0.,1.);
 
+  //Energy distribution
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("xyEnergy"),"xy",100,-25,25,100,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("xzEnergy"),"xz",100,-25,25,100,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("yzEnergy"),"yz",100,-25,25,100,-25,25);
+
   return true;
 
 }
@@ -115,6 +123,15 @@ bool petAnalysis::execute(gate::Event& evt){
 
 	  //Charge histograms
 	  chargeHist2d(planes);
+
+	  //Energy distribution
+	  double energy = totalCharge(evt.GetMCSensHits());
+	  gate::Centella::instance()
+		  ->hman()->fill2d(this->alabel("xyEnergy"),trueVertex.x(),trueVertex.y(),energy);
+	  gate::Centella::instance()
+		  ->hman()->fill2d(this->alabel("xzEnergy"),trueVertex.x(),trueVertex.z(),energy);
+	  gate::Centella::instance()
+		  ->hman()->fill2d(this->alabel("yzEnergy"),trueVertex.y(),trueVertex.z(),energy);
 
 	  //zRatio
 	  gate::Centella::instance()
@@ -362,6 +379,14 @@ void petAnalysis::bestPointRecons(std::vector<std::vector<gate::Hit*> > planes, 
 	}
 
 //	std::cout << "Best x: " << pt.x() << "\t y: " << pt.y() << "\t z: " << pt.z() << std::endl;
+}
+
+double petAnalysis::totalCharge(std::vector<gate::Hit*> hits){
+	double total=0;
+	for(unsigned int i=0;i<hits.size();i++){
+		total += hits[i]->GetAmplitude();
+	}
+	return total;
 }
 
 double petAnalysis::planeCharge(std::vector<gate::Hit*> plane){
