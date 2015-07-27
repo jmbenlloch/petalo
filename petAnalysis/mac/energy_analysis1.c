@@ -7,6 +7,35 @@ void energy_analysis1(){
 	TLatex *myt;
 
 	//////////////
+	// LXSC2_36 //
+	//////////////
+	TFile *file = TFile::Open("lxsc2_36.root");
+	petAnalysis_EnergyPhot->GetXaxis()->SetTitle("pe");
+	petAnalysis_EnergyPhot->GetYaxis()->SetTitle("counts");
+	petAnalysis_EnergyPhot->GetYaxis()->SetTitleOffset(1.4);
+	petAnalysis_EnergyPhot->SetAxisRange(0., 15000.0,"X");
+	petAnalysis_EnergyPhot->Fit("gauF","","e",7000,9000);
+	c1->Update();
+	TPaveStats *st = (TPaveStats*)petAnalysis_EnergyPhot->FindObject("stats");
+	st->SetX1NDC(0.15);
+	st->SetX2NDC(0.45);
+	st->SetY1NDC(0.45);
+	st->SetY2NDC(0.85);
+	petAnalysis_EnergyPhot->Draw();
+	double fwhm = 100*2.35*petAnalysis_EnergyPhot->GetFunction("gauF")->GetParameter(2) / petAnalysis_EnergyPhot->GetFunction("gauF")->GetParameter(1);
+	TPaveStats *ps = (TPaveStats*)c1->GetPrimitive("stats");
+	ps->SetName("mystats");
+	list = ps->GetListOfLines();
+	myt = new TLatex(0,0,Form("FWHM(%) = %1.1lf", fwhm));
+	myt->SetTextFont(42);
+	myt->SetTextSize(0.04);
+	list->Add(myt);
+	petAnalysis_EnergyPhot->SetStats(0);
+	c1->Modified();
+	c1->Print("deliverables1/energy_2_36.pdf");
+	file->Close();
+
+	//////////////
 	// LXSC2_49 //
 	//////////////
 	TFile *file = TFile::Open("lxsc2_49.root");
@@ -63,6 +92,64 @@ void energy_analysis1(){
 	c1->Modified();
 	c1->Print("deliverables1/energy_2_64.pdf");
 	file->Close();
+
+	//////////////
+	// LXSC4_36 //
+	//////////////
+	TFile *file = TFile::Open("lxsc4_36.root");
+	petAnalysis_EnergyPhot->GetXaxis()->SetTitle("pe");
+	petAnalysis_EnergyPhot->GetYaxis()->SetTitle("counts");
+	petAnalysis_EnergyPhot->GetYaxis()->SetTitleOffset(1.4);
+	petAnalysis_EnergyPhot->SetAxisRange(0., 15000.0,"X");
+	petAnalysis_EnergyPhot->Fit("gauF","","e",7000,11000);
+	c1->Update();
+	TPaveStats *st = (TPaveStats*)petAnalysis_EnergyPhot->FindObject("stats");
+	st->SetX1NDC(0.15);
+	st->SetX2NDC(0.45);
+	st->SetY1NDC(0.45);
+	st->SetY2NDC(0.85);
+	petAnalysis_EnergyPhot->Draw();
+	double fwhm = 100*2.35*petAnalysis_EnergyPhot->GetFunction("gauF")->GetParameter(2) / petAnalysis_EnergyPhot->GetFunction("gauF")->GetParameter(1);
+	TPaveStats *ps = (TPaveStats*)c1->GetPrimitive("stats");
+	ps->SetName("mystats");
+	list = ps->GetListOfLines();
+	myt = new TLatex(0,0,Form("FWHM(%) = %1.1lf", fwhm));
+	myt->SetTextFont(42);
+	myt->SetTextSize(0.04);
+	list->Add(myt);
+	petAnalysis_EnergyPhot->SetStats(0);
+	c1->Modified();
+	c1->Print("deliverables1/energy_4_36.pdf");
+	file->Close();
+
+	//////////////
+	// LXSC4_49 //
+	//////////////
+	TFile *file = TFile::Open("lxsc4_49.root");
+	petAnalysis_EnergyPhot->GetXaxis()->SetTitle("pe");
+	petAnalysis_EnergyPhot->GetYaxis()->SetTitle("counts");
+	petAnalysis_EnergyPhot->GetYaxis()->SetTitleOffset(1.4);
+	petAnalysis_EnergyPhot->SetAxisRange(0., 15000.0,"X");
+	petAnalysis_EnergyPhot->Fit("gauF","","e",8000,11000);
+	c1->Update();
+	TPaveStats *st = (TPaveStats*)petAnalysis_EnergyPhot->FindObject("stats");
+	st->SetX1NDC(0.15);
+	st->SetX2NDC(0.45);
+	st->SetY1NDC(0.45);
+	st->SetY2NDC(0.85);
+	petAnalysis_EnergyPhot->Draw();
+	double fwhm = 100*2.35*petAnalysis_EnergyPhot->GetFunction("gauF")->GetParameter(2) / petAnalysis_EnergyPhot->GetFunction("gauF")->GetParameter(1);
+	TPaveStats *ps = (TPaveStats*)c1->GetPrimitive("stats");
+	ps->SetName("mystats");
+	list = ps->GetListOfLines();
+	myt = new TLatex(0,0,Form("FWHM(%) = %1.1lf", fwhm));
+	myt->SetTextFont(42);
+	myt->SetTextSize(0.04);
+	list->Add(myt);
+	petAnalysis_EnergyPhot->SetStats(0);
+	c1->Modified();
+	c1->Print("deliverables1/energy_4_49.pdf");
+	file->Close();
 	
 	//////////////
 	// LXSC4_64 //
@@ -91,6 +178,35 @@ void energy_analysis1(){
 	petAnalysis_EnergyPhot->SetStats(0);
 	c1->Modified();
 	c1->Print("deliverables1/energy_4_64.pdf");
+	file->Close();
+
+	//////////////
+	// LXSC6_36 //
+	//////////////
+	TFile *file = TFile::Open("lxsc6_36.root");
+	petAnalysis_EnergyPhot->GetXaxis()->SetTitle("pe");
+	petAnalysis_EnergyPhot->GetYaxis()->SetTitle("counts");
+	petAnalysis_EnergyPhot->GetYaxis()->SetTitleOffset(1.4);
+	petAnalysis_EnergyPhot->SetAxisRange(0., 15000.0,"X");
+	petAnalysis_EnergyPhot->Fit("gauF","","e",8000,11000);
+	c1->Update();
+	TPaveStats *st = (TPaveStats*)petAnalysis_EnergyPhot->FindObject("stats");
+	st->SetX1NDC(0.15);
+	st->SetX2NDC(0.45);
+	st->SetY1NDC(0.45);
+	st->SetY2NDC(0.85);
+	petAnalysis_EnergyPhot->Draw();
+	double fwhm = 100*2.35*petAnalysis_EnergyPhot->GetFunction("gauF")->GetParameter(2) / petAnalysis_EnergyPhot->GetFunction("gauF")->GetParameter(1);
+	TPaveStats *ps = (TPaveStats*)c1->GetPrimitive("stats");
+	ps->SetName("mystats");
+	list = ps->GetListOfLines();
+	myt = new TLatex(0,0,Form("FWHM(%) = %1.1lf", fwhm));
+	myt->SetTextFont(42);
+	myt->SetTextSize(0.04);
+	list->Add(myt);
+	petAnalysis_EnergyPhot->SetStats(0);
+	c1->Modified();
+	c1->Print("deliverables1/energy_6_36.pdf");
 	file->Close();
 	
 	//////////////

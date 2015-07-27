@@ -26,17 +26,15 @@ CNTJob LIBS SV 1
 ../lib/libpetAnalysis.so
 
 #--------- DATA -------#
-CNTJob INPUT_DATA SV 10
-petalo_prod/petalo.4_36.000.next
-petalo_prod/petalo.4_36.001.next
-petalo_prod/petalo.4_36.002.next
-petalo_prod/petalo.4_36.003.next
-petalo_prod/petalo.4_36.004.next
-petalo_prod/petalo.4_36.005.next
-petalo_prod/petalo.4_36.006.next
-petalo_prod/petalo.4_36.007.next
-petalo_prod/petalo.4_36.008.next
-petalo_prod/petalo.4_64.009.next
+CNTJob INPUT_DATA SV 8
+petalo_prod/petalo.4_36.0.next
+petalo_prod/petalo.4_36.1.next
+petalo_prod/petalo.4_36.2.next
+petalo_prod/petalo.4_36.3.next
+petalo_prod/petalo.4_36.5.next
+petalo_prod/petalo.4_36.6.next
+petalo_prod/petalo.4_36.7.next
+petalo_prod/petalo.4_64.9.next
 
 #------ SAVE EVENTS IN OUTPUT FILE ----------# 
 CNTJob SAVE I 0
@@ -65,7 +63,7 @@ CNTJob WRITER S gateWriter
 
 #------------- log file -------------#
 CNTJob LOG I 1
-CNTJob FLOG S lxsc2_64.log
+CNTJob FLOG S lxsc4_36.log
 
 #---------- histogram file ----------#
 CNTJob HISTOS 1
