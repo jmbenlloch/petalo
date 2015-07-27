@@ -1,0 +1,389 @@
+\documentclass{beamer}
+
+\mode<presentation>
+{
+  \usetheme{Warsaw}      % or try Darmstadt, Madrid, Warsaw, ...
+  \usecolortheme{default} % or try albatross, beaver, crane, ...
+  \usefonttheme{default}  % or try serif, structurebold, ...
+  \setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{caption}[numbered]
+} 
+
+\graphicspath{{/home/jmbenlloch/next/projects/petalo/petAnalysis/mac/deliverables2/}}
+\usepackage{changepage}
+\usepackage{booktabs}
+\RequirePackage[english,spanish,activeacute]{babel}
+\selectlanguage{spanish}
+\usepackage[utf8x]{inputenc}
+\setbeamertemplate{footline}[frame number]
+
+\title{Preliminar study of a PET scanner with liquid Xenon}
+\author[José María Benlloch Rodríguez]{José María Benlloch Rodríguez}
+\institute{NEXT Collaboration}
+\date{06 de Julio de 2014}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Energy 2 Planes}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.3]{energy_2_z2.pdf} \\
+			\includegraphics[scale=0.3]{energy_2_z4.pdf}
+		 \end{column}
+		 \begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.3]{energy_2_z3.pdf} \\
+			\includegraphics[scale=0.3]{energy_2_z5.pdf}
+		 \end{column}
+ \end{columns}
+\end{frame}
+
+\begin{frame}{X Resolution 2 Planes}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{xBest_2_z2.pdf} \\
+			\includegraphics[scale=0.27]{xBest_2_z4.pdf}
+		 \end{column}
+		 \begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{xBest_2_z3.pdf} \\
+			\includegraphics[scale=0.27]{xBest_2_z5.pdf}
+		 \end{column}
+ \end{columns}
+\end{frame}
+
+\begin{frame}{Y Resolution 2 Planes}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{yBest_2_z2.pdf} \\
+			\includegraphics[scale=0.27]{yBest_2_z4.pdf}
+		 \end{column}
+		 \begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{yBest_2_z3.pdf} \\
+			\includegraphics[scale=0.27]{yBest_2_z5.pdf}
+		 \end{column}
+ \end{columns}
+\end{frame}
+
+\begin{frame}{Z resolution (using ratio)}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{zRatio_2_z2.pdf} \\
+			\includegraphics[scale=0.27]{zRatio_2_z4.pdf}
+		 \end{column}
+		 \begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{zRatio_2_z3.pdf} \\
+			\includegraphics[scale=0.27]{zRatio_2_z5.pdf}
+		 \end{column}
+ \end{columns}
+\end{frame}
+
+\begin{frame}{SiPMMC (Plane 0)}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{sipmmc_p0_2_z2.pdf} \\
+			\includegraphics[scale=0.27]{sipmmc_p0_2_z4.pdf}
+		 \end{column}
+		 \begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{sipmmc_p0_2_z3.pdf} \\
+			\includegraphics[scale=0.27]{sipmmc_p0_2_z5.pdf}
+		 \end{column}
+ \end{columns}
+\end{frame}
+
+\begin{frame}{SiPMMC (Plane 2)}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{sipmmc_p2_2_z2.pdf} \\
+			\includegraphics[scale=0.27]{sipmmc_p2_2_z4.pdf}
+		 \end{column}
+		 \begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{sipmmc_p2_2_z3.pdf} \\
+			\includegraphics[scale=0.27]{sipmmc_p2_2_z5.pdf}
+		 \end{column}
+ \end{columns}
+\end{frame}
+
+\begin{frame}{SiPMMC + Corona 1 (Plane 0)}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{sipmmc_c1_p0_2_z2.pdf} \\
+			\includegraphics[scale=0.27]{sipmmc_c1_p0_2_z4.pdf}
+		 \end{column}
+		 \begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{sipmmc_c1_p0_2_z3.pdf} \\
+			\includegraphics[scale=0.27]{sipmmc_c1_p0_2_z5.pdf}
+		 \end{column}
+ \end{columns}
+\end{frame}
+
+\begin{frame}{SiPMMC + Corona 1 (Plane 2)}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{sipmmc_c1_p2_2_z2.pdf} \\
+			\includegraphics[scale=0.27]{sipmmc_c1_p2_2_z4.pdf}
+		 \end{column}
+		 \begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{sipmmc_c1_p2_2_z3.pdf} \\
+			\includegraphics[scale=0.27]{sipmmc_c1_p2_2_z5.pdf}
+		 \end{column}
+ \end{columns}
+\end{frame}
+
+
+\begin{frame}{SiPMMC + Corona 2 (Plane 0)}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{sipmmc_c2_p0_2_z2.pdf} \\
+			\includegraphics[scale=0.27]{sipmmc_c2_p0_2_z4.pdf}
+		 \end{column}
+		 \begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{sipmmc_c2_p0_2_z3.pdf} \\
+			\includegraphics[scale=0.27]{sipmmc_c2_p0_2_z5.pdf}
+		 \end{column}
+ \end{columns}
+\end{frame}
+
+\begin{frame}{SiPMMC + Corona 2 (Plane 2)}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{sipmmc_c2_p2_2_z2.pdf} \\
+			\includegraphics[scale=0.27]{sipmmc_c2_p2_2_z4.pdf}
+		 \end{column}
+		 \begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{sipmmc_c2_p2_2_z3.pdf} \\
+			\includegraphics[scale=0.27]{sipmmc_c2_p2_2_z5.pdf}
+		 \end{column}
+ \end{columns}
+\end{frame}
+
+\begin{frame}{SiPMMC + Corona 1 (Plane 0) per SiPM in cluster}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{sipmmc_c1_p0_norm_2_z2.pdf} \\
+			\includegraphics[scale=0.27]{sipmmc_c1_p0_norm_2_z4.pdf}
+		 \end{column}
+		 \begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{sipmmc_c1_p0_norm_2_z3.pdf} \\
+			\includegraphics[scale=0.27]{sipmmc_c1_p0_norm_2_z5.pdf}
+		 \end{column}
+ \end{columns}
+\end{frame}
+
+\begin{frame}{SiPMMC + Corona 1 (Plane 2) per SiPM in cluster}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{sipmmc_c1_p2_norm_2_z2.pdf} \\
+			\includegraphics[scale=0.27]{sipmmc_c1_p2_norm_2_z4.pdf}
+		 \end{column}
+		 \begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{sipmmc_c1_p2_norm_2_z3.pdf} \\
+			\includegraphics[scale=0.27]{sipmmc_c1_p2_norm_2_z5.pdf}
+		 \end{column}
+ \end{columns}
+\end{frame}
+
+
+\begin{frame}{SiPMMC + Corona 2 (Plane 0) per SiPM in cluster}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{sipmmc_c2_p0_norm_2_z2.pdf} \\
+			\includegraphics[scale=0.27]{sipmmc_c2_p0_norm_2_z4.pdf}
+		 \end{column}
+		 \begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{sipmmc_c2_p0_norm_2_z3.pdf} \\
+			\includegraphics[scale=0.27]{sipmmc_c2_p0_norm_2_z5.pdf}
+		 \end{column}
+ \end{columns}
+\end{frame}
+
+\begin{frame}{SiPMMC + Corona 2 (Plane 2) per SiPM in cluster}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{sipmmc_c2_p2_norm_2_z2.pdf} \\
+			\includegraphics[scale=0.27]{sipmmc_c2_p2_norm_2_z4.pdf}
+		 \end{column}
+		 \begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{sipmmc_c2_p2_norm_2_z3.pdf} \\
+			\includegraphics[scale=0.27]{sipmmc_c2_p2_norm_2_z5.pdf}
+		 \end{column}
+ \end{columns}
+\end{frame}
+
+\begin{frame}{Charge in Plane 0}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{plane0_2_z2.pdf} \\
+			\includegraphics[scale=0.27]{plane0_2_z4.pdf}
+		 \end{column}
+		 \begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{plane0_2_z3.pdf} \\
+			\includegraphics[scale=0.27]{plane0_2_z5.pdf}
+		 \end{column}
+ \end{columns}
+\end{frame}
+
+\begin{frame}{Charge in Plane 2}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{plane2_2_z2.pdf} \\
+			\includegraphics[scale=0.27]{plane2_2_z4.pdf}
+		 \end{column}
+		 \begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{plane2_2_z3.pdf} \\
+			\includegraphics[scale=0.27]{plane2_2_z5.pdf}
+		 \end{column}
+ \end{columns}
+\end{frame}
+
+\begin{frame}{Charge without SiPMMC (Plane 0)}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{nosipmmc_p0_2_z2.pdf} \\
+			\includegraphics[scale=0.27]{nosipmmc_p0_2_z4.pdf}
+		 \end{column}
+		 \begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{nosipmmc_p0_2_z3.pdf} \\
+			\includegraphics[scale=0.27]{nosipmmc_p0_2_z5.pdf}
+		 \end{column}
+ \end{columns}
+\end{frame}
+
+\begin{frame}{Charge without SiPMMC (Plane 2)}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{nosipmmc_p2_2_z2.pdf} \\
+			\includegraphics[scale=0.27]{nosipmmc_p2_2_z4.pdf}
+		 \end{column}
+		 \begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{nosipmmc_p2_2_z3.pdf} \\
+			\includegraphics[scale=0.27]{nosipmmc_p2_2_z5.pdf}
+		 \end{column}
+ \end{columns}
+\end{frame}
+
+
+\begin{frame}{Charge without SiPMMC+Corona 1 (Plane 0)}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{nosipmmc_c1_p0_2_z2.pdf} \\
+			\includegraphics[scale=0.27]{nosipmmc_c1_p0_2_z4.pdf}
+		 \end{column}
+		 \begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{nosipmmc_c1_p0_2_z3.pdf} \\
+			\includegraphics[scale=0.27]{nosipmmc_c1_p0_2_z5.pdf}
+		 \end{column}
+ \end{columns}
+\end{frame}
+
+\begin{frame}{Charge without SiPMMC+Corona 1 (Plane 2)}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{nosipmmc_c1_p2_2_z2.pdf} \\
+			\includegraphics[scale=0.27]{nosipmmc_c1_p2_2_z4.pdf}
+		 \end{column}
+		 \begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{nosipmmc_c1_p2_2_z3.pdf} \\
+			\includegraphics[scale=0.27]{nosipmmc_c1_p2_2_z5.pdf}
+		 \end{column}
+ \end{columns}
+\end{frame}
+
+
+\begin{frame}{Charge without SiPMMC+Corona 2 (Plane 0)}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{nosipmmc_c2_p0_2_z2.pdf} \\
+			\includegraphics[scale=0.27]{nosipmmc_c2_p0_2_z4.pdf}
+		 \end{column}
+		 \begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{nosipmmc_c2_p0_2_z3.pdf} \\
+			\includegraphics[scale=0.27]{nosipmmc_c2_p0_2_z5.pdf}
+		 \end{column}
+ \end{columns}
+\end{frame}
+
+\begin{frame}{Charge without SiPMMC+Corona 2 (Plane 2)}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{nosipmmc_c2_p2_2_z2.pdf} \\
+			\includegraphics[scale=0.27]{nosipmmc_c2_p2_2_z4.pdf}
+		 \end{column}
+		 \begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{nosipmmc_c2_p2_2_z3.pdf} \\
+			\includegraphics[scale=0.27]{nosipmmc_c2_p2_2_z5.pdf}
+		 \end{column}
+ \end{columns}
+\end{frame}
+
+
+\begin{frame}{Charge without SiPMMC+Corona 1 (per SiPM) (Plane 0)}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{nosipmmc_c1_p0_norm_2_z2.pdf} \\
+			\includegraphics[scale=0.27]{nosipmmc_c1_p0_norm_2_z4.pdf}
+		 \end{column}
+		 \begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{nosipmmc_c1_p0_norm_2_z3.pdf} \\
+			\includegraphics[scale=0.27]{nosipmmc_c1_p0_norm_2_z5.pdf}
+		 \end{column}
+ \end{columns}
+\end{frame}
+
+\begin{frame}{Charge without SiPMMC+Corona 1 (per SiPM) (Plane 2)}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{nosipmmc_c1_p2_norm_2_z2.pdf} \\
+			\includegraphics[scale=0.27]{nosipmmc_c1_p2_norm_2_z4.pdf}
+		 \end{column}
+		 \begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{nosipmmc_c1_p2_norm_2_z3.pdf} \\
+			\includegraphics[scale=0.27]{nosipmmc_c1_p2_norm_2_z5.pdf}
+		 \end{column}
+ \end{columns}
+\end{frame}
+
+
+\begin{frame}{Charge without SiPMMC+Corona 2 (per SiPM) (Plane 0)}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{nosipmmc_c2_p0_norm_2_z2.pdf} \\
+			\includegraphics[scale=0.27]{nosipmmc_c2_p0_norm_2_z4.pdf}
+		 \end{column}
+		 \begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{nosipmmc_c2_p0_norm_2_z3.pdf} \\
+			\includegraphics[scale=0.27]{nosipmmc_c2_p0_norm_2_z5.pdf}
+		 \end{column}
+ \end{columns}
+\end{frame}
+
+\begin{frame}{Charge without SiPMMC+Corona 2 (per SiPM) (Plane 2)}
+	\begin{columns}[onlytextwidth]
+		\begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{nosipmmc_c2_p2_norm_2_z2.pdf} \\
+			\includegraphics[scale=0.27]{nosipmmc_c2_p2_norm_2_z4.pdf}
+		 \end{column}
+		 \begin{column}{0.5\textwidth}
+			\includegraphics[scale=0.27]{nosipmmc_c2_p2_norm_2_z3.pdf} \\
+			\includegraphics[scale=0.27]{nosipmmc_c2_p2_norm_2_z5.pdf}
+		 \end{column}
+ \end{columns}
+\end{frame}
+
+\begin{frame}{Fraction of events}
+\begin{center}
+ \begin{tabular}{c|cccc|}
+  \toprule
+    & \textbf{Z2} & \textbf{Z3} & \textbf{Z4} & \textbf{Z5} \\
+   \hline
+  Total interactions & 41241 & 54155 & 63851  & 71147\\
+  Photoelectric & 7300 & 9590 & 11599 & 13267\\
+  Compton (2 vertex) & 10936 & 17430 & 23292 & 27535 \\ 
+  \toprule
+ \end{tabular}
+\end{center}
+\end{frame}
+
+ \end{document}
