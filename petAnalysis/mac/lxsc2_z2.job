@@ -27,16 +27,16 @@ CNTJob LIBS SV 1
 
 #--------- DATA -------#
 CNTJob INPUT_DATA SV 10
-petalo_prod/petalo.4_49.0.next
-petalo_prod/petalo.4_49.1.next
-petalo_prod/petalo.4_49.2.next
-petalo_prod/petalo.4_49.3.next
-petalo_prod/petalo.4_49.4.next
-petalo_prod/petalo.4_49.5.next
-petalo_prod/petalo.4_49.6.next
-petalo_prod/petalo.4_49.7.next
-petalo_prod/petalo.4_49.8.next
-petalo_prod/petalo.2_64.9.next
+petalo_prod/petalo.2_64_z2cm.0.next
+petalo_prod/petalo.2_64_z2cm.1.next
+petalo_prod/petalo.2_64_z2cm.2.next
+petalo_prod/petalo.2_64_z2cm.3.next
+petalo_prod/petalo.2_64_z2cm.4.next
+petalo_prod/petalo.2_64_z2cm.5.next
+petalo_prod/petalo.2_64_z2cm.6.next
+petalo_prod/petalo.2_64_z2cm.7.next
+petalo_prod/petalo.2_64_z2cm.8.next
+petalo_prod/petalo.2_64_z2cm.9.next
 
 #------ SAVE EVENTS IN OUTPUT FILE ----------# 
 CNTJob SAVE I 0
@@ -65,15 +65,15 @@ CNTJob WRITER S gateWriter
 
 #------------- log file -------------#
 CNTJob LOG I 1
-CNTJob FLOG S lxsc4_49.log
+CNTJob FLOG S lxsc2_z2.log
 
 #---------- histogram file ----------#
 CNTJob HISTOS 1
-CNTJob FHISTOS S lxsc4_49.root
+CNTJob FHISTOS S lxsc2_z2.root
 
 #---------- histogram file ----------#
 CNTJob TREES 1
-CNTJob FTREES S lxsc4_49_trees.root
+CNTJob FTREES S lxsc2_z2_trees.root
 
 #---------- documentation tex file ----------#
 # latex_gen class can be used in your algorithm
@@ -88,4 +88,4 @@ CNTJob BROWSER I 0
 
 #---------- Algorithm parameters ----------#
 petAnalysis LAN S c++
-petAnalysis CONF S LXSC4_49
+petAnalysis CONF S LXSC2_Z2

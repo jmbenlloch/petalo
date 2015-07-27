@@ -104,13 +104,13 @@ bool petAnalysis::initialize(){
 	  ->hman()->h2(this->alabel("Plane2_NoSiPMMC_C2"),"Charge without SiPMMC+Cluster2 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
   
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane0_NoSiPMMC_C1_Norm"),"Charge without SiPMMC+Cluster1 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
+	  ->hman()->h2(this->alabel("Plane0_NoSiPMMC_C1_Norm"),"Charge without SiPMMC+Cluster1 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane2_NoSiPMMC_C1_Norm"),"Charge without SiPMMC+Cluster1 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
+	  ->hman()->h2(this->alabel("Plane2_NoSiPMMC_C1_Norm"),"Charge without SiPMMC+Cluster1 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane0_NoSiPMMC_C2_Norm"),"Charge without SiPMMC+Cluster2 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
+	  ->hman()->h2(this->alabel("Plane0_NoSiPMMC_C2_Norm"),"Charge without SiPMMC+Cluster2 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
   gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane2_NoSiPMMC_C2_Norm"),"Charge without SiPMMC+Cluster2 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
+	  ->hman()->h2(this->alabel("Plane2_NoSiPMMC_C2_Norm"),"Charge without SiPMMC+Cluster2 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
 
   gate::Centella::instance()
 	  ->hman()->h2(this->alabel("Plane0"),"Charge in Plane 0 " + fetch_sstore("CONF"),100,-25,25,2000,0,6500);
