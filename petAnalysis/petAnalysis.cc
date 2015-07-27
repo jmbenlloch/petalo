@@ -125,6 +125,42 @@ bool petAnalysis::initialize(){
   gate::Centella::instance()
 	  ->hman()->h2(this->alabel("yzEnergy"),"yz",100,-25,25,100,-25,25);
 
+  //Parametrization
+  int xmin,xmax,nBins;
+  if(fetch_sstore("CONF") == "LXSC2_Z2"){
+	  xmin = -10;
+	  xmax = 10;
+	  nBins = 2;
+  }
+  if(fetch_sstore("CONF") == "LXSC2_Z3"){
+	  xmin = -15;
+	  xmax = 15;
+	  nBins = 3;
+  }
+  if(fetch_sstore("CONF") == "LXSC2_Z4"){
+	  xmin = -20;
+	  xmax = 20;
+	  nBins = 4;
+  }
+  if(fetch_sstore("CONF") == "LXSC2_Z5"){
+	  xmin = -25;
+	  xmax = 25;
+	  nBins = 5;
+  }
+
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("Param_SiPMMC_Plane0"),"SiPM Max Charge (Plane 0) " + fetch_sstore("CONF"),nBins,xmin,xmax,2000,0,6000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("Param_SiPMMC_Plane2"),"SiPM Max Charge (Plane 2) " + fetch_sstore("CONF"),nBins,xmin,xmax,2000,0,6000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("Param_SiPMMC_C1_Plane0"),"SiPM Charge Corona 1 (Plane 0) " + fetch_sstore("CONF"),nBins,xmin,xmax,2000,0,6000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("Param_SiPMMC_C1_Plane2"),"SiPM Charge Corona 1 (Plane 2) " + fetch_sstore("CONF"),nBins,xmin,xmax,2000,0,6000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("Param_SiPMMC_C2_Plane0"),"SiPM Charge Corona 2 (Plane 0) " + fetch_sstore("CONF"),nBins,xmin,xmax,2000,0,6000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("Param_SiPMMC_C2_Plane2"),"SiPM Charge Corona 2 (Plane 2) " + fetch_sstore("CONF"),nBins,xmin,xmax,2000,0,6000);
+
   store("photoCount",0);
   store("comptCount",0);
 
@@ -640,4 +676,18 @@ void petAnalysis::sipmmcHist(std::vector<std::vector<gate::Hit*> > planes, gate:
 		->hman()->fill2d(this->alabel("Plane0_NoSiPMMC_C2_Norm"),trueVertex.z(), chargePlanes[0] - chargeC2[0]/clusters2.size());
 	gate::Centella::instance()
 		->hman()->fill2d(this->alabel("Plane2_NoSiPMMC_C2_Norm"),trueVertex.z(), chargePlanes[2] - chargeC2[2]/clusters2.size());
+
+	//Parametrization
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("Param_SiPMMC_Plane0"),trueVertex.z(),maxP0->GetAmplitude());
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("Param_SiPMMC_Plane2"),trueVertex.z(),maxP2->GetAmplitude());
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("Param_SiPMMC_C1_Plane0"),trueVertex.z(),chargeC1[0]);
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("Param_SiPMMC_C1_Plane2"),trueVertex.z(),chargeC1[2]);
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("Param_SiPMMC_C2_Plane0"),trueVertex.z(),chargeC2[0]);
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("Param_SiPMMC_C2_Plane2"),trueVertex.z(),chargeC2[2]);
 }
