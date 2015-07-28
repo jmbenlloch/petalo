@@ -214,6 +214,9 @@ bool petAnalysis::execute(gate::Event& evt){
 	  std::vector<std::vector<gate::Hit*> > planes(6);
 	  splitHitsPerPlane(evt,planes);
 
+	  //Reconstruction
+	  reconstruction(planes,trueVertex);
+
 	  //SiPMMC Charge Histograms
 	  sipmmcHist(planes,trueVertex);
 
@@ -690,4 +693,214 @@ void petAnalysis::sipmmcHist(std::vector<std::vector<gate::Hit*> > planes, gate:
 		->hman()->fill2d(this->alabel("Param_SiPMMC_C2_Plane0"),trueVertex.z(),chargeC2[0]);
 	gate::Centella::instance()
 		->hman()->fill2d(this->alabel("Param_SiPMMC_C2_Plane2"),trueVertex.z(),chargeC2[2]);
+}
+
+void petAnalysis::reconstruction(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& trueVertex){
+	double thresholdSiPMMC_P0_z2[2] = {723.032, 198.054};
+	double thresholdSiPMMC_P2_z2[2] = {194.089, 688.701};
+	double thresholdSiPMMC_C1_P0_z2[2] = {2045.35, 995.393};
+	double thresholdSiPMMC_C1_P2_z2[2] = {985.271, 2008.15};
+	double thresholdSiPMMC_C2_P0_z2[2] = {2370.08, 1546.52};
+	double thresholdSiPMMC_C2_P2_z2[2] = {1541.09, 2347.96};
+
+	double thresholdSiPMMC_P0_z3[3] = {683.887, 190.252, 115.318};
+	double thresholdSiPMMC_P2_z3[3] = {113.575, 178.822, 645.578};
+	double thresholdSiPMMC_C1_P0_z3[3] = {2017.25, 959.863, 650.798};
+	double thresholdSiPMMC_C1_P2_z3[3] = {638.519, 924.236, 1938.94};
+	double thresholdSiPMMC_C2_P0_z3[3] = {2362.58, 1548.82, 1172.13};
+	double thresholdSiPMMC_C2_P2_z3[3] = {1168.1, 1511.04, 2325.42};
+
+	double thresholdSiPMMC_P0_z4[4] = {624.569, 167.05, 108.444, 85.8442};
+	double thresholdSiPMMC_P2_z4[4] = {85.6222, 107.816, 165.535, 610.492};
+	double thresholdSiPMMC_C1_P0_z4[4] = {1981.54, 931.007, 639.871, 529.121};
+	double thresholdSiPMMC_C1_P2_z4[4] = {533.26, 631.336, 923.163, 1939.23};
+	double thresholdSiPMMC_C2_P0_z4[4] = {2426.35, 1582.51, 1221.23, 1084.15};
+	double thresholdSiPMMC_C2_P2_z4[4] = {1090.43, 1235.6, 1568.96, 2373.5};
+
+	double thresholdSiPMMC_P0_z5[5] = {649.707, 170.885, 111.769, 87.2472, 75.3164};
+	double thresholdSiPMMC_P2_z5[5] = {75.2515, 86.6805, 111.023, 169.563, 604.085};
+	double thresholdSiPMMC_C1_P0_z5[5] = {2017.07, 968.217, 669.531, 550.771, 473.303};
+	double thresholdSiPMMC_C1_P2_z5[5] = {474.229, 543.411, 666.626, 956.245, 1982.23};
+	double thresholdSiPMMC_C2_P0_z5[5] = {2481.14, 1621.77, 1295.75, 1138.08, 1011.12};
+	double thresholdSiPMMC_C2_P2_z5[5] = {1019.72, 1124.34, 1274.16, 1627.46, 2443.23};
+
+	double *thresholdSiPMMC_P0,*thresholdSiPMMC_P2,*thresholdSiPMMC_C1_P0,*thresholdSiPMMC_C1_P2,*thresholdSiPMMC_C2_P0,*thresholdSiPMMC_C2_P2;
+
+	//Compute Z
+	double z = zReconsRatio(planeCharge(planes[0])/planeCharge(planes[2]));
+	double offset;
+	if(fetch_sstore("CONF") == "LXSC2_Z2"){
+		offset = 10;
+		thresholdSiPMMC_P0 = thresholdSiPMMC_P0_z2;
+		thresholdSiPMMC_P2 = thresholdSiPMMC_P2_z2;
+		thresholdSiPMMC_C1_P0 = thresholdSiPMMC_C1_P0_z2;
+		thresholdSiPMMC_C1_P2 = thresholdSiPMMC_C1_P2_z2;
+		thresholdSiPMMC_C2_P0 = thresholdSiPMMC_C2_P0_z2;
+		thresholdSiPMMC_C2_P2 = thresholdSiPMMC_C2_P2_z2;
+	}
+	if(fetch_sstore("CONF") == "LXSC2_Z3"){
+		offset = 15;
+		thresholdSiPMMC_P0 = thresholdSiPMMC_P0_z3;
+		thresholdSiPMMC_P2 = thresholdSiPMMC_P2_z3;
+		thresholdSiPMMC_C1_P0 = thresholdSiPMMC_C1_P0_z3;
+		thresholdSiPMMC_C1_P2 = thresholdSiPMMC_C1_P2_z3;
+		thresholdSiPMMC_C2_P0 = thresholdSiPMMC_C2_P0_z3;
+		thresholdSiPMMC_C2_P2 = thresholdSiPMMC_C2_P2_z3;
+	}
+	if(fetch_sstore("CONF") == "LXSC2_Z4"){
+		offset = 20;
+		thresholdSiPMMC_P0 = thresholdSiPMMC_P0_z4;
+		thresholdSiPMMC_P2 = thresholdSiPMMC_P2_z4;
+		thresholdSiPMMC_C1_P0 = thresholdSiPMMC_C1_P0_z4;
+		thresholdSiPMMC_C1_P2 = thresholdSiPMMC_C1_P2_z4;
+		thresholdSiPMMC_C2_P0 = thresholdSiPMMC_C2_P0_z4;
+		thresholdSiPMMC_C2_P2 = thresholdSiPMMC_C2_P2_z4;
+	}
+	if(fetch_sstore("CONF") == "LXSC2_Z5"){
+		offset = 25;
+		thresholdSiPMMC_P0 = thresholdSiPMMC_P0_z5;
+		thresholdSiPMMC_P2 = thresholdSiPMMC_P2_z5;
+		thresholdSiPMMC_C1_P0 = thresholdSiPMMC_C1_P0_z5;
+		thresholdSiPMMC_C1_P2 = thresholdSiPMMC_C1_P2_z5;
+		thresholdSiPMMC_C2_P0 = thresholdSiPMMC_C2_P0_z5;
+		thresholdSiPMMC_C2_P2 = thresholdSiPMMC_C2_P2_z5;
+	}
+	int index = floor((z+offset)/10);
+	std::cout << "z: " << trueVertex.z() << "\t Index: " << index << std::endl;
+
+	//Find Max
+	gate::Hit* maxP0 = *std::max_element(planes[0].begin(),planes[0].end(),chargeOrderSensorsAsc);
+	gate::Hit* maxP2 = *std::max_element(planes[2].begin(),planes[2].end(),chargeOrderSensorsAsc);
+
+	util::findCluster* findCluster = new util::findCluster();
+	std::vector<std::vector<gate::Hit*> > clusters1(6);
+	std::vector<std::vector<gate::Hit*> > clusters2(6);
+
+	findCluster->findCoronnaAllPlanes(planes,clusters1,1,0,0);
+	findCluster->findCoronnaAllPlanes(planes,clusters2,2,0,0);
+
+	//Planes 0 & 2
+	double chargeC1[2] = {0.,0.};
+	double chargeC2[2] = {0.,0.};
+
+	for(unsigned int i=0;i<2;i++){
+		chargeC1[i] = planeCharge(clusters1[i]);
+		chargeC2[i] = planeCharge(clusters2[i]);
+	}
+
+	//2nd iteration
+	std::vector<std::vector<gate::Hit*> > planesFiltered(6);
+
+	std::vector<gate::Hit*> toFilter;
+
+	int pe = 0;
+	if(maxP0->GetAmplitude() >= thresholdSiPMMC_P0[index]){
+		std::cout << "plane0_sipmmc\t";
+		toFilter.push_back(maxP0);
+		pe++;
+	} else if(chargeC1[0] >= thresholdSiPMMC_C1_P0[index]){
+		std::cout << "plane0_c1\t";
+		toFilter = clusters1[0];
+		pe++;
+	} else if(chargeC2[0] >= thresholdSiPMMC_C2_P0[index]){
+		std::cout << "plane0_c2\t";
+		toFilter = clusters2[0];
+		pe++;
+	}
+	filterHits(planes[0],toFilter,planesFiltered[0]);
+//	std::cout << "toFilter: " << "\t size: " << toFilter.size() << std::endl;
+	toFilter.clear();
+
+	if(maxP2->GetAmplitude() >= thresholdSiPMMC_P2[index]){
+		std::cout << "plane2_sipmmc\t";
+		toFilter.push_back(maxP2);
+		pe++;
+	} else if(chargeC1[1] >= thresholdSiPMMC_C1_P2[index]){
+		std::cout << "plane2_c1\t";
+		toFilter = clusters1[2];
+		pe++;
+	} else if(chargeC2[1] >= thresholdSiPMMC_C2_P2[index]){
+		std::cout << "plane2_c2\t";
+		toFilter = clusters2[2];
+		pe++;
+	}
+	filterHits(planes[2],toFilter,planesFiltered[2]);
+//	std::cout << "toFilter: " << "\t size: " << toFilter.size() << std::endl;
+
+
+
+//	for(unsigned int i=0;i<6;i++){
+//		std::cout << "i: " << i << "\t size: " << planes[i].size() << std::endl;
+//	}
+//	std::cout << "clusters1[0]: " << "\t size: " << clusters1[0].size() << std::endl;
+//	std::cout << "clusters2[0]: " << "\t size: " << clusters2[0].size() << std::endl;
+//	std::cout << "clusters1[2]: " << "\t size: " << clusters1[2].size() << std::endl;
+//	std::cout << "clusters2[2]: " << "\t size: " << clusters2[2].size() << std::endl;
+//	for(unsigned int i=0;i<6;i++){
+//		std::cout << "iFiltered: " << i << "\t size: " << planesFiltered[i].size() << std::endl;
+//	}
+
+
+	//2nd iteration
+	gate::Hit* maxP0Filtered = *std::max_element(planesFiltered[0].begin(),planesFiltered[0].end(),chargeOrderSensorsAsc);
+	gate::Hit* maxP2Filtered = *std::max_element(planesFiltered[2].begin(),planesFiltered[2].end(),chargeOrderSensorsAsc);
+	std::vector<std::vector<gate::Hit*> > clusters1Filtered(6);
+	std::vector<std::vector<gate::Hit*> > clusters2Filtered(6);
+	findCluster->findCoronnaAllPlanes(planes,clusters1Filtered,1,0,0);
+	findCluster->findCoronnaAllPlanes(planes,clusters2Filtered,2,0,0);
+	
+	//Planes 0 & 2
+	double chargeC1Filtered[2] = {0.,0.};
+	double chargeC2Filtered[2] = {0.,0.};
+
+	for(unsigned int i=0;i<2;i++){
+		chargeC1Filtered[i] = planeCharge(clusters1Filtered[i]);
+		chargeC2Filtered[i] = planeCharge(clusters2Filtered[i]);
+	}
+
+	if(pe>0){
+		int peFiltered = 0;
+		if(maxP0Filtered->GetAmplitude() >= thresholdSiPMMC_P0[index]){
+			std::cout << "filtered0_sipmmc\t";
+			peFiltered++;
+		} else if(chargeC1Filtered[0] >= thresholdSiPMMC_C1_P0[index]){
+			std::cout << "filtered0_c1\t";
+			peFiltered++;
+		} else if(chargeC2Filtered[0] >= thresholdSiPMMC_C2_P0[index]){
+			std::cout << "filtered0_c2\t";
+			peFiltered++;
+		}
+
+		if(maxP2Filtered->GetAmplitude() >= thresholdSiPMMC_P2[index]){
+			std::cout << "filtered2_sipmmc\t";
+			peFiltered++;
+		} else if(chargeC1Filtered[1] >= thresholdSiPMMC_C1_P2[index]){
+			std::cout << "filtered2_c1\t";
+			peFiltered++;
+		} else if(chargeC2Filtered[1] >= thresholdSiPMMC_C2_P2[index]){
+			std::cout << "filtered2_c2\t";
+			peFiltered++;
+		}
+		std::cout << std::endl;
+		std::cout << "PE-Filtered: " << peFiltered << std::endl;
+	}
+	std::cout << std::endl;
+	std::cout << "PE: " << pe << std::endl;
+}
+
+void petAnalysis::filterHits(std::vector<gate::Hit*> plane, std::vector<gate::Hit*> hits, std::vector<gate::Hit*>& planeFiltered){
+	bool found;
+//	std::cout << "sizePlane: " << plane.size() << std::endl;
+	for(unsigned int i=0;i<plane.size();i++){
+		found = false;
+		for(unsigned int j=0;j<hits.size();j++){
+			if(plane[i]->GetSensorID() == hits[j]->GetSensorID()){
+				found = true;
+				break;
+			}
+		}
+		if(!found){
+			planeFiltered.push_back(plane[i]);
+		}
+	}
 }

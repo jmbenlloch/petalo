@@ -12,7 +12,7 @@ void param_analysis2(){
 	// LXSC2_Z2 //
 	//////////////
 	TFile *file = TFile::Open("lxsc2_z2.root");
-	petAnalysis_Param_SiPMMC_Plane0->RebinY(8);
+	petAnalysis_Param_SiPMMC_Plane0->RebinY(50);
 //	petAnalysis_Param_SiPMMC_Plane0->SetAxisRange(-10.,10.,"X");
 	petAnalysis_Param_SiPMMC_Plane0->GetXaxis()->SetTitle("z (mm)");
 	petAnalysis_Param_SiPMMC_Plane0->GetYaxis()->SetTitleOffset(1.4);
@@ -21,7 +21,7 @@ void param_analysis2(){
 	c1->Print("deliverables2/param_sipmmc_p0_2_z2.pdf");
 	petAnalysis_Param_SiPMMC_Plane0->ProfileX()->Draw();
 	c1->Print("deliverables2/prof_sipmmc_p0_2_z2.pdf");
-	petAnalysis_Param_SiPMMC_Plane2->RebinY(8);
+	petAnalysis_Param_SiPMMC_Plane2->RebinY(50);
 //	petAnalysis_Param_SiPMMC_Plane2->SetAxisRange(-10.,10.,"X");
 	petAnalysis_Param_SiPMMC_Plane2->GetXaxis()->SetTitle("z (mm)");
 	petAnalysis_Param_SiPMMC_Plane2->GetYaxis()->SetTitleOffset(1.4);
@@ -31,7 +31,7 @@ void param_analysis2(){
 	petAnalysis_Param_SiPMMC_Plane2->ProfileX()->Draw();
 	c1->Print("deliverables2/prof_sipmmc_p2_2_z2.pdf");
 
-	petAnalysis_Param_SiPMMC_C1_Plane0->RebinY(8);
+	petAnalysis_Param_SiPMMC_C1_Plane0->RebinY(50);
 //	petAnalysis_Param_SiPMMC_C1_Plane0->SetAxisRange(-10.,10.,"X");
 	petAnalysis_Param_SiPMMC_C1_Plane0->GetXaxis()->SetTitle("z (mm)");
 	petAnalysis_Param_SiPMMC_C1_Plane0->GetYaxis()->SetTitleOffset(1.4);
@@ -40,7 +40,7 @@ void param_analysis2(){
 	c1->Print("deliverables2/param_sipmmc_c1_p0_2_z2.pdf");
 	petAnalysis_Param_SiPMMC_C1_Plane0->ProfileX()->Draw();
 	c1->Print("deliverables2/prof_sipmmc_c1_p0_2_z2.pdf");
-	petAnalysis_Param_SiPMMC_C1_Plane2->RebinY(8);
+	petAnalysis_Param_SiPMMC_C1_Plane2->RebinY(50);
 //	petAnalysis_Param_SiPMMC_C1_Plane2->SetAxisRange(-10.,10.,"X");
 	petAnalysis_Param_SiPMMC_C1_Plane2->GetXaxis()->SetTitle("z (mm)");
 	petAnalysis_Param_SiPMMC_C1_Plane2->GetYaxis()->SetTitleOffset(1.4);
@@ -50,7 +50,7 @@ void param_analysis2(){
 	petAnalysis_Param_SiPMMC_C1_Plane2->ProfileX()->Draw();
 	c1->Print("deliverables2/prof_sipmmc_c1_p2_2_z2.pdf");
 
-	petAnalysis_Param_SiPMMC_C2_Plane0->RebinY(8);
+	petAnalysis_Param_SiPMMC_C2_Plane0->RebinY(50);
 //	petAnalysis_Param_SiPMMC_C2_Plane0->SetAxisRange(-10.,10.,"X");
 	petAnalysis_Param_SiPMMC_C2_Plane0->GetXaxis()->SetTitle("z (mm)");
 	petAnalysis_Param_SiPMMC_C2_Plane0->GetYaxis()->SetTitleOffset(1.4);
@@ -59,7 +59,7 @@ void param_analysis2(){
 	c1->Print("deliverables2/param_sipmmc_c2_p0_2_z2.pdf");
 	petAnalysis_Param_SiPMMC_C2_Plane0->ProfileX()->Draw();
 	c1->Print("deliverables2/prof_sipmmc_c2_p0_2_z2.pdf");
-	petAnalysis_Param_SiPMMC_C2_Plane2->RebinY(8);
+	petAnalysis_Param_SiPMMC_C2_Plane2->RebinY(50);
 //	petAnalysis_Param_SiPMMC_C2_Plane2->SetAxisRange(-10.,10.,"X");
 	petAnalysis_Param_SiPMMC_C2_Plane2->GetXaxis()->SetTitle("z (mm)");
 	petAnalysis_Param_SiPMMC_C2_Plane2->GetYaxis()->SetTitleOffset(1.4);
@@ -68,13 +68,45 @@ void param_analysis2(){
 	c1->Print("deliverables2/param_sipmmc_c2_p2_2_z2.pdf");
 	petAnalysis_Param_SiPMMC_C2_Plane2->ProfileX()->Draw();
 	c1->Print("deliverables2/prof_sipmmc_c2_p2_2_z2.pdf");
+
+
+	std::cout << "SiPMMC_Plane0: " << std::endl;
+	for(unsigned int i=1;i<3;i++){
+		std::cout << ", " << petAnalysis_Param_SiPMMC_Plane0->ProfileX()->GetBinContent(i);
+	}
+	std::cout << std::endl;
+	std::cout << "SiPMMC_Plane2: " << std::endl;
+	for(unsigned int i=1;i<3;i++){
+		std::cout << ", " << petAnalysis_Param_SiPMMC_Plane2->ProfileX()->GetBinContent(i);
+	}
+	std::cout << std::endl;
+	std::cout << "SiPMMC_C1_Plane0: " << std::endl;
+	for(unsigned int i=1;i<3;i++){
+		std::cout << ", " << petAnalysis_Param_SiPMMC_C1_Plane0->ProfileX()->GetBinContent(i);
+	}
+	std::cout << std::endl;
+	std::cout << "SiPMMC_C1_Plane2: " << std::endl;
+	for(unsigned int i=1;i<3;i++){
+		std::cout << ", " << petAnalysis_Param_SiPMMC_C1_Plane2->ProfileX()->GetBinContent(i);
+	}
+	std::cout << std::endl;
+	std::cout << "SiPMMC_C2_Plane0: " << std::endl;
+	for(unsigned int i=1;i<3;i++){
+		std::cout << ", " << petAnalysis_Param_SiPMMC_C2_Plane0->ProfileX()->GetBinContent(i);
+	}
+	std::cout << std::endl;
+	std::cout << "SiPMMC_C2_Plane2: " << std::endl;
+	for(unsigned int i=1;i<3;i++){
+		std::cout << ", " << petAnalysis_Param_SiPMMC_C2_Plane2->ProfileX()->GetBinContent(i);
+	}
+	std::cout << std::endl;
 	file->Close();
 
 	//////////////
 	// LXSC2_Z3 //
 	//////////////
 	TFile *file = TFile::Open("lxsc2_z3.root");
-	petAnalysis_Param_SiPMMC_Plane0->RebinY(8);
+	petAnalysis_Param_SiPMMC_Plane0->RebinY(50);
 //	petAnalysis_Param_SiPMMC_Plane0->SetAxisRange(-15.,15.,"X");
 	petAnalysis_Param_SiPMMC_Plane0->GetXaxis()->SetTitle("z (mm)");
 	petAnalysis_Param_SiPMMC_Plane0->GetYaxis()->SetTitleOffset(1.4);
@@ -83,7 +115,7 @@ void param_analysis2(){
 	c1->Print("deliverables2/param_sipmmc_p0_2_z3.pdf");
 	petAnalysis_Param_SiPMMC_Plane0->ProfileX()->Draw();
 	c1->Print("deliverables2/prof_sipmmc_p0_2_z3.pdf");
-	petAnalysis_Param_SiPMMC_Plane2->RebinY(8);
+	petAnalysis_Param_SiPMMC_Plane2->RebinY(50);
 //	petAnalysis_Param_SiPMMC_Plane2->SetAxisRange(-15.,15.,"X");
 	petAnalysis_Param_SiPMMC_Plane2->GetXaxis()->SetTitle("z (mm)");
 	petAnalysis_Param_SiPMMC_Plane2->GetYaxis()->SetTitleOffset(1.4);
@@ -93,7 +125,7 @@ void param_analysis2(){
 	petAnalysis_Param_SiPMMC_Plane2->ProfileX()->Draw();
 	c1->Print("deliverables2/prof_sipmmc_p2_2_z3.pdf");
 
-	petAnalysis_Param_SiPMMC_C1_Plane0->RebinY(8);
+	petAnalysis_Param_SiPMMC_C1_Plane0->RebinY(50);
 //	petAnalysis_Param_SiPMMC_C1_Plane0->SetAxisRange(-15.,15.,"X");
 	petAnalysis_Param_SiPMMC_C1_Plane0->GetXaxis()->SetTitle("z (mm)");
 	petAnalysis_Param_SiPMMC_C1_Plane0->GetYaxis()->SetTitleOffset(1.4);
@@ -101,8 +133,8 @@ void param_analysis2(){
 	petAnalysis_Param_SiPMMC_C1_Plane0->Draw("colz");
 	c1->Print("deliverables2/param_sipmmc_c1_p0_2_z3.pdf");
 	petAnalysis_Param_SiPMMC_C1_Plane0->ProfileX()->Draw();
-	c1->Print("deliverables2/prof_sipmmc_c2_p0_2_z3.pdf");
-	petAnalysis_Param_SiPMMC_C1_Plane2->RebinY(8);
+	c1->Print("deliverables2/prof_sipmmc_c1_p0_2_z3.pdf");
+	petAnalysis_Param_SiPMMC_C1_Plane2->RebinY(50);
 //	petAnalysis_Param_SiPMMC_C1_Plane2->SetAxisRange(-15.,15.,"X");
 	petAnalysis_Param_SiPMMC_C1_Plane2->GetXaxis()->SetTitle("z (mm)");
 	petAnalysis_Param_SiPMMC_C1_Plane2->GetYaxis()->SetTitleOffset(1.4);
@@ -112,7 +144,7 @@ void param_analysis2(){
 	petAnalysis_Param_SiPMMC_C1_Plane2->ProfileX()->Draw();
 	c1->Print("deliverables2/prof_sipmmc_c1_p2_2_z3.pdf");
 
-	petAnalysis_Param_SiPMMC_C2_Plane0->RebinY(8);
+	petAnalysis_Param_SiPMMC_C2_Plane0->RebinY(50);
 //	petAnalysis_Param_SiPMMC_C2_Plane0->SetAxisRange(-15.,15.,"X");
 	petAnalysis_Param_SiPMMC_C2_Plane0->GetXaxis()->SetTitle("z (mm)");
 	petAnalysis_Param_SiPMMC_C2_Plane0->GetYaxis()->SetTitleOffset(1.4);
@@ -121,7 +153,7 @@ void param_analysis2(){
 	c1->Print("deliverables2/param_sipmmc_c2_p0_2_z3.pdf");
 	petAnalysis_Param_SiPMMC_C2_Plane0->ProfileX()->Draw();
 	c1->Print("deliverables2/prof_sipmmc_c2_p0_2_z3.pdf");
-	petAnalysis_Param_SiPMMC_C2_Plane2->RebinY(8);
+	petAnalysis_Param_SiPMMC_C2_Plane2->RebinY(50);
 //	petAnalysis_Param_SiPMMC_C2_Plane2->SetAxisRange(-15.,15.,"X");
 	petAnalysis_Param_SiPMMC_C2_Plane2->GetXaxis()->SetTitle("z (mm)");
 	petAnalysis_Param_SiPMMC_C2_Plane2->GetYaxis()->SetTitleOffset(1.4);
@@ -130,13 +162,44 @@ void param_analysis2(){
 	c1->Print("deliverables2/param_sipmmc_c2_p2_2_z3.pdf");
 	petAnalysis_Param_SiPMMC_C2_Plane2->ProfileX()->Draw();
 	c1->Print("deliverables2/prof_sipmmc_c2_p2_2_z3.pdf");
+
+	std::cout << "SiPMMC_Plane0: " << std::endl;
+	for(unsigned int i=1;i<4;i++){
+		std::cout << ", " << petAnalysis_Param_SiPMMC_Plane0->ProfileX()->GetBinContent(i);
+	}
+	std::cout << std::endl;
+	std::cout << "SiPMMC_Plane2: " << std::endl;
+	for(unsigned int i=1;i<4;i++){
+		std::cout << ", " << petAnalysis_Param_SiPMMC_Plane2->ProfileX()->GetBinContent(i);
+	}
+	std::cout << std::endl;
+	std::cout << "SiPMMC_C1_Plane0: " << std::endl;
+	for(unsigned int i=1;i<4;i++){
+		std::cout << ", " << petAnalysis_Param_SiPMMC_C1_Plane0->ProfileX()->GetBinContent(i);
+	}
+	std::cout << std::endl;
+	std::cout << "SiPMMC_C1_Plane2: " << std::endl;
+	for(unsigned int i=1;i<4;i++){
+		std::cout << ", " << petAnalysis_Param_SiPMMC_C1_Plane2->ProfileX()->GetBinContent(i);
+	}
+	std::cout << std::endl;
+	std::cout << "SiPMMC_C2_Plane0: " << std::endl;
+	for(unsigned int i=1;i<4;i++){
+		std::cout << ", " << petAnalysis_Param_SiPMMC_C2_Plane0->ProfileX()->GetBinContent(i);
+	}
+	std::cout << std::endl;
+	std::cout << "SiPMMC_C2_Plane2: " << std::endl;
+	for(unsigned int i=1;i<4;i++){
+		std::cout << ", " << petAnalysis_Param_SiPMMC_C2_Plane2->ProfileX()->GetBinContent(i);
+	}
+	std::cout << std::endl;
 	file->Close();
 
 	//////////////
 	// LXSC2_Z4 //
 	//////////////
 	TFile *file = TFile::Open("lxsc2_z4.root");
-	petAnalysis_Param_SiPMMC_Plane0->RebinY(8);
+	petAnalysis_Param_SiPMMC_Plane0->RebinY(50);
 //	petAnalysis_Param_SiPMMC_Plane0->SetAxisRange(-20.,20.,"X");
 	petAnalysis_Param_SiPMMC_Plane0->GetXaxis()->SetTitle("z (mm)");
 	petAnalysis_Param_SiPMMC_Plane0->GetYaxis()->SetTitleOffset(1.4);
@@ -145,7 +208,7 @@ void param_analysis2(){
 	c1->Print("deliverables2/param_sipmmc_p0_2_z4.pdf");
 	petAnalysis_Param_SiPMMC_Plane0->ProfileX()->Draw();
 	c1->Print("deliverables2/prof_sipmmc_p0_2_z4.pdf");
-	petAnalysis_Param_SiPMMC_Plane2->RebinY(8);
+	petAnalysis_Param_SiPMMC_Plane2->RebinY(50);
 //	petAnalysis_Param_SiPMMC_Plane2->SetAxisRange(-20.,20.,"X");
 	petAnalysis_Param_SiPMMC_Plane2->GetXaxis()->SetTitle("z (mm)");
 	petAnalysis_Param_SiPMMC_Plane2->GetYaxis()->SetTitleOffset(1.4);
@@ -155,7 +218,7 @@ void param_analysis2(){
 	petAnalysis_Param_SiPMMC_Plane2->ProfileX()->Draw();
 	c1->Print("deliverables2/prof_sipmmc_p2_2_z4.pdf");
 
-	petAnalysis_Param_SiPMMC_C1_Plane0->RebinY(8);
+	petAnalysis_Param_SiPMMC_C1_Plane0->RebinY(50);
 //	petAnalysis_Param_SiPMMC_C1_Plane0->SetAxisRange(-20.,20.,"X");
 	petAnalysis_Param_SiPMMC_C1_Plane0->GetXaxis()->SetTitle("z (mm)");
 	petAnalysis_Param_SiPMMC_C1_Plane0->GetYaxis()->SetTitleOffset(1.4);
@@ -164,7 +227,7 @@ void param_analysis2(){
 	c1->Print("deliverables2/param_sipmmc_c1_p0_2_z4.pdf");
 	petAnalysis_Param_SiPMMC_C1_Plane0->ProfileX()->Draw();
 	c1->Print("deliverables2/prof_sipmmc_c1_p0_2_z4.pdf");
-	petAnalysis_Param_SiPMMC_C1_Plane2->RebinY(8);
+	petAnalysis_Param_SiPMMC_C1_Plane2->RebinY(50);
 //	petAnalysis_Param_SiPMMC_C1_Plane2->SetAxisRange(-20.,20.,"X");
 	petAnalysis_Param_SiPMMC_C1_Plane2->GetXaxis()->SetTitle("z (mm)");
 	petAnalysis_Param_SiPMMC_C1_Plane2->GetYaxis()->SetTitleOffset(1.4);
@@ -174,7 +237,7 @@ void param_analysis2(){
 	petAnalysis_Param_SiPMMC_C1_Plane2->ProfileX()->Draw();
 	c1->Print("deliverables2/prof_sipmmc_c1_p2_2_z4.pdf");
 
-	petAnalysis_Param_SiPMMC_C2_Plane0->RebinY(8);
+	petAnalysis_Param_SiPMMC_C2_Plane0->RebinY(50);
 //	petAnalysis_Param_SiPMMC_C2_Plane0->SetAxisRange(-20.,20.,"X");
 	petAnalysis_Param_SiPMMC_C2_Plane0->GetXaxis()->SetTitle("z (mm)");
 	petAnalysis_Param_SiPMMC_C2_Plane0->GetYaxis()->SetTitleOffset(1.4);
@@ -183,7 +246,7 @@ void param_analysis2(){
 	c1->Print("deliverables2/param_sipmmc_c2_p0_2_z4.pdf");
 	petAnalysis_Param_SiPMMC_C2_Plane0->ProfileX()->Draw();
 	c1->Print("deliverables2/prof_sipmmc_c2_p0_2_z4.pdf");
-	petAnalysis_Param_SiPMMC_C2_Plane2->RebinY(8);
+	petAnalysis_Param_SiPMMC_C2_Plane2->RebinY(50);
 //	petAnalysis_Param_SiPMMC_C2_Plane2->SetAxisRange(-20.,20.,"X");
 	petAnalysis_Param_SiPMMC_C2_Plane2->GetXaxis()->SetTitle("z (mm)");
 	petAnalysis_Param_SiPMMC_C2_Plane2->GetYaxis()->SetTitleOffset(1.4);
@@ -192,13 +255,44 @@ void param_analysis2(){
 	c1->Print("deliverables2/param_sipmmc_c2_p2_2_z4.pdf");
 	petAnalysis_Param_SiPMMC_C2_Plane2->ProfileX()->Draw();
 	c1->Print("deliverables2/prof_sipmmc_c2_p2_2_z4.pdf");
+
+	std::cout << "SiPMMC_Plane0: " << std::endl;
+	for(unsigned int i=1;i<5;i++){
+		std::cout << ", " << petAnalysis_Param_SiPMMC_Plane0->ProfileX()->GetBinContent(i);
+	}
+	std::cout << std::endl;
+	std::cout << "SiPMMC_Plane2: " << std::endl;
+	for(unsigned int i=1;i<5;i++){
+		std::cout << ", " << petAnalysis_Param_SiPMMC_Plane2->ProfileX()->GetBinContent(i);
+	}
+	std::cout << std::endl;
+	std::cout << "SiPMMC_C1_Plane0: " << std::endl;
+	for(unsigned int i=1;i<5;i++){
+		std::cout << ", " << petAnalysis_Param_SiPMMC_C1_Plane0->ProfileX()->GetBinContent(i);
+	}
+	std::cout << std::endl;
+	std::cout << "SiPMMC_C1_Plane2: " << std::endl;
+	for(unsigned int i=1;i<5;i++){
+		std::cout << ", " << petAnalysis_Param_SiPMMC_C1_Plane2->ProfileX()->GetBinContent(i);
+	}
+	std::cout << std::endl;
+	std::cout << "SiPMMC_C2_Plane0: " << std::endl;
+	for(unsigned int i=1;i<5;i++){
+		std::cout << ", " << petAnalysis_Param_SiPMMC_C2_Plane0->ProfileX()->GetBinContent(i);
+	}
+	std::cout << std::endl;
+	std::cout << "SiPMMC_C2_Plane2: " << std::endl;
+	for(unsigned int i=1;i<5;i++){
+		std::cout << ", " << petAnalysis_Param_SiPMMC_C2_Plane2->ProfileX()->GetBinContent(i);
+	}
+	std::cout << std::endl;
 	file->Close();
 	
 	//////////////
 	// LXSC2_Z5 //
 	//////////////
 	TFile *file = TFile::Open("lxsc2_z5.root");
-	petAnalysis_Param_SiPMMC_Plane0->RebinY(8);
+	petAnalysis_Param_SiPMMC_Plane0->RebinY(50);
 //	petAnalysis_Param_SiPMMC_Plane0->SetAxisRange(-25.,25.,"X");
 	petAnalysis_Param_SiPMMC_Plane0->GetXaxis()->SetTitle("z (mm)");
 	petAnalysis_Param_SiPMMC_Plane0->GetYaxis()->SetTitleOffset(1.4);
@@ -207,7 +301,7 @@ void param_analysis2(){
 	c1->Print("deliverables2/param_sipmmc_p0_2_z5.pdf");
 	petAnalysis_Param_SiPMMC_Plane0->ProfileX()->Draw();
 	c1->Print("deliverables2/prof_sipmmc_p0_2_z5.pdf");
-	petAnalysis_Param_SiPMMC_Plane2->RebinY(8);
+	petAnalysis_Param_SiPMMC_Plane2->RebinY(50);
 //	petAnalysis_Param_SiPMMC_Plane2->SetAxisRange(-25.,25.,"X");
 	petAnalysis_Param_SiPMMC_Plane2->GetXaxis()->SetTitle("z (mm)");
 	petAnalysis_Param_SiPMMC_Plane2->GetYaxis()->SetTitleOffset(1.4);
@@ -217,7 +311,7 @@ void param_analysis2(){
 	petAnalysis_Param_SiPMMC_Plane2->ProfileX()->Draw();
 	c1->Print("deliverables2/prof_sipmmc_p2_2_z5.pdf");
 
-	petAnalysis_Param_SiPMMC_C1_Plane0->RebinY(8);
+	petAnalysis_Param_SiPMMC_C1_Plane0->RebinY(50);
 //	petAnalysis_Param_SiPMMC_C1_Plane0->SetAxisRange(-25.,25.,"X");
 	petAnalysis_Param_SiPMMC_C1_Plane0->GetXaxis()->SetTitle("z (mm)");
 	petAnalysis_Param_SiPMMC_C1_Plane0->GetYaxis()->SetTitleOffset(1.4);
@@ -226,7 +320,7 @@ void param_analysis2(){
 	c1->Print("deliverables2/param_sipmmc_c1_p0_2_z5.pdf");
 	petAnalysis_Param_SiPMMC_C1_Plane0->ProfileX()->Draw();
 	c1->Print("deliverables2/prof_sipmmc_c1_p0_2_z5.pdf");
-	petAnalysis_Param_SiPMMC_C1_Plane2->RebinY(8);
+	petAnalysis_Param_SiPMMC_C1_Plane2->RebinY(50);
 //	petAnalysis_Param_SiPMMC_C1_Plane2->SetAxisRange(-25.,25.,"X");
 	petAnalysis_Param_SiPMMC_C1_Plane2->GetXaxis()->SetTitle("z (mm)");
 	petAnalysis_Param_SiPMMC_C1_Plane2->GetYaxis()->SetTitleOffset(1.4);
@@ -236,7 +330,7 @@ void param_analysis2(){
 	petAnalysis_Param_SiPMMC_C1_Plane2->ProfileX()->Draw();
 	c1->Print("deliverables2/prof_sipmmc_c1_p2_2_z5.pdf");
 
-	petAnalysis_Param_SiPMMC_C2_Plane0->RebinY(8);
+	petAnalysis_Param_SiPMMC_C2_Plane0->RebinY(50);
 //	petAnalysis_Param_SiPMMC_C2_Plane0->SetAxisRange(-25.,25.,"X");
 	petAnalysis_Param_SiPMMC_C2_Plane0->GetXaxis()->SetTitle("z (mm)");
 	petAnalysis_Param_SiPMMC_C2_Plane0->GetYaxis()->SetTitleOffset(1.4);
@@ -245,7 +339,7 @@ void param_analysis2(){
 	c1->Print("deliverables2/param_sipmmc_c2_p0_2_z5.pdf");
 	petAnalysis_Param_SiPMMC_C2_Plane0->ProfileX()->Draw();
 	c1->Print("deliverables2/prof_sipmmc_c2_p0_2_z5.pdf");
-	petAnalysis_Param_SiPMMC_C2_Plane2->RebinY(8);
+	petAnalysis_Param_SiPMMC_C2_Plane2->RebinY(50);
 //	petAnalysis_Param_SiPMMC_C2_Plane2->SetAxisRange(-25.,25.,"X");
 	petAnalysis_Param_SiPMMC_C2_Plane2->GetXaxis()->SetTitle("z (mm)");
 	petAnalysis_Param_SiPMMC_C2_Plane2->GetYaxis()->SetTitleOffset(1.4);
@@ -254,6 +348,37 @@ void param_analysis2(){
 	c1->Print("deliverables2/param_sipmmc_c2_p2_2_z5.pdf");
 	petAnalysis_Param_SiPMMC_C2_Plane2->ProfileX()->Draw();
 	c1->Print("deliverables2/prof_sipmmc_c2_p2_2_z5.pdf");
+
+	std::cout << "SiPMMC_Plane0: " << std::endl;
+	for(unsigned int i=1;i<6;i++){
+		std::cout << ", " << petAnalysis_Param_SiPMMC_Plane0->ProfileX()->GetBinContent(i);
+	}
+	std::cout << std::endl;
+	std::cout << "SiPMMC_Plane2: " << std::endl;
+	for(unsigned int i=1;i<6;i++){
+		std::cout << ", " << petAnalysis_Param_SiPMMC_Plane2->ProfileX()->GetBinContent(i);
+	}
+	std::cout << std::endl;
+	std::cout << "SiPMMC_C1_Plane0: " << std::endl;
+	for(unsigned int i=1;i<6;i++){
+		std::cout << ", " << petAnalysis_Param_SiPMMC_C1_Plane0->ProfileX()->GetBinContent(i);
+	}
+	std::cout << std::endl;
+	std::cout << "SiPMMC_C1_Plane2: " << std::endl;
+	for(unsigned int i=1;i<6;i++){
+		std::cout << ", " << petAnalysis_Param_SiPMMC_C1_Plane2->ProfileX()->GetBinContent(i);
+	}
+	std::cout << std::endl;
+	std::cout << "SiPMMC_C2_Plane0: " << std::endl;
+	for(unsigned int i=1;i<6;i++){
+		std::cout << ", " << petAnalysis_Param_SiPMMC_C2_Plane0->ProfileX()->GetBinContent(i);
+	}
+	std::cout << std::endl;
+	std::cout << "SiPMMC_C2_Plane2: " << std::endl;
+	for(unsigned int i=1;i<6;i++){
+		std::cout << ", " << petAnalysis_Param_SiPMMC_C2_Plane2->ProfileX()->GetBinContent(i);
+	}
+	std::cout << std::endl;
 	file->Close();
 
 	c1->Close();
