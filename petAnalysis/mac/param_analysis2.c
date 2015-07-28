@@ -70,33 +70,34 @@ void param_analysis2(){
 	c1->Print("deliverables2/prof_sipmmc_c2_p2_2_z2.pdf");
 
 
+	int nBins = petAnalysis_Param_SiPMMC_Plane0->GetNbinsX();
 	std::cout << "SiPMMC_Plane0: " << std::endl;
-	for(unsigned int i=1;i<3;i++){
+	for(unsigned int i=1;i<=nBins;i++){
 		std::cout << ", " << petAnalysis_Param_SiPMMC_Plane0->ProfileX()->GetBinContent(i);
 	}
 	std::cout << std::endl;
 	std::cout << "SiPMMC_Plane2: " << std::endl;
-	for(unsigned int i=1;i<3;i++){
+	for(unsigned int i=1;i<=nBins;i++){
 		std::cout << ", " << petAnalysis_Param_SiPMMC_Plane2->ProfileX()->GetBinContent(i);
 	}
 	std::cout << std::endl;
 	std::cout << "SiPMMC_C1_Plane0: " << std::endl;
-	for(unsigned int i=1;i<3;i++){
+	for(unsigned int i=1;i<=nBins;i++){
 		std::cout << ", " << petAnalysis_Param_SiPMMC_C1_Plane0->ProfileX()->GetBinContent(i);
 	}
 	std::cout << std::endl;
 	std::cout << "SiPMMC_C1_Plane2: " << std::endl;
-	for(unsigned int i=1;i<3;i++){
+	for(unsigned int i=1;i<=nBins;i++){
 		std::cout << ", " << petAnalysis_Param_SiPMMC_C1_Plane2->ProfileX()->GetBinContent(i);
 	}
 	std::cout << std::endl;
 	std::cout << "SiPMMC_C2_Plane0: " << std::endl;
-	for(unsigned int i=1;i<3;i++){
+	for(unsigned int i=1;i<=nBins;i++){
 		std::cout << ", " << petAnalysis_Param_SiPMMC_C2_Plane0->ProfileX()->GetBinContent(i);
 	}
 	std::cout << std::endl;
 	std::cout << "SiPMMC_C2_Plane2: " << std::endl;
-	for(unsigned int i=1;i<3;i++){
+	for(unsigned int i=1;i<=nBins;i++){
 		std::cout << ", " << petAnalysis_Param_SiPMMC_C2_Plane2->ProfileX()->GetBinContent(i);
 	}
 	std::cout << std::endl;
@@ -163,33 +164,34 @@ void param_analysis2(){
 	petAnalysis_Param_SiPMMC_C2_Plane2->ProfileX()->Draw();
 	c1->Print("deliverables2/prof_sipmmc_c2_p2_2_z3.pdf");
 
+	int nBins = petAnalysis_Param_SiPMMC_Plane0->GetNbinsX();
 	std::cout << "SiPMMC_Plane0: " << std::endl;
-	for(unsigned int i=1;i<4;i++){
+	for(unsigned int i=1;i<=nBins;i++){
 		std::cout << ", " << petAnalysis_Param_SiPMMC_Plane0->ProfileX()->GetBinContent(i);
 	}
 	std::cout << std::endl;
 	std::cout << "SiPMMC_Plane2: " << std::endl;
-	for(unsigned int i=1;i<4;i++){
+	for(unsigned int i=1;i<=nBins;i++){
 		std::cout << ", " << petAnalysis_Param_SiPMMC_Plane2->ProfileX()->GetBinContent(i);
 	}
 	std::cout << std::endl;
 	std::cout << "SiPMMC_C1_Plane0: " << std::endl;
-	for(unsigned int i=1;i<4;i++){
+	for(unsigned int i=1;i<=nBins;i++){
 		std::cout << ", " << petAnalysis_Param_SiPMMC_C1_Plane0->ProfileX()->GetBinContent(i);
 	}
 	std::cout << std::endl;
 	std::cout << "SiPMMC_C1_Plane2: " << std::endl;
-	for(unsigned int i=1;i<4;i++){
+	for(unsigned int i=1;i<=nBins;i++){
 		std::cout << ", " << petAnalysis_Param_SiPMMC_C1_Plane2->ProfileX()->GetBinContent(i);
 	}
 	std::cout << std::endl;
 	std::cout << "SiPMMC_C2_Plane0: " << std::endl;
-	for(unsigned int i=1;i<4;i++){
+	for(unsigned int i=1;i<=nBins;i++){
 		std::cout << ", " << petAnalysis_Param_SiPMMC_C2_Plane0->ProfileX()->GetBinContent(i);
 	}
 	std::cout << std::endl;
 	std::cout << "SiPMMC_C2_Plane2: " << std::endl;
-	for(unsigned int i=1;i<4;i++){
+	for(unsigned int i=1;i<=nBins;i++){
 		std::cout << ", " << petAnalysis_Param_SiPMMC_C2_Plane2->ProfileX()->GetBinContent(i);
 	}
 	std::cout << std::endl;
@@ -256,33 +258,34 @@ void param_analysis2(){
 	petAnalysis_Param_SiPMMC_C2_Plane2->ProfileX()->Draw();
 	c1->Print("deliverables2/prof_sipmmc_c2_p2_2_z4.pdf");
 
+	int nBins = petAnalysis_Param_SiPMMC_Plane0->GetNbinsX();
 	std::cout << "SiPMMC_Plane0: " << std::endl;
-	for(unsigned int i=1;i<5;i++){
+	for(unsigned int i=1;i<=nBins;i++){
 		std::cout << ", " << petAnalysis_Param_SiPMMC_Plane0->ProfileX()->GetBinContent(i);
 	}
 	std::cout << std::endl;
 	std::cout << "SiPMMC_Plane2: " << std::endl;
-	for(unsigned int i=1;i<5;i++){
+	for(unsigned int i=1;i<=nBins;i++){
 		std::cout << ", " << petAnalysis_Param_SiPMMC_Plane2->ProfileX()->GetBinContent(i);
 	}
 	std::cout << std::endl;
 	std::cout << "SiPMMC_C1_Plane0: " << std::endl;
-	for(unsigned int i=1;i<5;i++){
+	for(unsigned int i=1;i<=nBins;i++){
 		std::cout << ", " << petAnalysis_Param_SiPMMC_C1_Plane0->ProfileX()->GetBinContent(i);
 	}
 	std::cout << std::endl;
 	std::cout << "SiPMMC_C1_Plane2: " << std::endl;
-	for(unsigned int i=1;i<5;i++){
+	for(unsigned int i=1;i<=nBins;i++){
 		std::cout << ", " << petAnalysis_Param_SiPMMC_C1_Plane2->ProfileX()->GetBinContent(i);
 	}
 	std::cout << std::endl;
 	std::cout << "SiPMMC_C2_Plane0: " << std::endl;
-	for(unsigned int i=1;i<5;i++){
+	for(unsigned int i=1;i<=nBins;i++){
 		std::cout << ", " << petAnalysis_Param_SiPMMC_C2_Plane0->ProfileX()->GetBinContent(i);
 	}
 	std::cout << std::endl;
 	std::cout << "SiPMMC_C2_Plane2: " << std::endl;
-	for(unsigned int i=1;i<5;i++){
+	for(unsigned int i=1;i<=nBins;i++){
 		std::cout << ", " << petAnalysis_Param_SiPMMC_C2_Plane2->ProfileX()->GetBinContent(i);
 	}
 	std::cout << std::endl;
@@ -349,33 +352,34 @@ void param_analysis2(){
 	petAnalysis_Param_SiPMMC_C2_Plane2->ProfileX()->Draw();
 	c1->Print("deliverables2/prof_sipmmc_c2_p2_2_z5.pdf");
 
+	int nBins = petAnalysis_Param_SiPMMC_Plane0->GetNbinsX();
 	std::cout << "SiPMMC_Plane0: " << std::endl;
-	for(unsigned int i=1;i<6;i++){
+	for(unsigned int i=1;i<=nBins;i++){
 		std::cout << ", " << petAnalysis_Param_SiPMMC_Plane0->ProfileX()->GetBinContent(i);
 	}
 	std::cout << std::endl;
 	std::cout << "SiPMMC_Plane2: " << std::endl;
-	for(unsigned int i=1;i<6;i++){
+	for(unsigned int i=1;i<=nBins;i++){
 		std::cout << ", " << petAnalysis_Param_SiPMMC_Plane2->ProfileX()->GetBinContent(i);
 	}
 	std::cout << std::endl;
 	std::cout << "SiPMMC_C1_Plane0: " << std::endl;
-	for(unsigned int i=1;i<6;i++){
+	for(unsigned int i=1;i<=nBins;i++){
 		std::cout << ", " << petAnalysis_Param_SiPMMC_C1_Plane0->ProfileX()->GetBinContent(i);
 	}
 	std::cout << std::endl;
 	std::cout << "SiPMMC_C1_Plane2: " << std::endl;
-	for(unsigned int i=1;i<6;i++){
+	for(unsigned int i=1;i<=nBins;i++){
 		std::cout << ", " << petAnalysis_Param_SiPMMC_C1_Plane2->ProfileX()->GetBinContent(i);
 	}
 	std::cout << std::endl;
 	std::cout << "SiPMMC_C2_Plane0: " << std::endl;
-	for(unsigned int i=1;i<6;i++){
+	for(unsigned int i=1;i<=nBins;i++){
 		std::cout << ", " << petAnalysis_Param_SiPMMC_C2_Plane0->ProfileX()->GetBinContent(i);
 	}
 	std::cout << std::endl;
 	std::cout << "SiPMMC_C2_Plane2: " << std::endl;
-	for(unsigned int i=1;i<6;i++){
+	for(unsigned int i=1;i<=nBins;i++){
 		std::cout << ", " << petAnalysis_Param_SiPMMC_C2_Plane2->ProfileX()->GetBinContent(i);
 	}
 	std::cout << std::endl;

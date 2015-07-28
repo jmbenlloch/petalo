@@ -50,6 +50,7 @@ class petAnalysis : public gate::IAlgo {
   void sipmmcHist(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& trueVertex);
   double totalCharge(std::vector<gate::Hit*> hits);
   void reconstruction(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& trueVertex);
+  void reconstructionCorona1(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& trueVertex);
   void filterHits(std::vector<gate::Hit*> plane, std::vector<gate::Hit*> hits, std::vector<gate::Hit*>& planeFiltered);
 
   //! finalize algorithm
