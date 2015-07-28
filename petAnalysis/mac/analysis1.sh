@@ -1,5 +1,5 @@
 #!/bin/bash
-#runCNTjob lxsc2_36.job
+runCNTjob lxsc2_36.job
 runCNTjob lxsc2_49.job
 runCNTjob lxsc2_64.job
 runCNTjob lxsc4_36.job
