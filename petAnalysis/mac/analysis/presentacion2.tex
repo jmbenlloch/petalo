@@ -80,6 +80,15 @@
  \end{columns}
 \end{frame}
 
+\begin{frame}{Definitions}
+\begin{itemize}
+\item \textbf{SiPMMC}: SiPM with maximum charge
+\item \textbf{SiPMMC + Corona 1}: SiPM with maximum charge and (up to) 8 adjacent SiPMs
+\item \textbf{SiPMMC + Corona 2}: SiPM with maximum charge and (up to) 25 adjacent SiPMs
+\item \textbf{SiPMMC + Corona per SiPM}: Total charge in the cluster divided by the number of SiPM included. This is done in order to avoid edge effects (not all clusters have the same size, in the edge they are smaller).
+\end{itemize}
+\end{frame}
+
 \begin{frame}{SiPMMC (Plane 0)}
 	\begin{columns}[onlytextwidth]
 		\begin{column}{0.5\textwidth}
@@ -318,59 +327,59 @@
  \end{columns}
 \end{frame}
 
-
-\begin{frame}{Charge without SiPMMC+Corona 1 (per SiPM) (Plane 0)}
-	\begin{columns}[onlytextwidth]
-		\begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{nosipmmc_c1_p0_norm_2_z2.pdf} \\
-			\includegraphics[scale=0.27]{nosipmmc_c1_p0_norm_2_z4.pdf}
-		 \end{column}
-		 \begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{nosipmmc_c1_p0_norm_2_z3.pdf} \\
-			\includegraphics[scale=0.27]{nosipmmc_c1_p0_norm_2_z5.pdf}
-		 \end{column}
- \end{columns}
-\end{frame}
-
-\begin{frame}{Charge without SiPMMC+Corona 1 (per SiPM) (Plane 2)}
-	\begin{columns}[onlytextwidth]
-		\begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{nosipmmc_c1_p2_norm_2_z2.pdf} \\
-			\includegraphics[scale=0.27]{nosipmmc_c1_p2_norm_2_z4.pdf}
-		 \end{column}
-		 \begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{nosipmmc_c1_p2_norm_2_z3.pdf} \\
-			\includegraphics[scale=0.27]{nosipmmc_c1_p2_norm_2_z5.pdf}
-		 \end{column}
- \end{columns}
-\end{frame}
-
-
-\begin{frame}{Charge without SiPMMC+Corona 2 (per SiPM) (Plane 0)}
-	\begin{columns}[onlytextwidth]
-		\begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{nosipmmc_c2_p0_norm_2_z2.pdf} \\
-			\includegraphics[scale=0.27]{nosipmmc_c2_p0_norm_2_z4.pdf}
-		 \end{column}
-		 \begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{nosipmmc_c2_p0_norm_2_z3.pdf} \\
-			\includegraphics[scale=0.27]{nosipmmc_c2_p0_norm_2_z5.pdf}
-		 \end{column}
- \end{columns}
-\end{frame}
-
-\begin{frame}{Charge without SiPMMC+Corona 2 (per SiPM) (Plane 2)}
-	\begin{columns}[onlytextwidth]
-		\begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{nosipmmc_c2_p2_norm_2_z2.pdf} \\
-			\includegraphics[scale=0.27]{nosipmmc_c2_p2_norm_2_z4.pdf}
-		 \end{column}
-		 \begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{nosipmmc_c2_p2_norm_2_z3.pdf} \\
-			\includegraphics[scale=0.27]{nosipmmc_c2_p2_norm_2_z5.pdf}
-		 \end{column}
- \end{columns}
-\end{frame}
+%
+%\begin{frame}{Charge without SiPMMC+Corona 1 (per SiPM) (Plane 0)}
+%	\begin{columns}[onlytextwidth]
+%		\begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{nosipmmc_c1_p0_norm_2_z2.pdf} \\
+%			\includegraphics[scale=0.27]{nosipmmc_c1_p0_norm_2_z4.pdf}
+%		 \end{column}
+%		 \begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{nosipmmc_c1_p0_norm_2_z3.pdf} \\
+%			\includegraphics[scale=0.27]{nosipmmc_c1_p0_norm_2_z5.pdf}
+%		 \end{column}
+% \end{columns}
+%\end{frame}
+%
+%\begin{frame}{Charge without SiPMMC+Corona 1 (per SiPM) (Plane 2)}
+%	\begin{columns}[onlytextwidth]
+%		\begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{nosipmmc_c1_p2_norm_2_z2.pdf} \\
+%			\includegraphics[scale=0.27]{nosipmmc_c1_p2_norm_2_z4.pdf}
+%		 \end{column}
+%		 \begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{nosipmmc_c1_p2_norm_2_z3.pdf} \\
+%			\includegraphics[scale=0.27]{nosipmmc_c1_p2_norm_2_z5.pdf}
+%		 \end{column}
+% \end{columns}
+%\end{frame}
+%
+%
+%\begin{frame}{Charge without SiPMMC+Corona 2 (per SiPM) (Plane 0)}
+%	\begin{columns}[onlytextwidth]
+%		\begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{nosipmmc_c2_p0_norm_2_z2.pdf} \\
+%			\includegraphics[scale=0.27]{nosipmmc_c2_p0_norm_2_z4.pdf}
+%		 \end{column}
+%		 \begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{nosipmmc_c2_p0_norm_2_z3.pdf} \\
+%			\includegraphics[scale=0.27]{nosipmmc_c2_p0_norm_2_z5.pdf}
+%		 \end{column}
+% \end{columns}
+%\end{frame}
+%
+%\begin{frame}{Charge without SiPMMC+Corona 2 (per SiPM) (Plane 2)}
+%	\begin{columns}[onlytextwidth]
+%		\begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{nosipmmc_c2_p2_norm_2_z2.pdf} \\
+%			\includegraphics[scale=0.27]{nosipmmc_c2_p2_norm_2_z4.pdf}
+%		 \end{column}
+%		 \begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{nosipmmc_c2_p2_norm_2_z3.pdf} \\
+%			\includegraphics[scale=0.27]{nosipmmc_c2_p2_norm_2_z5.pdf}
+%		 \end{column}
+% \end{columns}
+%\end{frame}
 
 \begin{frame}{Fraction of events}
 \begin{center}
@@ -378,169 +387,194 @@
   \toprule
     & \textbf{Z2} & \textbf{Z3} & \textbf{Z4} & \textbf{Z5} \\
    \hline
-  Total interactions & 41241 & 54155 & 63851  & 71147\\
-  Photoelectric & 7300 & 9590 & 11599 & 13267\\
-  Compton (2 vertex) & 10936 & 17430 & 23292 & 27535 \\ 
+  Gammas simulated & 500000 & 500000 & 500000  & 100000\\
+  Total interactions & 207047 & 270172 & 318649  & 71147\\
+  Photoelectric & 36714 & 48883 & 59256 & 13267\\
+  Compton (2 vertex) & 35833 & 52927 & 66418 & 16191 \\ 
   \toprule
  \end{tabular}
+  \begin{tabular}{c|cccc|}
+   \toprule
+     & \textbf{Z2} & \textbf{Z3} & \textbf{Z4} & \textbf{Z5} \\
+    \hline
+   Total interactions & 41.4 \% & 54.0\% & 63.7\%  & 71.1\%\\
+   Photoelectric & 73.4\% & 9.8\% & 11.9\% & 13.3\%\\
+   Compton (2 vertex) & 7.2\% & 10.6\% & 13.3\% & 16.2\% \\ 
+   \toprule
+  \end{tabular}
 \end{center}
 \end{frame}
 
-\begin{frame}{Parametrization SiPMMC (Plane 0)}
-	\begin{columns}[onlytextwidth]
-		\begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{param_sipmmc_p0_2_z2.pdf} \\
-			\includegraphics[scale=0.27]{param_sipmmc_p0_2_z4.pdf}
-		 \end{column}
-		 \begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{param_sipmmc_p0_2_z3.pdf} \\
-			\includegraphics[scale=0.27]{param_sipmmc_p0_2_z5.pdf}
-		 \end{column}
- \end{columns}
+\begin{frame}{Finding definition of cluster...}
+In the following slides is shown:
+\begin{itemize}
+\item \textbf{Left}: SiPMMC [+Corona] 
+\item \textbf{Right}: Remove SiPMMC [+Corona] and find the new SiPMMC [+Corona]
+\item \textbf{Up}: Photoelectric events
+\item \textbf{Down}: Compton events with more than 8000 photoelectrons (those will be in the photoelectric peak)
+\end{itemize}
+We want to find a criteria to classify events as photoelectric or compton:
+\begin{itemize}
+\item Corona 1 seems to be the best one, but there are some common regions in all 4 histograms, so it does not seem to be possible choosing one good threslhold in order to discriminate events.
+\end{itemize}
 \end{frame}
 
-\begin{frame}{Parametrization SiPMMC (Plane 0)}
-	\begin{columns}[onlytextwidth]
-		\begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{prof_sipmmc_p0_2_z2.pdf} \\
-			\includegraphics[scale=0.27]{prof_sipmmc_p0_2_z4.pdf}
-		 \end{column}
-		 \begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{prof_sipmmc_p0_2_z3.pdf} \\
-			\includegraphics[scale=0.27]{prof_sipmmc_p0_2_z5.pdf}
-		 \end{column}
- \end{columns}
-\end{frame}
-
-\begin{frame}{Parametrization SiPMMC (Plane 2)}
-	\begin{columns}[onlytextwidth]
-		\begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{param_sipmmc_p2_2_z2.pdf} \\
-			\includegraphics[scale=0.27]{param_sipmmc_p2_2_z4.pdf}
-		 \end{column}
-		 \begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{param_sipmmc_p2_2_z3.pdf} \\
-			\includegraphics[scale=0.27]{param_sipmmc_p2_2_z5.pdf}
-		 \end{column}
- \end{columns}
-\end{frame}
-
-\begin{frame}{Parametrization SiPMMC (Plane 2)}
-	\begin{columns}[onlytextwidth]
-		\begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{prof_sipmmc_p2_2_z2.pdf} \\
-			\includegraphics[scale=0.27]{prof_sipmmc_p2_2_z4.pdf}
-		 \end{column}
-		 \begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{prof_sipmmc_p2_2_z3.pdf} \\
-			\includegraphics[scale=0.27]{prof_sipmmc_p2_2_z5.pdf}
-		 \end{column}
- \end{columns}
-\end{frame}
-
-\begin{frame}{Parametrization SiPMMC+Corona 1 (Plane 0)}
-	\begin{columns}[onlytextwidth]
-		\begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{param_sipmmc_c1_p0_2_z2.pdf} \\
-			\includegraphics[scale=0.27]{param_sipmmc_c1_p0_2_z4.pdf}
-		 \end{column}
-		 \begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{param_sipmmc_c1_p0_2_z3.pdf} \\
-			\includegraphics[scale=0.27]{param_sipmmc_c1_p0_2_z5.pdf}
-		 \end{column}
- \end{columns}
-\end{frame}
-
-\begin{frame}{Parametrization SiPMMC+Corona 1 (Plane 0)}
-	\begin{columns}[onlytextwidth]
-		\begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{prof_sipmmc_c1_p0_2_z2.pdf} \\
-			\includegraphics[scale=0.27]{prof_sipmmc_c1_p0_2_z4.pdf}
-		 \end{column}
-		 \begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{prof_sipmmc_c1_p0_2_z3.pdf} \\
-			\includegraphics[scale=0.27]{prof_sipmmc_c1_p0_2_z5.pdf}
-		 \end{column}
- \end{columns}
-\end{frame}
-
-\begin{frame}{Parametrization SiPMMC+Corona 1 (Plane 2)}
-	\begin{columns}[onlytextwidth]
-		\begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{param_sipmmc_c1_p2_2_z2.pdf} \\
-			\includegraphics[scale=0.27]{param_sipmmc_c1_p2_2_z4.pdf}
-		 \end{column}
-		 \begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{param_sipmmc_c1_p2_2_z3.pdf} \\
-			\includegraphics[scale=0.27]{param_sipmmc_c1_p2_2_z5.pdf}
-		 \end{column}
- \end{columns}
-\end{frame}
-
-\begin{frame}{Parametrization SiPMMC+Corona 1 (Plane 2)}
-	\begin{columns}[onlytextwidth]
-		\begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{prof_sipmmc_c1_p2_2_z2.pdf} \\
-			\includegraphics[scale=0.27]{prof_sipmmc_c1_p2_2_z4.pdf}
-		 \end{column}
-		 \begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{prof_sipmmc_c1_p2_2_z3.pdf} \\
-			\includegraphics[scale=0.27]{prof_sipmmc_c1_p2_2_z5.pdf}
-		 \end{column}
- \end{columns}
-\end{frame}
-
-\begin{frame}{Parametrization SiPMMC+Corona 1 (Plane 0)}
-	\begin{columns}[onlytextwidth]
-		\begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{param_sipmmc_c2_p0_2_z2.pdf} \\
-			\includegraphics[scale=0.27]{param_sipmmc_c2_p0_2_z4.pdf}
-		 \end{column}
-		 \begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{param_sipmmc_c2_p0_2_z3.pdf} \\
-			\includegraphics[scale=0.27]{param_sipmmc_c2_p0_2_z5.pdf}
-		 \end{column}
- \end{columns}
-\end{frame}
-
-\begin{frame}{Parametrization SiPMMC+Corona 1 (Plane 0)}
-	\begin{columns}[onlytextwidth]
-		\begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{prof_sipmmc_c2_p0_2_z2.pdf} \\
-			\includegraphics[scale=0.27]{prof_sipmmc_c2_p0_2_z4.pdf}
-		 \end{column}
-		 \begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{prof_sipmmc_c2_p0_2_z3.pdf} \\
-			\includegraphics[scale=0.27]{prof_sipmmc_c2_p0_2_z5.pdf}
-		 \end{column}
- \end{columns}
-\end{frame}
-
-\begin{frame}{Parametrization SiPMMC+Corona 1 (Plane 2)}
-	\begin{columns}[onlytextwidth]
-		\begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{param_sipmmc_c2_p2_2_z2.pdf} \\
-			\includegraphics[scale=0.27]{param_sipmmc_c2_p2_2_z4.pdf}
-		 \end{column}
-		 \begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{param_sipmmc_c2_p2_2_z3.pdf} \\
-			\includegraphics[scale=0.27]{param_sipmmc_c2_p2_2_z5.pdf}
-		 \end{column}
- \end{columns}
-\end{frame}
-
-\begin{frame}{Parametrization SiPMMC+Corona 1 (Plane 2)}
-	\begin{columns}[onlytextwidth]
-		\begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{prof_sipmmc_c2_p2_2_z2.pdf} \\
-			\includegraphics[scale=0.27]{prof_sipmmc_c2_p2_2_z4.pdf}
-		 \end{column}
-		 \begin{column}{0.5\textwidth}
-			\includegraphics[scale=0.27]{prof_sipmmc_c2_p2_2_z3.pdf} \\
-			\includegraphics[scale=0.27]{prof_sipmmc_c2_p2_2_z5.pdf}
-		 \end{column}
- \end{columns}
-\end{frame}
+%
+%\begin{frame}{Parametrization SiPMMC (Plane 0)}
+%	\begin{columns}[onlytextwidth]
+%		\begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{param_sipmmc_p0_2_z2.pdf} \\
+%			\includegraphics[scale=0.27]{param_sipmmc_p0_2_z4.pdf}
+%		 \end{column}
+%		 \begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{param_sipmmc_p0_2_z3.pdf} \\
+%			\includegraphics[scale=0.27]{param_sipmmc_p0_2_z5.pdf}
+%		 \end{column}
+% \end{columns}
+%\end{frame}
+%
+%\begin{frame}{Parametrization SiPMMC (Plane 0)}
+%	\begin{columns}[onlytextwidth]
+%		\begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{prof_sipmmc_p0_2_z2.pdf} \\
+%			\includegraphics[scale=0.27]{prof_sipmmc_p0_2_z4.pdf}
+%		 \end{column}
+%		 \begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{prof_sipmmc_p0_2_z3.pdf} \\
+%			\includegraphics[scale=0.27]{prof_sipmmc_p0_2_z5.pdf}
+%		 \end{column}
+% \end{columns}
+%\end{frame}
+%
+%\begin{frame}{Parametrization SiPMMC (Plane 2)}
+%	\begin{columns}[onlytextwidth]
+%		\begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{param_sipmmc_p2_2_z2.pdf} \\
+%			\includegraphics[scale=0.27]{param_sipmmc_p2_2_z4.pdf}
+%		 \end{column}
+%		 \begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{param_sipmmc_p2_2_z3.pdf} \\
+%			\includegraphics[scale=0.27]{param_sipmmc_p2_2_z5.pdf}
+%		 \end{column}
+% \end{columns}
+%\end{frame}
+%
+%\begin{frame}{Parametrization SiPMMC (Plane 2)}
+%	\begin{columns}[onlytextwidth]
+%		\begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{prof_sipmmc_p2_2_z2.pdf} \\
+%			\includegraphics[scale=0.27]{prof_sipmmc_p2_2_z4.pdf}
+%		 \end{column}
+%		 \begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{prof_sipmmc_p2_2_z3.pdf} \\
+%			\includegraphics[scale=0.27]{prof_sipmmc_p2_2_z5.pdf}
+%		 \end{column}
+% \end{columns}
+%\end{frame}
+%
+%\begin{frame}{Parametrization SiPMMC+Corona 1 (Plane 0)}
+%	\begin{columns}[onlytextwidth]
+%		\begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{param_sipmmc_c1_p0_2_z2.pdf} \\
+%			\includegraphics[scale=0.27]{param_sipmmc_c1_p0_2_z4.pdf}
+%		 \end{column}
+%		 \begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{param_sipmmc_c1_p0_2_z3.pdf} \\
+%			\includegraphics[scale=0.27]{param_sipmmc_c1_p0_2_z5.pdf}
+%		 \end{column}
+% \end{columns}
+%\end{frame}
+%
+%\begin{frame}{Parametrization SiPMMC+Corona 1 (Plane 0)}
+%	\begin{columns}[onlytextwidth]
+%		\begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{prof_sipmmc_c1_p0_2_z2.pdf} \\
+%			\includegraphics[scale=0.27]{prof_sipmmc_c1_p0_2_z4.pdf}
+%		 \end{column}
+%		 \begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{prof_sipmmc_c1_p0_2_z3.pdf} \\
+%			\includegraphics[scale=0.27]{prof_sipmmc_c1_p0_2_z5.pdf}
+%		 \end{column}
+% \end{columns}
+%\end{frame}
+%
+%\begin{frame}{Parametrization SiPMMC+Corona 1 (Plane 2)}
+%	\begin{columns}[onlytextwidth]
+%		\begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{param_sipmmc_c1_p2_2_z2.pdf} \\
+%			\includegraphics[scale=0.27]{param_sipmmc_c1_p2_2_z4.pdf}
+%		 \end{column}
+%		 \begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{param_sipmmc_c1_p2_2_z3.pdf} \\
+%			\includegraphics[scale=0.27]{param_sipmmc_c1_p2_2_z5.pdf}
+%		 \end{column}
+% \end{columns}
+%\end{frame}
+%
+%\begin{frame}{Parametrization SiPMMC+Corona 1 (Plane 2)}
+%	\begin{columns}[onlytextwidth]
+%		\begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{prof_sipmmc_c1_p2_2_z2.pdf} \\
+%			\includegraphics[scale=0.27]{prof_sipmmc_c1_p2_2_z4.pdf}
+%		 \end{column}
+%		 \begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{prof_sipmmc_c1_p2_2_z3.pdf} \\
+%			\includegraphics[scale=0.27]{prof_sipmmc_c1_p2_2_z5.pdf}
+%		 \end{column}
+% \end{columns}
+%\end{frame}
+%
+%\begin{frame}{Parametrization SiPMMC+Corona 1 (Plane 0)}
+%	\begin{columns}[onlytextwidth]
+%		\begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{param_sipmmc_c2_p0_2_z2.pdf} \\
+%			\includegraphics[scale=0.27]{param_sipmmc_c2_p0_2_z4.pdf}
+%		 \end{column}
+%		 \begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{param_sipmmc_c2_p0_2_z3.pdf} \\
+%			\includegraphics[scale=0.27]{param_sipmmc_c2_p0_2_z5.pdf}
+%		 \end{column}
+% \end{columns}
+%\end{frame}
+%
+%\begin{frame}{Parametrization SiPMMC+Corona 1 (Plane 0)}
+%	\begin{columns}[onlytextwidth]
+%		\begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{prof_sipmmc_c2_p0_2_z2.pdf} \\
+%			\includegraphics[scale=0.27]{prof_sipmmc_c2_p0_2_z4.pdf}
+%		 \end{column}
+%		 \begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{prof_sipmmc_c2_p0_2_z3.pdf} \\
+%			\includegraphics[scale=0.27]{prof_sipmmc_c2_p0_2_z5.pdf}
+%		 \end{column}
+% \end{columns}
+%\end{frame}
+%
+%\begin{frame}{Parametrization SiPMMC+Corona 1 (Plane 2)}
+%	\begin{columns}[onlytextwidth]
+%		\begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{param_sipmmc_c2_p2_2_z2.pdf} \\
+%			\includegraphics[scale=0.27]{param_sipmmc_c2_p2_2_z4.pdf}
+%		 \end{column}
+%		 \begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{param_sipmmc_c2_p2_2_z3.pdf} \\
+%			\includegraphics[scale=0.27]{param_sipmmc_c2_p2_2_z5.pdf}
+%		 \end{column}
+% \end{columns}
+%\end{frame}
+%
+%\begin{frame}{Parametrization SiPMMC+Corona 1 (Plane 2)}
+%	\begin{columns}[onlytextwidth]
+%		\begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{prof_sipmmc_c2_p2_2_z2.pdf} \\
+%			\includegraphics[scale=0.27]{prof_sipmmc_c2_p2_2_z4.pdf}
+%		 \end{column}
+%		 \begin{column}{0.5\textwidth}
+%			\includegraphics[scale=0.27]{prof_sipmmc_c2_p2_2_z3.pdf} \\
+%			\includegraphics[scale=0.27]{prof_sipmmc_c2_p2_2_z5.pdf}
+%		 \end{column}
+% \end{columns}
+%\end{frame}
 
 \begin{frame}{1st \& 2nd SiPMMC (z2, Plane 0)}
 	\includegraphics[scale=0.29]{sipmmc_p0_2_z2.pdf}
@@ -788,6 +822,14 @@
 	
 		\includegraphics[scale=0.29]{sipmmc_c1_p2_norm_compt_2_z5.pdf}
 		\includegraphics[scale=0.29]{sipmmc_c1_p2_norm_2nd_compt_2_z5.pdf}
+\end{frame}
+
+\begin{frame}{1st \& 2nd SiPMMC+C2 (z2, Plane 0, per SiMP)}
+	\includegraphics[scale=0.29]{sipmmc_c2_p0_norm_2_z2.pdf}
+	\includegraphics[scale=0.29]{sipmmc_c2_p0_norm_2nd_2_z2.pdf} \\
+	
+		\includegraphics[scale=0.29]{sipmmc_c2_p0_norm_compt_2_z2.pdf}
+		\includegraphics[scale=0.29]{sipmmc_c2_p0_norm_2nd_compt_2_z2.pdf}
 \end{frame}
 
 \begin{frame}{1st \& 2nd SiPMMC+C2 (z2, Plane 2, per SiMP)}

@@ -12,30 +12,30 @@ void sipmCharge_Norm_2nd_compt_analysis2(){
 	// LXSC2_Z2 //
 	//////////////
 	TFile *file = TFile::Open("lxsc2_z2.root");
-	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd->SetAxisRange(-10.,10.,"X");
-	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd->GetXaxis()->SetTitle("z (mm)");
-	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd->GetYaxis()->SetTitleOffset(1.4);
-	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd->GetYaxis()->SetTitle("pes");
-	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd->Draw("colz");
+	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd_Compt->SetAxisRange(-10.,10.,"X");
+	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd_Compt->GetXaxis()->SetTitle("z (mm)");
+	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd_Compt->GetYaxis()->SetTitleOffset(1.4);
+	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd_Compt->GetYaxis()->SetTitle("pes");
+	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd_Compt->Draw("colz");
 	c1->Print("deliverables2/sipmmc_c1_p0_norm_2nd_compt_2_z2.pdf");
-	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd->SetAxisRange(-10.,10.,"X");
-	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd->GetXaxis()->SetTitle("z (mm)");
-	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd->GetYaxis()->SetTitleOffset(1.4);
-	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd->GetYaxis()->SetTitle("pes");
-	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd->Draw("colz");
+	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd_Compt->SetAxisRange(-10.,10.,"X");
+	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd_Compt->GetXaxis()->SetTitle("z (mm)");
+	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd_Compt->GetYaxis()->SetTitleOffset(1.4);
+	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd_Compt->GetYaxis()->SetTitle("pes");
+	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd_Compt->Draw("colz");
 	c1->Print("deliverables2/sipmmc_c1_p2_norm_2nd_compt_2_z2.pdf");
 
-	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd->SetAxisRange(-10.,10.,"X");
-	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd->GetXaxis()->SetTitle("z (mm)");
-	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd->GetYaxis()->SetTitleOffset(1.4);
-	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd->GetYaxis()->SetTitle("pes");
-	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd->Draw("colz");
+	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd_Compt->SetAxisRange(-10.,10.,"X");
+	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd_Compt->GetXaxis()->SetTitle("z (mm)");
+	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd_Compt->GetYaxis()->SetTitleOffset(1.4);
+	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd_Compt->GetYaxis()->SetTitle("pes");
+	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd_Compt->Draw("colz");
 	c1->Print("deliverables2/sipmmc_c2_p0_norm_2nd_compt_2_z2.pdf");
-	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd->SetAxisRange(-10.,10.,"X");
-	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd->GetXaxis()->SetTitle("z (mm)");
-	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd->GetYaxis()->SetTitleOffset(1.4);
-	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd->GetYaxis()->SetTitle("pes");
-	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd->Draw("colz");
+	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd_Compt->SetAxisRange(-10.,10.,"X");
+	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd_Compt->GetXaxis()->SetTitle("z (mm)");
+	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd_Compt->GetYaxis()->SetTitleOffset(1.4);
+	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd_Compt->GetYaxis()->SetTitle("pes");
+	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd_Compt->Draw("colz");
 	c1->Print("deliverables2/sipmmc_c2_p2_norm_2nd_compt_2_z2.pdf");
 	file->Close();
 
@@ -43,30 +43,30 @@ void sipmCharge_Norm_2nd_compt_analysis2(){
 	// LXSC2_Z3 //
 	//////////////
 	TFile *file = TFile::Open("lxsc2_z3.root");
-	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd->SetAxisRange(-15.,15.,"X");
-	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd->GetXaxis()->SetTitle("z (mm)");
-	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd->GetYaxis()->SetTitleOffset(1.4);
-	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd->GetYaxis()->SetTitle("pes");
-	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd->Draw("colz");
+	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd_Compt->SetAxisRange(-15.,15.,"X");
+	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd_Compt->GetXaxis()->SetTitle("z (mm)");
+	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd_Compt->GetYaxis()->SetTitleOffset(1.4);
+	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd_Compt->GetYaxis()->SetTitle("pes");
+	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd_Compt->Draw("colz");
 	c1->Print("deliverables2/sipmmc_c1_p0_norm_2nd_compt_2_z3.pdf");
-	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd->SetAxisRange(-15.,15.,"X");
-	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd->GetXaxis()->SetTitle("z (mm)");
-	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd->GetYaxis()->SetTitleOffset(1.4);
-	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd->GetYaxis()->SetTitle("pes");
-	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd->Draw("colz");
+	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd_Compt->SetAxisRange(-15.,15.,"X");
+	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd_Compt->GetXaxis()->SetTitle("z (mm)");
+	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd_Compt->GetYaxis()->SetTitleOffset(1.4);
+	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd_Compt->GetYaxis()->SetTitle("pes");
+	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd_Compt->Draw("colz");
 	c1->Print("deliverables2/sipmmc_c1_p2_norm_2nd_compt_2_z3.pdf");
 
-	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd->SetAxisRange(-15.,15.,"X");
-	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd->GetXaxis()->SetTitle("z (mm)");
-	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd->GetYaxis()->SetTitleOffset(1.4);
-	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd->GetYaxis()->SetTitle("pes");
-	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd->Draw("colz");
+	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd_Compt->SetAxisRange(-15.,15.,"X");
+	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd_Compt->GetXaxis()->SetTitle("z (mm)");
+	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd_Compt->GetYaxis()->SetTitleOffset(1.4);
+	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd_Compt->GetYaxis()->SetTitle("pes");
+	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd_Compt->Draw("colz");
 	c1->Print("deliverables2/sipmmc_c2_p0_norm_2nd_compt_2_z3.pdf");
-	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd->SetAxisRange(-15.,15.,"X");
-	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd->GetXaxis()->SetTitle("z (mm)");
-	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd->GetYaxis()->SetTitleOffset(1.4);
-	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd->GetYaxis()->SetTitle("pes");
-	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd->Draw("colz");
+	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd_Compt->SetAxisRange(-15.,15.,"X");
+	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd_Compt->GetXaxis()->SetTitle("z (mm)");
+	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd_Compt->GetYaxis()->SetTitleOffset(1.4);
+	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd_Compt->GetYaxis()->SetTitle("pes");
+	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd_Compt->Draw("colz");
 	c1->Print("deliverables2/sipmmc_c2_p2_norm_2nd_compt_2_z3.pdf");
 	file->Close();
 
@@ -75,30 +75,30 @@ void sipmCharge_Norm_2nd_compt_analysis2(){
 	//////////////
 	TFile *file = TFile::Open("lxsc2_z4.root");
 
-	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd->SetAxisRange(-20.,20.,"X");
-	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd->GetXaxis()->SetTitle("z (mm)");
-	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd->GetYaxis()->SetTitleOffset(1.4);
-	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd->GetYaxis()->SetTitle("pes");
-	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd->Draw("colz");
+	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd_Compt->SetAxisRange(-20.,20.,"X");
+	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd_Compt->GetXaxis()->SetTitle("z (mm)");
+	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd_Compt->GetYaxis()->SetTitleOffset(1.4);
+	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd_Compt->GetYaxis()->SetTitle("pes");
+	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd_Compt->Draw("colz");
 	c1->Print("deliverables2/sipmmc_c1_p0_norm_2nd_compt_2_z4.pdf");
-	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd->SetAxisRange(-20.,20.,"X");
-	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd->GetXaxis()->SetTitle("z (mm)");
-	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd->GetYaxis()->SetTitleOffset(1.4);
-	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd->GetYaxis()->SetTitle("pes");
-	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd->Draw("colz");
+	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd_Compt->SetAxisRange(-20.,20.,"X");
+	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd_Compt->GetXaxis()->SetTitle("z (mm)");
+	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd_Compt->GetYaxis()->SetTitleOffset(1.4);
+	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd_Compt->GetYaxis()->SetTitle("pes");
+	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd_Compt->Draw("colz");
 	c1->Print("deliverables2/sipmmc_c1_p2_norm_2nd_compt_2_z4.pdf");
 
-	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd->SetAxisRange(-20.,20.,"X");
-	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd->GetXaxis()->SetTitle("z (mm)");
-	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd->GetYaxis()->SetTitleOffset(1.4);
-	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd->GetYaxis()->SetTitle("pes");
-	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd->Draw("colz");
+	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd_Compt->SetAxisRange(-20.,20.,"X");
+	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd_Compt->GetXaxis()->SetTitle("z (mm)");
+	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd_Compt->GetYaxis()->SetTitleOffset(1.4);
+	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd_Compt->GetYaxis()->SetTitle("pes");
+	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd_Compt->Draw("colz");
 	c1->Print("deliverables2/sipmmc_c2_p0_norm_2nd_compt_2_z4.pdf");
-	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd->SetAxisRange(-20.,20.,"X");
-	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd->GetXaxis()->SetTitle("z (mm)");
-	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd->GetYaxis()->SetTitleOffset(1.4);
-	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd->GetYaxis()->SetTitle("pes");
-	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd->Draw("colz");
+	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd_Compt->SetAxisRange(-20.,20.,"X");
+	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd_Compt->GetXaxis()->SetTitle("z (mm)");
+	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd_Compt->GetYaxis()->SetTitleOffset(1.4);
+	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd_Compt->GetYaxis()->SetTitle("pes");
+	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd_Compt->Draw("colz");
 	c1->Print("deliverables2/sipmmc_c2_p2_norm_2nd_compt_2_z4.pdf");
 	file->Close();
 	
@@ -106,30 +106,30 @@ void sipmCharge_Norm_2nd_compt_analysis2(){
 	// LXSC2_Z5 //
 	//////////////
 	TFile *file = TFile::Open("lxsc2_z5.root");
-	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd->SetAxisRange(-25.,25.,"X");
-	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd->GetXaxis()->SetTitle("z (mm)");
-	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd->GetYaxis()->SetTitleOffset(1.4);
-	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd->GetYaxis()->SetTitle("pes");
-	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd->Draw("colz");
+	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd_Compt->SetAxisRange(-25.,25.,"X");
+	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd_Compt->GetXaxis()->SetTitle("z (mm)");
+	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd_Compt->GetYaxis()->SetTitleOffset(1.4);
+	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd_Compt->GetYaxis()->SetTitle("pes");
+	petAnalysis_SiPMMC_C1_Plane0_Norm_2nd_Compt->Draw("colz");
 	c1->Print("deliverables2/sipmmc_c1_p0_norm_2nd_compt_2_z5.pdf");
-	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd->SetAxisRange(-25.,25.,"X");
-	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd->GetXaxis()->SetTitle("z (mm)");
-	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd->GetYaxis()->SetTitleOffset(1.4);
-	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd->GetYaxis()->SetTitle("pes");
-	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd->Draw("colz");
+	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd_Compt->SetAxisRange(-25.,25.,"X");
+	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd_Compt->GetXaxis()->SetTitle("z (mm)");
+	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd_Compt->GetYaxis()->SetTitleOffset(1.4);
+	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd_Compt->GetYaxis()->SetTitle("pes");
+	petAnalysis_SiPMMC_C1_Plane2_Norm_2nd_Compt->Draw("colz");
 	c1->Print("deliverables2/sipmmc_c1_p2_norm_2nd_compt_2_z5.pdf");
 
-	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd->SetAxisRange(-25.,25.,"X");
-	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd->GetXaxis()->SetTitle("z (mm)");
-	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd->GetYaxis()->SetTitleOffset(1.4);
-	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd->GetYaxis()->SetTitle("pes");
-	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd->Draw("colz");
+	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd_Compt->SetAxisRange(-25.,25.,"X");
+	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd_Compt->GetXaxis()->SetTitle("z (mm)");
+	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd_Compt->GetYaxis()->SetTitleOffset(1.4);
+	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd_Compt->GetYaxis()->SetTitle("pes");
+	petAnalysis_SiPMMC_C2_Plane0_Norm_2nd_Compt->Draw("colz");
 	c1->Print("deliverables2/sipmmc_c2_p0_norm_2nd_compt_2_z5.pdf");
-	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd->SetAxisRange(-25.,25.,"X");
-	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd->GetXaxis()->SetTitle("z (mm)");
-	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd->GetYaxis()->SetTitleOffset(1.4);
-	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd->GetYaxis()->SetTitle("pes");
-	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd->Draw("colz");
+	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd_Compt->SetAxisRange(-25.,25.,"X");
+	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd_Compt->GetXaxis()->SetTitle("z (mm)");
+	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd_Compt->GetYaxis()->SetTitleOffset(1.4);
+	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd_Compt->GetYaxis()->SetTitle("pes");
+	petAnalysis_SiPMMC_C2_Plane2_Norm_2nd_Compt->Draw("colz");
 	c1->Print("deliverables2/sipmmc_c2_p2_norm_2nd_compt_2_z5.pdf");
 	file->Close();
 

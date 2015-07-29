@@ -26,7 +26,7 @@ CNTJob LIBS SV 1
 ../lib/libpetAnalysis.so
 
 #--------- DATA -------#
-CNTJob INPUT_DATA SV 10
+CNTJob INPUT_DATA SV 50
 petalo_prod/petalo.2_64_z4cm.0.next
 petalo_prod/petalo.2_64_z4cm.1.next
 petalo_prod/petalo.2_64_z4cm.2.next

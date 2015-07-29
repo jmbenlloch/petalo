@@ -252,25 +252,36 @@ bool petAnalysis::execute(gate::Event& evt){
   findFirstParticle(evt.GetMCParticles(),primary);
   findFirstParticle(primary.GetDaughters(),firstDaughter);
 
+  //Find second daughter
+  std::vector<const gate::MCParticle*> daughters(primary.GetDaughters());
+  std::sort(daughters.begin(), daughters.end(), petAnalysis::timeOrderParticles);
+//  std::cout << "Event number:" << evt.GetEventID() << std::endl; 
+//  for(unsigned int i=0;i<daughters.size();i++){
+//	  std::cout << "\t Vol: " <<daughters[i]->GetInitialVol();
+//	  std::cout << "\t t: " << daughters[i]->GetInitialVtx4D().GetT();
+//	  std::cout << "\t" << daughters[i]->GetCreatorProc() << "/" << daughters[i]->GetPDG();
+//	  std::cout << std::endl;
+//  }
+
   //True Vertex
   gate::Point3D trueVertex = firstDaughter.GetInitialVtx(); 
 
   //Compton count
-  if(firstDaughter.GetCreatorProc() == std::string("compt") 
-	//	  && firstDaughter.GetDaughters().size()==1
-		  && firstDaughter.GetInitialVol() == "ACTIVE"
-		  && totalCharge(evt.GetMCSensHits()) > 8000){
-	  int comptCount = fetch_istore("comptCount");
-	  fstore("comptCount",comptCount+1);
+  if(firstDaughter.GetCreatorProc() == std::string("compt") && totalCharge(evt.GetMCSensHits()) > 8000){
+	  if(daughters[1]->GetCreatorProc() == std::string("phot")){
+		  int comptCount = fetch_istore("comptCount");
+		  fstore("comptCount",comptCount+1);
+//		  std::cout << "Compton!" << std::endl;
+	  }
   }
 
   //Hist compt events
-  if(firstDaughter.GetCreatorProc() == std::string("compt") 
-		  && totalCharge(evt.GetMCSensHits()) > 8000 ){
-
-	  std::vector<std::vector<gate::Hit*> > planes(6);
-	  splitHitsPerPlane(evt,planes);
-	  sipmmcHistCompton(planes,trueVertex);
+  if(firstDaughter.GetCreatorProc() == std::string("compt") && totalCharge(evt.GetMCSensHits()) > 8000 ){
+	  if(daughters[1]->GetCreatorProc() == std::string("phot")){
+		  std::vector<std::vector<gate::Hit*> > planes(6);
+		  splitHitsPerPlane(evt,planes);
+		  sipmmcHistCompton(planes,trueVertex);
+	  }
   }
 
  //Try only events with photoelectric and one vertex
@@ -279,6 +290,8 @@ bool petAnalysis::execute(gate::Event& evt){
   if(firstDaughter.GetCreatorProc() == std::string("phot") 
 		  && firstDaughter.GetDaughters().size()==0 
 		  && totalCharge(evt.GetMCSensHits()) > 8000 ){
+	  
+//	  std::cout << "Photoelectic!" << std::endl;
 
 	  //Store fraction of photoelectric
 	  int photoCount = fetch_istore("photoCount");
@@ -1215,7 +1228,6 @@ void petAnalysis::sipmmcHistCompton(std::vector<std::vector<gate::Hit*> > planes
 	findCluster->findCoronnaAllPlanes(planes,clusters1,1,0,0);
 	findCluster->findCoronnaAllPlanes(planes,clusters2,2,0,0);
 
-	std::cout << "entries\n";
 	gate::Centella::instance()
 		->hman()->fill2d(this->alabel("SiPMMC_Plane0_Compt"),trueVertex.z(),maxP0->GetAmplitude());
 	gate::Centella::instance()
@@ -1241,11 +1253,11 @@ void petAnalysis::sipmmcHistCompton(std::vector<std::vector<gate::Hit*> > planes
 	gate::Centella::instance()
 		->hman()->fill2d(this->alabel("SiPMMC_C1_Plane0_Norm_Compt"),trueVertex.z(),chargeC1[0]/clusters1.size());
 	gate::Centella::instance()
-		->hman()->fill2d(this->alabel("SiPMMC_C1_Plane2_Norm_Compt"),trueVertex.z(),chargeC1[2]/clusters1.size());
+		->hman()->fill2d(this->alabel("SiPMMC_C1_Plane2_Norm_Compt"),trueVertex.z(),chargeC1[1]/clusters1.size());
 	gate::Centella::instance()
 		->hman()->fill2d(this->alabel("SiPMMC_C2_Plane0_Norm_Compt"),trueVertex.z(),chargeC2[0]/clusters2.size());
 	gate::Centella::instance()
-		->hman()->fill2d(this->alabel("SiPMMC_C2_Plane2_Norm_Compt"),trueVertex.z(),chargeC2[2]/clusters2.size());
+		->hman()->fill2d(this->alabel("SiPMMC_C2_Plane2_Norm_Compt"),trueVertex.z(),chargeC2[1]/clusters2.size());
 
 	//2nd iteration
 	std::vector<std::vector<gate::Hit*> > planesFiltered(6);
@@ -1334,6 +1346,5 @@ void petAnalysis::sipmmcHistCompton(std::vector<std::vector<gate::Hit*> > planes
 
 //	std::cout << "c1_p0_Filtered: " << chargeC1Filtered[0] << "\tc1_p2_Filtered: " << chargeC1Filtered[1] << std::endl;
 //	std::cout << "c2_p0_Filtered: " << chargeC2Filtered[0] << "\tc2_p2_Filtered: " << chargeC2Filtered[1] << std::endl;
-
 
 }
