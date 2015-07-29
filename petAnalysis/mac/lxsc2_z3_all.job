@@ -1,0 +1,131 @@
+#####     ------ Parameter File -----       ###
+#                                             #  
+#   use:                                      #
+#                                             #
+#     GROUP NAME TYPE VALUE                   #
+#                                             #
+#     where TYPE is:                          #
+#                                             #
+#          I  --> INTEGER,                    #
+#          D  --> FLOAT                       #
+#          S  --> STRING                      #
+#          IV --> INTEGER VECTOR              #
+#          DV --> FLOAT VECTOR                #
+#          SV --> STRING VECTOR               #
+#                                             #
+#     For vectors:  TYPE == vector length     #
+#     Each element is decleared in new line   #
+#                                             #
+###############################################
+
+#--------- PATHS with modules to be used -------#
+#CNTJob PATHS SV 1
+#./../algos/
+
+CNTJob LIBS SV 1
+../lib/libpetAnalysis.so
+
+#--------- DATA -------#
+CNTJob INPUT_DATA SV 50
+petalo_prod/petalo.2_64_z3cm.0.next
+petalo_prod/petalo.2_64_z3cm.1.next
+petalo_prod/petalo.2_64_z3cm.2.next
+petalo_prod/petalo.2_64_z3cm.3.next
+petalo_prod/petalo.2_64_z3cm.4.next
+petalo_prod/petalo.2_64_z3cm.5.next
+petalo_prod/petalo.2_64_z3cm.6.next
+petalo_prod/petalo.2_64_z3cm.7.next
+petalo_prod/petalo.2_64_z3cm.8.next
+petalo_prod/petalo.2_64_z3cm.9.next
+petalo_prod/petalo.2_64_z3cm.10.next
+petalo_prod/petalo.2_64_z3cm.11.next
+petalo_prod/petalo.2_64_z3cm.12.next
+petalo_prod/petalo.2_64_z3cm.13.next
+petalo_prod/petalo.2_64_z3cm.14.next
+petalo_prod/petalo.2_64_z3cm.15.next
+petalo_prod/petalo.2_64_z3cm.16.next
+petalo_prod/petalo.2_64_z3cm.17.next
+petalo_prod/petalo.2_64_z3cm.18.next
+petalo_prod/petalo.2_64_z3cm.19.next
+petalo_prod/petalo.2_64_z3cm.20.next
+petalo_prod/petalo.2_64_z3cm.21.next
+petalo_prod/petalo.2_64_z3cm.22.next
+petalo_prod/petalo.2_64_z3cm.23.next
+petalo_prod/petalo.2_64_z3cm.24.next
+petalo_prod/petalo.2_64_z3cm.25.next
+petalo_prod/petalo.2_64_z3cm.26.next
+petalo_prod/petalo.2_64_z3cm.27.next
+petalo_prod/petalo.2_64_z3cm.28.next
+petalo_prod/petalo.2_64_z3cm.29.next
+petalo_prod/petalo.2_64_z3cm.30.next
+petalo_prod/petalo.2_64_z3cm.31.next
+petalo_prod/petalo.2_64_z3cm.32.next
+petalo_prod/petalo.2_64_z3cm.33.next
+petalo_prod/petalo.2_64_z3cm.34.next
+petalo_prod/petalo.2_64_z3cm.35.next
+petalo_prod/petalo.2_64_z3cm.36.next
+petalo_prod/petalo.2_64_z3cm.37.next
+petalo_prod/petalo.2_64_z3cm.38.next
+petalo_prod/petalo.2_64_z3cm.39.next
+petalo_prod/petalo.2_64_z3cm.40.next
+petalo_prod/petalo.2_64_z3cm.41.next
+petalo_prod/petalo.2_64_z3cm.42.next
+petalo_prod/petalo.2_64_z3cm.43.next
+petalo_prod/petalo.2_64_z3cm.44.next
+petalo_prod/petalo.2_64_z3cm.45.next
+petalo_prod/petalo.2_64_z3cm.46.next
+petalo_prod/petalo.2_64_z3cm.47.next
+petalo_prod/petalo.2_64_z3cm.48.next
+petalo_prod/petalo.2_64_z3cm.49.next
+
+#------ SAVE EVENTS IN OUTPUT FILE ----------# 
+CNTJob SAVE I 0
+
+#---------- NUMBER OF EVENTS TO ANALYZE ----------#
+CNTJob NEVENTS I 500000
+
+#---------- FIRST EVENT TO ANALYZE ----------#
+CNTJob FEVENT I 0
+
+#---------- Print status messages after NDEBUG events ----------#
+CNTJob NDEBUG I 100
+
+#---------- VERBOSITY LEVEL ----------#
+CNTJob LEVEL I 1
+
+#--------- ALGORITHMS-------#
+CNTJob ALGOS SV 1
+petAnalysis
+
+#--------- INPUT DATA FORMAT -------#
+CNTJob READER S gateReader
+
+#--------- OUPUT DATA FORMAT -------#
+CNTJob WRITER S gateWriter
+
+#------------- log file -------------#
+CNTJob LOG I 1
+CNTJob FLOG S lxsc2_z3.log
+
+#---------- histogram file ----------#
+CNTJob HISTOS 1
+CNTJob FHISTOS S lxsc2_z3.root
+
+#---------- histogram file ----------#
+CNTJob TREES 1
+CNTJob FTREES S lxsc2_z3_trees.root
+
+#---------- documentation tex file ----------#
+# latex_gen class can be used in your algorithm
+CNTJob DOC 0
+CNTJob FDOC S algo_example.tex
+
+#---------- output ps file for histoManager plots ----------#
+CNTJob FPS S algo_example.ps
+
+#---------- open a TBrowser at the end of the run ----------#
+CNTJob BROWSER I 0
+
+#---------- Algorithm parameters ----------#
+petAnalysis LAN S c++
+petAnalysis CONF S LXSC2_Z3
