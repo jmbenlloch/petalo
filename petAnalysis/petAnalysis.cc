@@ -104,6 +104,15 @@ bool petAnalysis::initialize(){
 	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane2_Norm"),"SiPM Charge Corona 2 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
 
   gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane0_Norm_2nd"),"SiPM Charge 2nd Corona 1 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane2_Norm_2nd"),"SiPM Charge 2nd Corona 1 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane0_Norm_2nd"),"SiPM Charge 2nd Corona 2 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane2_Norm_2nd"),"SiPM Charge 2nd Corona 2 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
+
+  gate::Centella::instance()
 	  ->hman()->h2(this->alabel("Plane0_NoSiPMMC"),"Charge without SiPMMC (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
   gate::Centella::instance()
 	  ->hman()->h2(this->alabel("Plane2_NoSiPMMC"),"Charge without SiPMMC (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
@@ -129,6 +138,51 @@ bool petAnalysis::initialize(){
 	  ->hman()->h2(this->alabel("Plane0"),"Charge in Plane 0 " + fetch_sstore("CONF"),100,-25,25,2000,0,6500);
   gate::Centella::instance()
 	  ->hman()->h2(this->alabel("Plane2"),"Charge in Plane 2 " + fetch_sstore("CONF"),100,-25,25,2000,0,6500);
+
+  //Non-PE events
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPMMC_Plane0_Compt"),"Compton SiPM Max Charge (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPMMC_Plane2_Compt"),"Compton SiPM Max Charge (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane0_Compt"),"Compton SiPM Charge Corona 1 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane2_Compt"),"Compton SiPM Charge Corona 1 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane0_Compt"),"Compton SiPM Charge Corona 2 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane2_Compt"),"Compton SiPM Charge Corona 2 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
+
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPMMC_Plane0_2nd_Compt"),"Compton SiPM 2nd Max Charge (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPMMC_Plane2_2nd_Compt"),"Compton SiPM 2nd Max Charge (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane0_2nd_Compt"),"Compton SiPM Charge 2nd Corona 1 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane2_2nd_Compt"),"Compton SiPM Charge 2nd Corona 1 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane0_2nd_Compt"),"Compton SiPM Charge 2nd Corona 2 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane2_2nd_Compt"),"Compton SiPM Charge 2nd Corona 2 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
+
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane0_Norm_Compt"),"Compton SiPM Charge Corona 1 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane2_Norm_Compt"),"Compton SiPM Charge Corona 1 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane0_Norm_Compt"),"Compton SiPM Charge Corona 2 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane2_Norm_Compt"),"Compton SiPM Charge Corona 2 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
+
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane0_Norm_2nd_Compt"),"Compton SiPM Charge 2nd Corona 1 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane2_Norm_2nd_Compt"),"Compton SiPM Charge 2nd Corona 1 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane0_Norm_2nd_Compt"),"Compton SiPM Charge 2nd Corona 2 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane2_Norm_2nd_Compt"),"Compton SiPM Charge 2nd Corona 2 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
 
   //Energy distribution
   gate::Centella::instance()
@@ -208,6 +262,15 @@ bool petAnalysis::execute(gate::Event& evt){
 		  && totalCharge(evt.GetMCSensHits()) > 8000){
 	  int comptCount = fetch_istore("comptCount");
 	  fstore("comptCount",comptCount+1);
+  }
+
+  //Hist compt events
+  if(firstDaughter.GetCreatorProc() == std::string("compt") 
+		  && totalCharge(evt.GetMCSensHits()) > 8000 ){
+
+	  std::vector<std::vector<gate::Hit*> > planes(6);
+	  splitHitsPerPlane(evt,planes);
+	  sipmmcHistCompton(planes,trueVertex);
   }
 
  //Try only events with photoelectric and one vertex
@@ -1104,6 +1167,11 @@ void petAnalysis::sipmmcHist2nd(std::vector<std::vector<gate::Hit*> > planes, ga
 	gate::Centella::instance()
 		->hman()->fill2d(this->alabel("SiPMMC_C1_Plane2_2nd"),trueVertex.z(),chargeC1Filtered[1]);
 
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("SiPMMC_C1_Plane0_Norm_2nd"),trueVertex.z(),chargeC1Filtered[0]/clusters1Filtered.size());
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("SiPMMC_C1_Plane2_Norm_2nd"),trueVertex.z(),chargeC1Filtered[1]/clusters1Filtered.size());
+
 	//Corona 2 2nd
 	planesFiltered[0].clear();
 	planesFiltered[2].clear();
@@ -1125,6 +1193,144 @@ void petAnalysis::sipmmcHist2nd(std::vector<std::vector<gate::Hit*> > planes, ga
 		->hman()->fill2d(this->alabel("SiPMMC_C2_Plane0_2nd"),trueVertex.z(),chargeC2Filtered[0]);
 	gate::Centella::instance()
 		->hman()->fill2d(this->alabel("SiPMMC_C2_Plane2_2nd"),trueVertex.z(),chargeC2Filtered[1]);
+
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("SiPMMC_C2_Plane0_Norm_2nd"),trueVertex.z(),chargeC2Filtered[0]/clusters2Filtered.size());
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("SiPMMC_C2_Plane2_Norm_2nd"),trueVertex.z(),chargeC2Filtered[1]/clusters2Filtered.size());
+
+//	std::cout << "c1_p0_Filtered: " << chargeC1Filtered[0] << "\tc1_p2_Filtered: " << chargeC1Filtered[1] << std::endl;
+//	std::cout << "c2_p0_Filtered: " << chargeC2Filtered[0] << "\tc2_p2_Filtered: " << chargeC2Filtered[1] << std::endl;
+
+
+}
+
+void petAnalysis::sipmmcHistCompton(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& trueVertex){
+	gate::Hit* maxP0 = *std::max_element(planes[0].begin(),planes[0].end(),chargeOrderSensorsAsc);
+	gate::Hit* maxP2 = *std::max_element(planes[2].begin(),planes[2].end(),chargeOrderSensorsAsc);
+
+	util::findCluster* findCluster = new util::findCluster();
+	std::vector<std::vector<gate::Hit*> > clusters1(6);
+	std::vector<std::vector<gate::Hit*> > clusters2(6);
+	findCluster->findCoronnaAllPlanes(planes,clusters1,1,0,0);
+	findCluster->findCoronnaAllPlanes(planes,clusters2,2,0,0);
+
+	std::cout << "entries\n";
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("SiPMMC_Plane0_Compt"),trueVertex.z(),maxP0->GetAmplitude());
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("SiPMMC_Plane2_Compt"),trueVertex.z(),maxP2->GetAmplitude());
+
+	double chargeC1[2] = {0.,0.};
+	double chargeC2[2] = {0.,0.};
+
+	chargeC1[0] = planeCharge(clusters1[0]);
+	chargeC1[1] = planeCharge(clusters1[2]);
+	chargeC2[0] = planeCharge(clusters2[0]);
+	chargeC2[1] = planeCharge(clusters2[2]);
+
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("SiPMMC_C1_Plane0_Compt"),trueVertex.z(),chargeC1[0]);
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("SiPMMC_C1_Plane2_Compt"),trueVertex.z(),chargeC1[1]);
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("SiPMMC_C2_Plane0_Compt"),trueVertex.z(),chargeC2[0]);
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("SiPMMC_C2_Plane2_Compt"),trueVertex.z(),chargeC2[1]);
+
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("SiPMMC_C1_Plane0_Norm_Compt"),trueVertex.z(),chargeC1[0]/clusters1.size());
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("SiPMMC_C1_Plane2_Norm_Compt"),trueVertex.z(),chargeC1[2]/clusters1.size());
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("SiPMMC_C2_Plane0_Norm_Compt"),trueVertex.z(),chargeC2[0]/clusters2.size());
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("SiPMMC_C2_Plane2_Norm_Compt"),trueVertex.z(),chargeC2[2]/clusters2.size());
+
+	//2nd iteration
+	std::vector<std::vector<gate::Hit*> > planesFiltered(6);
+	std::vector<gate::Hit*> toFilter;
+
+//	for(unsigned int i=0;i<3;i+=2){
+//		std::cout << "i: " << i << "\t size: " << planes[i].size() << std::endl;
+//	}
+//	std::cout << "clusters1[0]: " << "\t size: " << clusters1[0].size() << std::endl;
+//	std::cout << "clusters1[2]: " << "\t size: " << clusters1[2].size() << std::endl;
+//	std::cout << "clusters2[0]: " << "\t size: " << clusters2[0].size() << std::endl;
+//	std::cout << "clusters2[2]: " << "\t size: " << clusters2[2].size() << std::endl;
+
+	//SiPMMC 2nd
+	toFilter.push_back(maxP0);
+	filterHits(planes[0],toFilter,planesFiltered[0]);
+	toFilter.clear();
+	toFilter.push_back(maxP2);
+	filterHits(planes[2],toFilter,planesFiltered[2]);
+	toFilter.clear();
+	
+//	for(unsigned int i=0;i<3;i+=2){
+//		std::cout << "Filtered SiPMMC: " << i << "\t size: " << planesFiltered[i].size() << std::endl;
+//	}
+
+	gate::Hit* maxP0Filtered = *std::max_element(planesFiltered[0].begin(),planesFiltered[0].end(),chargeOrderSensorsAsc);
+	gate::Hit* maxP2Filtered = *std::max_element(planesFiltered[2].begin(),planesFiltered[2].end(),chargeOrderSensorsAsc);
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("SiPMMC_Plane0_2nd_Compt"),trueVertex.z(),maxP0Filtered->GetAmplitude());
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("SiPMMC_Plane2_2nd_Compt"),trueVertex.z(),maxP2Filtered->GetAmplitude());
+
+	//Corona 1 2nd
+	planesFiltered[0].clear();
+	planesFiltered[2].clear();
+	filterHits(planes[0],clusters1[0],planesFiltered[0]);
+	filterHits(planes[2],clusters1[2],planesFiltered[2]);
+
+//	for(unsigned int i=0;i<3;i+=2){
+//		std::cout << "Filtered C1: " << i << "\t size: " << planesFiltered[i].size() << std::endl;
+//	}
+
+	std::vector<std::vector<gate::Hit*> > clusters1Filtered(6);
+	findCluster->findCoronnaAllPlanes(planesFiltered,clusters1Filtered,1,0,0);
+
+	double chargeC1Filtered[2] = {0.,0.};
+	chargeC1Filtered[0] = planeCharge(clusters1Filtered[0]);
+	chargeC1Filtered[1] = planeCharge(clusters1Filtered[2]);
+
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("SiPMMC_C1_Plane0_2nd_Compt"),trueVertex.z(),chargeC1Filtered[0]);
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("SiPMMC_C1_Plane2_2nd_Compt"),trueVertex.z(),chargeC1Filtered[1]);
+
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("SiPMMC_C1_Plane0_Norm_2nd_Compt"),trueVertex.z(),chargeC1Filtered[0]/clusters1Filtered.size());
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("SiPMMC_C1_Plane2_Norm_2nd_Compt"),trueVertex.z(),chargeC1Filtered[1]/clusters1Filtered.size());
+
+	//Corona 2 2nd
+	planesFiltered[0].clear();
+	planesFiltered[2].clear();
+	filterHits(planes[0],clusters2[0],planesFiltered[0]);
+	filterHits(planes[2],clusters2[2],planesFiltered[2]);
+	
+//	for(unsigned int i=0;i<3;i+=2){
+//		std::cout << "Filtered C2: " << i << "\t size: " << planesFiltered[i].size() << std::endl;
+//	}
+
+	std::vector<std::vector<gate::Hit*> > clusters2Filtered(6);
+	findCluster->findCoronnaAllPlanes(planesFiltered,clusters2Filtered,2,0,0);
+
+	double chargeC2Filtered[2] = {0.,0.};
+	chargeC2Filtered[0] = planeCharge(clusters2Filtered[0]);
+	chargeC2Filtered[1] = planeCharge(clusters2Filtered[2]);
+
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("SiPMMC_C2_Plane0_2nd_Compt"),trueVertex.z(),chargeC2Filtered[0]);
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("SiPMMC_C2_Plane2_2nd_Compt"),trueVertex.z(),chargeC2Filtered[1]);
+
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("SiPMMC_C2_Plane0_Norm_2nd_Compt"),trueVertex.z(),chargeC2Filtered[0]/clusters2Filtered.size());
+	gate::Centella::instance()
+		->hman()->fill2d(this->alabel("SiPMMC_C2_Plane2_Norm_2nd_Compt"),trueVertex.z(),chargeC2Filtered[1]/clusters2Filtered.size());
 
 //	std::cout << "c1_p0_Filtered: " << chargeC1Filtered[0] << "\tc1_p2_Filtered: " << chargeC1Filtered[1] << std::endl;
 //	std::cout << "c2_p0_Filtered: " << chargeC2Filtered[0] << "\tc2_p2_Filtered: " << chargeC2Filtered[1] << std::endl;
