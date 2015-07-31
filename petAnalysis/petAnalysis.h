@@ -4,10 +4,12 @@
 #include <GATE/Centella.h>
 #include <utility>
 #include "TNtuple.h"
+#include "TFile.h"
 
 class petAnalysis : public gate::IAlgo {
 
 	TNtuple *_ntuple;
+	TFile *_file;
 
  public:
   
@@ -48,19 +50,17 @@ class petAnalysis : public gate::IAlgo {
   void computeBarycenters(std::vector<std::vector<gate::Hit*> > planes, std::vector<std::vector<double> >& points, std::vector<std::vector<double> >& errors);
   double zReconsRatio(double ratio);
   void chargeHist2d(std::vector<std::vector<gate::Hit*> > planes);
-  void sipmmcHist(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& trueVertex);
+  void sipmmcHist(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& trueVertex, int phot);
   double totalCharge(std::vector<gate::Hit*> hits);
-  void reconstruction(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& trueVertex);
-  void reconstructionCorona1(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& trueVertex);
   void filterHits(std::vector<gate::Hit*> plane, std::vector<gate::Hit*> hits, std::vector<gate::Hit*>& planeFiltered);
-  void sipmmcHist2nd(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& trueVertex);
-  void sipmmcHistCompton(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& trueVertex);
 
   //! finalize algorithm
   bool finalize();          
 
   TNtuple * getNtuple() {return _ntuple;}
   void setNtuple(TNtuple* ntuple) {_ntuple = ntuple;}
+  TFile * getFile() {return _file;}
+  void setFile(TFile* file) {_file = file;}
   
  private:
   
