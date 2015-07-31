@@ -27,16 +27,16 @@ CNTJob LIBS SV 1
 
 #--------- DATA -------#
 CNTJob INPUT_DATA SV 10
-petalo_prod/petalo.2_64.000.next
-petalo_prod/petalo.2_64.001.next
-petalo_prod/petalo.2_64.002.next
-petalo_prod/petalo.2_64.003.next
-petalo_prod/petalo.2_64.004.next
-petalo_prod/petalo.2_64.005.next
-petalo_prod/petalo.2_64.006.next
-petalo_prod/petalo.2_64.007.next
-petalo_prod/petalo.2_64.008.next
-petalo_prod/petalo.2_64.009.next
+petalo_prod/petalo.2_36.0.next
+petalo_prod/petalo.2_36.1.next
+petalo_prod/petalo.2_36.2.next
+petalo_prod/petalo.2_36.3.next
+petalo_prod/petalo.2_36.4.next
+petalo_prod/petalo.2_36.5.next
+petalo_prod/petalo.2_36.6.next
+petalo_prod/petalo.2_36.7.next
+petalo_prod/petalo.2_36.8.next
+petalo_prod/petalo.2_36.9.next
 
 #------ SAVE EVENTS IN OUTPUT FILE ----------# 
 CNTJob SAVE I 0

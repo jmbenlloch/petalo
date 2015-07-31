@@ -3,8 +3,11 @@
 
 #include <GATE/Centella.h>
 #include <utility>
+#include "TNtuple.h"
 
 class petAnalysis : public gate::IAlgo {
+
+	TNtuple *_ntuple;
 
  public:
   
@@ -28,8 +31,6 @@ class petAnalysis : public gate::IAlgo {
   
   //Position reconstruction using barycenter
   void bestPointRecons(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& truePt, gate::Point3D& pt);
-  //Fill energy histogram
-  void energyPhotCompt(gate::Event& evt);
   //Find first particle in a vector of particles by its creation time
   void findFirstParticle(const std::vector<const gate::MCParticle*> particles, gate::MCParticle& first);
   void findFirstParticle(std::vector<gate::MCParticle*> particles, gate::MCParticle& first);
@@ -57,6 +58,9 @@ class petAnalysis : public gate::IAlgo {
 
   //! finalize algorithm
   bool finalize();          
+
+  TNtuple * getNtuple() {return _ntuple;}
+  void setNtuple(TNtuple* ntuple) {_ntuple = ntuple;}
   
  private:
   

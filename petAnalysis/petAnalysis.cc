@@ -28,208 +28,9 @@ bool petAnalysis::initialize(){
 //==========================================================================
 
   _m.message("Intializing algorithm",this->getAlgoLabel(),gate::NORMAL);
-
-  // Energy
-  gate::Centella::instance()
-    ->hman()->h1(this->alabel("Energy"),"Energy SiPM " + fetch_sstore("CONF"),500,0,20000);
-  gate::Centella::instance()
-    ->hman()->h1(this->alabel("EnergyPhot"),"Energy Phot SiPM " + fetch_sstore("CONF"),500,0,20000);
-  gate::Centella::instance()
-    ->hman()->h1(this->alabel("EnergyCompt"),"Energy Compton SiPM " + fetch_sstore("CONF"),500,0,20000);
-
-  // Best reconstruction
-/*  gate::Centella::instance()
-	  ->hman()->h1(this->alabel("xBest"),"xRecons-xTrue " + fetch_sstore("CONF"),100,-25,25);
-  gate::Centella::instance()
-	  ->hman()->h1(this->alabel("yBest"),"yRecons-yTrue " + fetch_sstore("CONF"),100,-25,25);
-  gate::Centella::instance()
-	  ->hman()->h1(this->alabel("zBest"),"zRecons-zTrue " + fetch_sstore("CONF"),100,-25,25);*/
-
-  //Find best cut
-  for(unsigned int i=0;i<20;i++){
-	  string nameX = "x_" + gate::to_string(5*i);
-	  string nameY = "y_" + gate::to_string(5*i);
-	  gate::Centella::instance()
-		  ->hman()->h1(this->alabel(nameX),"xRecons-xTrue " + fetch_sstore("CONF"),100,-25,25);
-	  gate::Centella::instance()
-		  ->hman()->h1(this->alabel(nameY),"yRecons-yTrue " + fetch_sstore("CONF"),100,-25,25);
-  }
-
-  // z Ratio
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("zRatio"),"Charge Ratio Planes 0-2 " + fetch_sstore("CONF"),100,-25,25,100,0,10);
-  gate::Centella::instance()
-	  ->hman()->h1(this->alabel("zReconsRatio"),"zRecons-zTrue using ratio " + fetch_sstore("CONF"),100,-25,25);
-
-  // SiPM Relative Charge
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPM_Plane0"),"SiPM Relative Charge Plane 0 " + fetch_sstore("CONF"),64,0,64,100,0.,1.);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPM_Plane2"),"SiPM Relative Charge Plane 2 " + fetch_sstore("CONF"),64,0,64,100,0.,1.);
-
-  //SiPMMC as function of z
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_Plane0"),"SiPM Max Charge (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_Plane2"),"SiPM Max Charge (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane0"),"SiPM Charge Corona 1 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane2"),"SiPM Charge Corona 1 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane0"),"SiPM Charge Corona 2 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane2"),"SiPM Charge Corona 2 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_Plane0_2nd"),"SiPM 2nd Max Charge (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_Plane2_2nd"),"SiPM 2nd Max Charge (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane0_2nd"),"SiPM Charge 2nd Corona 1 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane2_2nd"),"SiPM Charge 2nd Corona 1 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane0_2nd"),"SiPM Charge 2nd Corona 2 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane2_2nd"),"SiPM Charge 2nd Corona 2 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-  
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane0_Norm"),"SiPM Charge Corona 1 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane2_Norm"),"SiPM Charge Corona 1 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane0_Norm"),"SiPM Charge Corona 2 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane2_Norm"),"SiPM Charge Corona 2 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
-
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane0_Norm_2nd"),"SiPM Charge 2nd Corona 1 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane2_Norm_2nd"),"SiPM Charge 2nd Corona 1 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane0_Norm_2nd"),"SiPM Charge 2nd Corona 2 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane2_Norm_2nd"),"SiPM Charge 2nd Corona 2 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
-
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane0_NoSiPMMC"),"Charge without SiPMMC (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane2_NoSiPMMC"),"Charge without SiPMMC (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane0_NoSiPMMC_C1"),"Charge without SiPMMC+Cluster1 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane2_NoSiPMMC_C1"),"Charge without SiPMMC+Cluster1 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane0_NoSiPMMC_C2"),"Charge without SiPMMC+Cluster2 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane2_NoSiPMMC_C2"),"Charge without SiPMMC+Cluster2 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-  
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane0_NoSiPMMC_C1_Norm"),"Charge without SiPMMC+Cluster1 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane2_NoSiPMMC_C1_Norm"),"Charge without SiPMMC+Cluster1 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane0_NoSiPMMC_C2_Norm"),"Charge without SiPMMC+Cluster2 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane2_NoSiPMMC_C2_Norm"),"Charge without SiPMMC+Cluster2 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane0"),"Charge in Plane 0 " + fetch_sstore("CONF"),100,-25,25,2000,0,6500);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Plane2"),"Charge in Plane 2 " + fetch_sstore("CONF"),100,-25,25,2000,0,6500);
-
-  //Non-PE events
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_Plane0_Compt"),"Compton SiPM Max Charge (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_Plane2_Compt"),"Compton SiPM Max Charge (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane0_Compt"),"Compton SiPM Charge Corona 1 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane2_Compt"),"Compton SiPM Charge Corona 1 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane0_Compt"),"Compton SiPM Charge Corona 2 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane2_Compt"),"Compton SiPM Charge Corona 2 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_Plane0_2nd_Compt"),"Compton SiPM 2nd Max Charge (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_Plane2_2nd_Compt"),"Compton SiPM 2nd Max Charge (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane0_2nd_Compt"),"Compton SiPM Charge 2nd Corona 1 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane2_2nd_Compt"),"Compton SiPM Charge 2nd Corona 1 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane0_2nd_Compt"),"Compton SiPM Charge 2nd Corona 2 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane2_2nd_Compt"),"Compton SiPM Charge 2nd Corona 2 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,2000,0,6000);
-
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane0_Norm_Compt"),"Compton SiPM Charge Corona 1 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane2_Norm_Compt"),"Compton SiPM Charge Corona 1 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane0_Norm_Compt"),"Compton SiPM Charge Corona 2 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane2_Norm_Compt"),"Compton SiPM Charge Corona 2 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
-
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane0_Norm_2nd_Compt"),"Compton SiPM Charge 2nd Corona 1 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C1_Plane2_Norm_2nd_Compt"),"Compton SiPM Charge 2nd Corona 1 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane0_Norm_2nd_Compt"),"Compton SiPM Charge 2nd Corona 2 (Plane 0) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("SiPMMC_C2_Plane2_Norm_2nd_Compt"),"Compton SiPM Charge 2nd Corona 2 (Plane 2) " + fetch_sstore("CONF"),100,-25,25,100,0,1000);
-
-  //Energy distribution
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("xyEnergy"),"xy",100,-25,25,100,-25,25);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("xzEnergy"),"xz",100,-25,25,100,-25,25);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("yzEnergy"),"yz",100,-25,25,100,-25,25);
-
-  //Parametrization
-  int xmin,xmax,nBins;
-  if(fetch_sstore("CONF") == "LXSC2_Z2"){
-	  xmin = -10;
-	  xmax = 10;
-	  nBins = 10;
-  }
-  if(fetch_sstore("CONF") == "LXSC2_Z3"){
-	  xmin = -15;
-	  xmax = 15;
-	  nBins = 15;
-  }
-  if(fetch_sstore("CONF") == "LXSC2_Z4"){
-	  xmin = -20;
-	  xmax = 20;
-	  nBins = 20;
-  }
-  if(fetch_sstore("CONF") == "LXSC2_Z5"){
-	  xmin = -25;
-	  xmax = 25;
-	  nBins = 25;
-  }
-
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Param_SiPMMC_Plane0"),"SiPM Max Charge (Plane 0) " + fetch_sstore("CONF"),nBins,xmin,xmax,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Param_SiPMMC_Plane2"),"SiPM Max Charge (Plane 2) " + fetch_sstore("CONF"),nBins,xmin,xmax,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Param_SiPMMC_C1_Plane0"),"SiPM Charge Corona 1 (Plane 0) " + fetch_sstore("CONF"),nBins,xmin,xmax,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Param_SiPMMC_C1_Plane2"),"SiPM Charge Corona 1 (Plane 2) " + fetch_sstore("CONF"),nBins,xmin,xmax,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Param_SiPMMC_C2_Plane0"),"SiPM Charge Corona 2 (Plane 0) " + fetch_sstore("CONF"),nBins,xmin,xmax,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Param_SiPMMC_C2_Plane2"),"SiPM Charge Corona 2 (Plane 2) " + fetch_sstore("CONF"),nBins,xmin,xmax,2000,0,6000);
-
-  store("photoCount",0);
-  store("comptCount",0);
+ 
+  TNtuple *ntuple = new TNtuple("ntuple","data from ascii file","energy:x:y:z:plane0:plane2:charge:phot:compt");
+  setNtuple(ntuple);
 
   return true;
 }
@@ -244,7 +45,7 @@ bool petAnalysis::execute(gate::Event& evt){
   _m.message("Event number:",evt.GetEventID(),gate::VERBOSE);
 
   //Fill energy hists
-  energyPhotCompt(evt);
+//  energyPhotCompt(evt);
 
   // Search primary particle and its first daughter
   gate::MCParticle primary;
@@ -252,19 +53,54 @@ bool petAnalysis::execute(gate::Event& evt){
   findFirstParticle(evt.GetMCParticles(),primary);
   findFirstParticle(primary.GetDaughters(),firstDaughter);
 
+  //True Vertex
+  gate::Point3D trueVertex = firstDaughter.GetInitialVtx(); 
+
+  //Classify sensor hits per planes
+  std::vector<std::vector<gate::Hit*> > planes(6);
+  splitHitsPerPlane(evt,planes);
+
+  float phot = 0;
+  float compt = 0;
+  if(firstDaughter.GetCreatorProc() == std::string("compt")){
+	  compt = 1;
+  }
+  if(firstDaughter.GetCreatorProc() == std::string("phot")){
+	  phot = 1;
+  }
+
   //Find second daughter
   std::vector<const gate::MCParticle*> daughters(primary.GetDaughters());
   std::sort(daughters.begin(), daughters.end(), petAnalysis::timeOrderParticles);
-//  std::cout << "Event number:" << evt.GetEventID() << std::endl; 
-//  for(unsigned int i=0;i<daughters.size();i++){
-//	  std::cout << "\t Vol: " <<daughters[i]->GetInitialVol();
-//	  std::cout << "\t t: " << daughters[i]->GetInitialVtx4D().GetT();
-//	  std::cout << "\t" << daughters[i]->GetCreatorProc() << "/" << daughters[i]->GetPDG();
-//	  std::cout << std::endl;
-//  }
+  std::cout << "Event number:" << evt.GetEventID() << std::endl; 
+  for(unsigned int i=0;i<daughters.size();i++){
+	  std::cout << "\t Vol: " <<daughters[i]->GetInitialVol();
+	  std::cout << "\t t: " << daughters[i]->GetInitialVtx4D().GetT();
+	  std::cout << "\t" << daughters[i]->GetCreatorProc() << "/" << daughters[i]->GetPDG();
+	  std::cout << "\t\t daughters:" << daughters[i]->GetDaughters().size();
+	  std::cout << std::endl;
 
-  //True Vertex
-  gate::Point3D trueVertex = firstDaughter.GetInitialVtx(); 
+	  for(unsigned int j=0;j<daughters[i]->GetDaughters().size();j++){
+		  std::cout << "\t\t Vol: " << daughters[i]->GetDaughters()[j]->GetInitialVol();
+		  std::cout << "\t\t t: " << daughters[i]->GetDaughters()[j]->GetInitialVtx4D().GetT();
+		  std::cout << "\t\t" << daughters[i]->GetDaughters()[j]->GetCreatorProc() << "/" << daughters[i]->GetDaughters()[j]->GetPDG();
+		  std::cout << "\t\t daughters:" << daughters[i]->GetDaughters()[j]->GetDaughters().size();
+		  std::cout << std::endl;
+	  }
+  }
+  
+  //Energy MCParticles
+  double energy = 0.;
+  for(unsigned int i=0;i<evt.GetMCParticles().size();i++){
+	  for(unsigned int j=0;j<evt.GetMCParticles()[i]->GetTracks().size();j++){
+		  energy += evt.GetMCParticles()[i]->GetTracks()[j]->GetHitsEnergy();
+	  }
+  }
+  std::cout << "Energy all MCParticles: " << energy << std::endl;
+
+  getNtuple()->Fill(energy,trueVertex.x(),trueVertex.y(),trueVertex.z(),planeCharge(planes[0]),planeCharge(planes[2]),totalCharge(evt.GetMCSensHits()),phot,compt);
+
+/*
 
   //Compton count
   if(firstDaughter.GetCreatorProc() == std::string("compt") && totalCharge(evt.GetMCSensHits()) > 8000){
@@ -299,9 +135,6 @@ bool petAnalysis::execute(gate::Event& evt){
 
 //	  std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
 
-	  //Classify sensor hits per planes
-	  std::vector<std::vector<gate::Hit*> > planes(6);
-	  splitHitsPerPlane(evt,planes);
 
 	  //Reconstruction
 //	  reconstruction(planes,trueVertex);
@@ -314,44 +147,8 @@ bool petAnalysis::execute(gate::Event& evt){
 	  //Charge histograms
 	  chargeHist2d(planes);
 
-	  //Energy distribution
-	  double energy = totalCharge(evt.GetMCSensHits());
-	  gate::Centella::instance()
-		  ->hman()->fill2d(this->alabel("xyEnergy"),trueVertex.x(),trueVertex.y(),energy);
-	  gate::Centella::instance()
-		  ->hman()->fill2d(this->alabel("xzEnergy"),trueVertex.x(),trueVertex.z(),energy);
-	  gate::Centella::instance()
-		  ->hman()->fill2d(this->alabel("yzEnergy"),trueVertex.y(),trueVertex.z(),energy);
-
-	  //zRatio
-	  gate::Centella::instance()
-		  ->hman()->fill2d(this->alabel("zRatio"),trueVertex.z(),planeCharge(planes[0])/planeCharge(planes[2]));
-	  gate::Centella::instance()
-		  ->hman()->fill(this->alabel("zReconsRatio"), zReconsRatio(planeCharge(planes[0])/planeCharge(planes[2])) - trueVertex.z());
-
-	  //Find best cut
-	  for(unsigned int k=0;k<20;k++){
-		  //Apply cut
-		  std::vector<std::vector<gate::Hit*> > planesCut(6);
-		  for(unsigned int i=0; i<6;i++){
-			  applyCut(planes[i], 0.05*k,planesCut[i]);
-		  }
-
-		  gate::Point3D reconsPointBest; 
-		  bestPointRecons(planesCut,trueVertex,reconsPointBest);
-
-		  string nameX = "x_" + gate::to_string(5*k);
-		  string nameY = "y_" + gate::to_string(5*k);
-		  gate::Centella::instance()
-			  ->hman()->fill(this->alabel(nameX), reconsPointBest.x() - trueVertex.x());
-		  gate::Centella::instance()
-			  ->hman()->fill(this->alabel(nameY), reconsPointBest.y() - trueVertex.y());
-		  /*	  std::cout << "xBest: " << reconsPointBest.x() - trueVertex.x() << std::endl;
-				  std::cout << "yBest: " << reconsPointBest.y() - trueVertex.y() << std::endl;*/
-	  }
-
   }
-
+*/
   return true;
 }
 
@@ -365,53 +162,10 @@ bool petAnalysis::finalize(){
   int nevt = gate::int_from_string(run->fetch_sstore("num_events"));
   _m.message("Number of generated events in file:",nevt,gate::NORMAL);
 
-  std::vector<double> sigmaX(20),sigmaY(20),sigmaAvg(20);
-  for(unsigned int i=0;i<20;i++){
-	  string nameX = "petAnalysis_x_" + gate::to_string(5*i);
-	  string nameY = "petAnalysis_y_" + gate::to_string(5*i);
-	  TF1* gauF = new TF1("gauF","gaus",-50,50);
 
-	  TH1* histX = gate::Centella::instance()->hman()->operator[](nameX);
-	  histX->Fit("gauF","","e",-15,15);
-	  sigmaX[i] = gauF->GetParameter(2);
-
-	  TH1* histY = gate::Centella::instance()->hman()->operator[](nameY);
-	  histY->Fit("gauF","","e",-15,15);
-	  sigmaY[i] = gauF->GetParameter(2);
-
-	  sigmaAvg[i] = (sigmaX[i] + sigmaY[i])/2.0;
-  }
-
-/*  for(unsigned int i=0;i<20;i++){
-	  std::cout << "x_" << i*0.05 << ": " << sigmaX[i] << std::endl;
-  }
-  for(unsigned int i=0;i<20;i++){
-	  std::cout << "y_" << i*0.05 << ": " << sigmaY[i] << std::endl;
-  }*/
-
-  int indexBest = std::min_element(sigmaAvg.begin(), sigmaAvg.end()) - sigmaAvg.begin();
-  string nameX = "petAnalysis_x_" + gate::to_string(5*indexBest);
-  string nameY = "petAnalysis_y_" + gate::to_string(5*indexBest);
-
-  gate::Centella::instance()->logman().addLog("USER","bestCut",5*indexBest);
-  gate::Centella::instance()->logman().addLog("USER","photoCount",fetch_istore("photoCount"));
-  gate::Centella::instance()->logman().addLog("USER","comptCount",fetch_istore("comptCount"));
-
-/*  int nBins = gate::Centella::instance()->hman()->operator[]("petAnalysis_xBest")->GetNbinsX();
-  //Copy best hist to xBest,yBest,zBest
-  for(int i=0;i<nBins;i++){
-	  gate::Centella::instance()->hman()->operator[]("petAnalysis_xBest")->SetBinContent(i,gate::Centella::instance()->hman()->operator[](nameX)->GetBinContent(i));
-	  gate::Centella::instance()->hman()->operator[]("petAnalysis_yBest")->SetBinContent(i,gate::Centella::instance()->hman()->operator[](nameY)->GetBinContent(i));
-	  gate::Centella::instance()->hman()->operator[]("petAnalysis_zBest")->SetBinContent(i,gate::Centella::instance()->hman()->operator[](nameZ)->GetBinContent(i));
-  }*/
-
-/*  std::cout << "Cut minValue (avg): " << 0.05*(std::min_element(sigmaAvg.begin(), sigmaAvg.end()) - sigmaAvg.begin()) << std::endl;
-  std::cout << "Cut minValue (x): " << 0.05*(std::min_element(sigmaX.begin(), sigmaX.end()) - sigmaX.begin()) << std::endl;
-  std::cout << "Cut minValue (y): " << 0.05*(std::min_element(sigmaY.begin(), sigmaY.end()) - sigmaY.begin()) << std::endl;*/
-
-  //Try rename
-  gate::Centella::instance()->hman()->operator[](nameX)->SetName("petAnalysis_xBest");
-  gate::Centella::instance()->hman()->operator[](nameY)->SetName("petAnalysis_yBest");
+  TFile *file = new TFile("ntuple.root", "RECREATE", "An Example ROOT file");
+  getNtuple()->Write();
+  file->Close();
 
   return true;
 
@@ -607,40 +361,6 @@ void petAnalysis::computeBarycenters(std::vector<std::vector<gate::Hit*> > plane
 	std::cout << "Plane 4: x=" << points[4][0] << ", z=" << points[4][1] << std::endl;
 	std::cout << "Plane 5: x=" << points[5][0] << ", z=" << points[5][1] << std::endl;
 */
-}
-
-void petAnalysis::energyPhotCompt(gate::Event& evt){
-  gate::MCParticle primary;
-  gate::MCParticle firstDaughter;
-  findFirstParticle(evt.GetMCParticles(),primary);
-  findFirstParticle(primary.GetDaughters(),firstDaughter);
-
-  int energy = 0;
-  for(unsigned int i=0;i<evt.GetMCSensHits().size(); i++){
-	  energy += evt.GetMCSensHits()[i]->GetAmplitude();
-  }
-
-  gate::Centella::instance()
-    ->hman()->fill(this->alabel("Energy"),energy);
-
-  int flagPhot=0;
-  for(unsigned int i=0;i<evt.GetMCParticles().size();i++){
-	  if(evt.GetMCParticles()[i]->GetCreatorProc() == std::string("phot")){
-		  flagPhot = 1;
-	//	  gate::Centella::instance()
-	//		  ->hman()->fill(this->alabel("EnergyPhot"),energy);
-		  break;
-	  }
-  }
-  if(flagPhot==0){
-	  gate::Centella::instance()
-		  ->hman()->fill(this->alabel("EnergyCompt"),energy);
-  }
-
-  if(firstDaughter.GetCreatorProc() == std::string("phot")){
-	  gate::Centella::instance()
-		  ->hman()->fill(this->alabel("EnergyPhot"),energy);
-  }
 }
 
 //Must be update for each case
