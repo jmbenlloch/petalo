@@ -126,7 +126,11 @@ bool petAnalysis::execute(gate::Event& evt){
   //std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
 
   //SiPMMC Charge Histograms
-  sipmmcHist(planes,trueVertex,phot);
+//  if(firstDaughter.GetCreatorProc() == std::string("phot")
+//		   && firstDaughter.GetDaughters().size()==0){
+  if(energy == 0.511){
+	  sipmmcHist(planes,trueVertex,phot);
+  }
 
   return true;
 }
