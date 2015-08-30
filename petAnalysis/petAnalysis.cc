@@ -191,7 +191,11 @@ bool petAnalysis::initialize(){
   gate::Centella::instance()
 	  ->hman()->h2(this->alabel("phot150"),"Phot cluster",8,-25,25,8,-25,25);
   gate::Centella::instance()
+	  ->hman()->h2(this->alabel("phot150out"),"Phot cluster",8,-25,25,8,-25,25);
+  gate::Centella::instance()
 	  ->hman()->h2(this->alabel("compt1"),"Compton 1",8,-25,25,8,-25,25);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("compt1out"),"Compton 1",8,-25,25,8,-25,25);
   gate::Centella::instance()
 	  ->hman()->h2(this->alabel("noise"),"Compton 2",8,-25,25,8,-25,25);
 
@@ -299,12 +303,13 @@ bool petAnalysis::execute(gate::Event& evt){
   gate::Centella::instance()
 	  ->hman()->fill(this->alabel("z"),trueVertex.z() + 25);
 
-  
+  /*
   /////////////
   /////////////
   if(firstDaughter.GetCreatorProc() == std::string("compt")){
 //  if(firstDaughter.GetCreatorProc() == std::string("compt") && evt.GetEventID() != 6){
 //  if(firstDaughter.GetCreatorProc() == std::string("compt") && evt.GetEventID() != 6 && evt.GetEventID() != 15){
+//  if(firstDaughter.GetCreatorProc() == std::string("compt") && evt.GetEventID() != 6 && evt.GetEventID() != 15 && evt.GetEventID() != 40 && evt.GetEventID() != 48){
 	  int comptFound = fetch_istore("comptFound");
 	  std::vector<std::vector<gate::Hit*> > planes(6);
 	  splitHitsPerPlane(evt,planes);
@@ -320,6 +325,14 @@ bool petAnalysis::execute(gate::Event& evt){
 				  if(planes[0][j]->GetAmplitude() > 100 && 
 			  			distance(max->GetPosition(), planes[0][j]->GetPosition()) >= 10){
 					  std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
+
+
+					  std::vector<const gate::MCParticle*> newPart(primary.GetDaughters());
+					  std::sort(newPart.begin(), newPart.end(), petAnalysis::timeOrderParticles);
+
+					  gate::Point3D trueVertex2 = newPart[1]->GetInitialVtx(); 
+					  std::cout << "x = " << trueVertex2.x() << "\ty = "<< trueVertex2.y() << "\t z = " << trueVertex2.z() << ")" << std::endl; 
+
 					  std::cout << "comptFound\n";
 					  flagCompt = true;
 					  fstore("comptFound",1);
@@ -328,8 +341,10 @@ bool petAnalysis::execute(gate::Event& evt){
 			  }
 			  if(flagCompt){
 				  for(unsigned int j=0;j<planes[0].size();j++){
+	//				  gate::Centella::instance()
+	//					  ->hman()->fill2d(this->alabel("compt1"),planes[0][j]->GetPosition().x(),planes[0][j]->GetPosition().y(),planes[0][j]->GetAmplitude());
 					  gate::Centella::instance()
-						  ->hman()->fill2d(this->alabel("compt1"),planes[0][j]->GetPosition().x(),planes[0][j]->GetPosition().y(),planes[0][j]->GetAmplitude());
+						  ->hman()->fill2d(this->alabel("compt1"),-planes[0][j]->GetPosition().x(),-planes[0][j]->GetPosition().y(),planes[0][j]->GetAmplitude());
 				  }
 			  }
 
@@ -337,6 +352,8 @@ bool petAnalysis::execute(gate::Event& evt){
 
 	  }
   }
+
+  */
   //////////////
   //////////////
 
@@ -394,12 +411,15 @@ bool petAnalysis::execute(gate::Event& evt){
 */
 
 	//////////
+	  if(trueVertex.x() > -5 && trueVertex.x() < 5 &&
+			  trueVertex.y() > -5 && trueVertex.y() < 5 &&
+			  trueVertex.z() < -15){
 //	  if(trueVertex.x() > -5 && trueVertex.x() < 5 &&
 //			  trueVertex.y() > -5 && trueVertex.y() < 5 &&
 //			  trueVertex.z() > -5 && trueVertex.z() < 5){
-	  if(trueVertex.x() > -5 && trueVertex.x() < 5 &&
-			  trueVertex.y() > -5 && trueVertex.y() < 5 &&
-			  trueVertex.z() > 15){
+//	  if(trueVertex.x() > -5 && trueVertex.x() < 5 &&
+//			  trueVertex.y() > -5 && trueVertex.y() < 5 &&
+//			  trueVertex.z() > 15){
 		  std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
 		  if(photFound==0){
 /*			  bool flagPhot = false;
@@ -417,6 +437,10 @@ bool petAnalysis::execute(gate::Event& evt){
 				  for(unsigned int j=0;j<planes[0].size();j++){
 					  gate::Centella::instance()
 						  ->hman()->fill2d(this->alabel("phot150"),planes[0][j]->GetPosition().x(),planes[0][j]->GetPosition().y(),planes[0][j]->GetAmplitude());
+				  }
+				  for(unsigned int j=0;j<planes[2].size();j++){
+					  gate::Centella::instance()
+						  ->hman()->fill2d(this->alabel("phot150out"),planes[2][j]->GetPosition().x(),planes[2][j]->GetPosition().y(),planes[2][j]->GetAmplitude());
 				  }
 //			  }
 		  }
