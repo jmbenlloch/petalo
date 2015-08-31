@@ -86,6 +86,12 @@ bool petAnalysis::initialize(){
   gate::Centella::instance()
 	  ->hman()->h2(this->alabel("yzEnergy"),"yz",100,-25,25,100,-25,25);
 
+  //Energy bias
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("EPosX"),"E_Recons-E_True (x)",100,-25,25,100,-2000,2000);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("EPosZ"),"E_Recons-E_True (z)",100,-25,25,100,-2000,2000);
+
   return true;
 
 }
@@ -132,6 +138,21 @@ bool petAnalysis::execute(gate::Event& evt){
 		  ->hman()->fill2d(this->alabel("xzEnergy"),trueVertex.x(),trueVertex.z(),energy);
 	  gate::Centella::instance()
 		  ->hman()->fill2d(this->alabel("yzEnergy"),trueVertex.y(),trueVertex.z(),energy);
+
+	  //energy bias
+	  double meanEnergy=0;
+
+	  if(fetch_sstore("CONF") == "LXSC2_64"){
+		  meanEnergy = 9043;
+	  }
+	  if(fetch_sstore("CONF") == "LXSC6_64"){
+		  meanEnergy = 10770;
+	  }
+	  gate::Centella::instance()
+		  ->hman()->fill2d(this->alabel("EPosX"), trueVertex.x(), energy-meanEnergy);
+	  gate::Centella::instance()
+		  ->hman()->fill2d(this->alabel("EPosZ"), trueVertex.z(), energy-meanEnergy);
+
 
 	  //zRatio
 	  gate::Centella::instance()
