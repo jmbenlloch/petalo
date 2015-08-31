@@ -303,11 +303,11 @@ bool petAnalysis::execute(gate::Event& evt){
   gate::Centella::instance()
 	  ->hman()->fill(this->alabel("z"),trueVertex.z() + 25);
 
-  /*
+  
   /////////////
   /////////////
-  if(firstDaughter.GetCreatorProc() == std::string("compt")){
-//  if(firstDaughter.GetCreatorProc() == std::string("compt") && evt.GetEventID() != 6){
+//  if(firstDaughter.GetCreatorProc() == std::string("compt")){
+  if(firstDaughter.GetCreatorProc() == std::string("compt") && evt.GetEventID() != 6){
 //  if(firstDaughter.GetCreatorProc() == std::string("compt") && evt.GetEventID() != 6 && evt.GetEventID() != 15){
 //  if(firstDaughter.GetCreatorProc() == std::string("compt") && evt.GetEventID() != 6 && evt.GetEventID() != 15 && evt.GetEventID() != 40 && evt.GetEventID() != 48){
 	  int comptFound = fetch_istore("comptFound");
@@ -332,6 +332,8 @@ bool petAnalysis::execute(gate::Event& evt){
 
 					  gate::Point3D trueVertex2 = newPart[1]->GetInitialVtx(); 
 					  std::cout << "x = " << trueVertex2.x() << "\ty = "<< trueVertex2.y() << "\t z = " << trueVertex2.z() << ")" << std::endl; 
+					  trueVertex2 = newPart[2]->GetInitialVtx(); 
+					  std::cout << "x = " << trueVertex2.x() << "\ty = "<< trueVertex2.y() << "\t z = " << trueVertex2.z() << ")" << std::endl; 
 
 					  std::cout << "comptFound\n";
 					  flagCompt = true;
@@ -353,7 +355,7 @@ bool petAnalysis::execute(gate::Event& evt){
 	  }
   }
 
-  */
+ 
   //////////////
   //////////////
 
