@@ -29,6 +29,12 @@ bool petAnalysis::initialize(){
 
   _m.message("Intializing algorithm",this->getAlgoLabel(),gate::NORMAL);
 
+  //bias
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("xPosZ"),"xRecons-xTrue",100,-25,25,134,-20,20);
+  gate::Centella::instance()
+	  ->hman()->h2(this->alabel("yPosZ"),"yRecons-yTrue",100,-25,25,134,-20,20);
+
   // Energy
   gate::Centella::instance()
     ->hman()->h1(this->alabel("Energy"),"Energy SiPM " + fetch_sstore("CONF"),500,0,20000);
@@ -348,6 +354,14 @@ bool petAnalysis::execute(gate::Event& evt){
 			  ->hman()->fill(this->alabel(nameY), reconsPointBest.y() - trueVertex.y());
 		  /*	  std::cout << "xBest: " << reconsPointBest.x() - trueVertex.x() << std::endl;
 				  std::cout << "yBest: " << reconsPointBest.y() - trueVertex.y() << std::endl;*/
+
+		  //bias
+		  if(5*k == 75){
+			  gate::Centella::instance()
+				  ->hman()->fill2d(this->alabel("xPosZ"), trueVertex.z(), reconsPointBest.x()-trueVertex.x());
+			  gate::Centella::instance()
+				  ->hman()->fill2d(this->alabel("yPosZ"), trueVertex.z(), reconsPointBest.y()-trueVertex.y());
+		  }
 	  }
 
   }
@@ -409,6 +423,8 @@ bool petAnalysis::finalize(){
   std::cout << "Cut minValue (x): " << 0.05*(std::min_element(sigmaX.begin(), sigmaX.end()) - sigmaX.begin()) << std::endl;
   std::cout << "Cut minValue (y): " << 0.05*(std::min_element(sigmaY.begin(), sigmaY.end()) - sigmaY.begin()) << std::endl;*/
 
+  std::cout << nameX << std::endl;
+  std::cout << nameY << std::endl;
   //Try rename
   gate::Centella::instance()->hman()->operator[](nameX)->SetName("petAnalysis_xBest");
   gate::Centella::instance()->hman()->operator[](nameY)->SetName("petAnalysis_yBest");
