@@ -145,6 +145,9 @@ bool petAnalysis::execute(gate::Event& evt){
 	  if(fetch_sstore("CONF") == "LXSC2_64"){
 		  meanEnergy = 9043;
 	  }
+	  if(fetch_sstore("CONF") == "LXSC4_64"){
+		  meanEnergy = 10410;
+	  }
 	  if(fetch_sstore("CONF") == "LXSC6_64"){
 		  meanEnergy = 10770;
 	  }
