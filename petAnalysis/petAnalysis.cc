@@ -28,33 +28,13 @@ bool petAnalysis::initialize(){
 //==========================================================================
 
   _m.message("Intializing algorithm",this->getAlgoLabel(),gate::NORMAL);
- 
+
   TFile *file = new TFile((fetch_sstore("CONF") + "_ntuple.root").c_str(), "RECREATE", "An Example ROOT file");
   setFile(file);
-  TNtuple *ntuple = new TNtuple("ntuple","data from ascii file","energy:x:y:z:plane0:plane2:charge:phot:compt:full");
-  setNtuple(ntuple);
-
-  int xmin,xmax,nBins;
-  if(fetch_sstore("CONF") == "LXSC2_Z4_64"){
-	  xmin = -20;
-	  xmax = 20;
-	  nBins = 20;
-  }
-  if(fetch_sstore("CONF") == "LXSC2_Z5_64"){
-	  xmin = -25;
-	  xmax = 25;
-	  nBins = 25;
-  }
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Param_SiPMMC_C1_Plane0"),"SiPM Charge Corona 1 (Plane 0) " + fetch_sstore("CONF"),nBins,xmin,xmax,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Param_SiPMMC_C1_Plane2"),"SiPM Charge Corona 1 (Plane 2) " + fetch_sstore("CONF"),nBins,xmin,xmax,2000,0,6000);
-
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Param_SiPMMC_C1_Plane0_Compt"),"Compton SiPM Charge Corona 1 (Plane 0) " + fetch_sstore("CONF"),nBins,xmin,xmax,2000,0,6000);
-  gate::Centella::instance()
-	  ->hman()->h2(this->alabel("Param_SiPMMC_C1_Plane2_Compt"),"Compton SiPM Charge Corona 1 (Plane 2) " + fetch_sstore("CONF"),nBins,xmin,xmax,2000,0,6000);
-
+  TTree *tree = new TTree("petalo","petalo");
+  setTree(tree);
+  getTree()->Branch("entryPlane",getEntryPlane(),"entryPlane[64]/D");
+ 
   return true;
 }
 
@@ -92,6 +72,29 @@ bool petAnalysis::execute(gate::Event& evt){
 	  phot = 1;
   }
 
+  /////////////////////////////////////
+  // Preproc data for neural network //
+  /////////////////////////////////////
+  double entryPlane[64];
+  for(int i=0; i<64; i++){
+	  entryPlane[i] = findSensors(planes[0],i);
+//	  std::cout << entryPlane[i] << ", " << std::endl;
+  }
+  std::vector<double> sipm_plane0(entryPlane,entryPlane+64);
+
+
+  for(int i=0; i<64; i++){
+	  getEntryPlane()[i] = findSensors(planes[0],i);
+  }
+  getTree()->Fill();
+
+  this->fstore("plane0",sipm_plane0);
+  this->fstore("x",trueVertex.x());
+  this->fstore("y",trueVertex.y());
+  this->fstore("z",trueVertex.z());
+  this->fstore("eventID",evt.GetEventID());
+
+
   //Find second daughter
 /*  std::vector<const gate::MCParticle*> daughters(primary.GetDaughters());
   std::sort(daughters.begin(), daughters.end(), petAnalysis::timeOrderParticles);
@@ -121,16 +124,7 @@ bool petAnalysis::execute(gate::Event& evt){
   }
   //std::cout << "Energy all MCParticles: " << energy << std::endl;
 
-  getNtuple()->Fill(energy,trueVertex.x(),trueVertex.y(),trueVertex.z(),planeCharge(planes[0]),planeCharge(planes[2]),totalCharge(evt.GetMCSensHits()),phot,compt,energy == 0.511);
-
-  //std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
-
-  //SiPMMC Charge Histograms
-//  if(firstDaughter.GetCreatorProc() == std::string("phot")
-//		   && firstDaughter.GetDaughters().size()==0){
-  if(energy == 0.511){
-	  sipmmcHist(planes,trueVertex,phot);
-  }
+  std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
 
   return true;
 }
@@ -146,7 +140,7 @@ bool petAnalysis::finalize(){
   _m.message("Number of generated events in file:",nevt,gate::NORMAL);
 
   getFile()->cd();
-  getNtuple()->Write();
+  getTree()->Write();
   gDirectory->pwd();
 
   return true;
@@ -402,3 +396,14 @@ void petAnalysis::sipmmcHist(std::vector<std::vector<gate::Hit*> > planes, gate:
 	}
 }
 
+double petAnalysis::findSensors(std::vector<gate::Hit*>& plane, int id){
+	double amplitude = 0;
+	for(unsigned int i=0;i<plane.size();i++){
+		if(plane[i]->GetSensorID() == id){
+			amplitude = plane[i]->GetAmplitude();
+	//		std::cout << plane[i]->GetSensorID() << ": " << amplitude << std::endl;
+			break;
+		}
+	}
+	return amplitude;
+}

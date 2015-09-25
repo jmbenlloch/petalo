@@ -8,8 +8,9 @@
 
 class petAnalysis : public gate::IAlgo {
 
-	TNtuple *_ntuple;
+	TTree *_tree;
 	TFile *_file;
+	double _entryPlane[64];
 
  public:
   
@@ -53,15 +54,17 @@ class petAnalysis : public gate::IAlgo {
   void sipmmcHist(std::vector<std::vector<gate::Hit*> > planes, gate::Point3D& trueVertex, int phot);
   double totalCharge(std::vector<gate::Hit*> hits);
   void filterHits(std::vector<gate::Hit*> plane, std::vector<gate::Hit*> hits, std::vector<gate::Hit*>& planeFiltered);
+  double findSensors(std::vector<gate::Hit*>& plane, int id);
 
   //! finalize algorithm
   bool finalize();          
 
-  TNtuple * getNtuple() {return _ntuple;}
-  void setNtuple(TNtuple* ntuple) {_ntuple = ntuple;}
+  TTree * getTree() {return _tree;}
+  void setTree(TTree* tree) {_tree = tree;}
   TFile * getFile() {return _file;}
   void setFile(TFile* file) {_file = file;}
-  
+  double * getEntryPlane() {return _entryPlane;}
+
  private:
   
   ClassDef(petAnalysis,0)
