@@ -19,8 +19,8 @@
 ###############################################
 
 #--------- PATHS with modules to be used -------#
-CNTJob PATHS SV 1
-./../
+#CNTJob PATHS SV 1
+#./../
 
 CNTJob LIBS SV 1
 ../lib/libpetAnalysis.so
@@ -42,7 +42,7 @@ petalo_prod/petalo.2_64.009.next
 CNTJob SAVE I 0
 
 #---------- NUMBER OF EVENTS TO ANALYZE ----------#
-CNTJob NEVENTS I 2
+CNTJob NEVENTS I 100000
 
 #---------- FIRST EVENT TO ANALYZE ----------#
 CNTJob FEVENT I 0
@@ -54,9 +54,9 @@ CNTJob NDEBUG I 100
 CNTJob LEVEL I 1
 
 #--------- ALGORITHMS-------#
-CNTJob ALGOS SV 2
+CNTJob ALGOS SV 1
 petAnalysis
-PyAlgo
+#PyAlgo
 
 #--------- INPUT DATA FORMAT -------#
 CNTJob READER S gateReader

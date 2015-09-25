@@ -11,6 +11,7 @@ class petAnalysis : public gate::IAlgo {
 	TTree *_tree;
 	TFile *_file;
 	double _entryPlane[64];
+	double _x[1], _y[1], _z[1];
 
  public:
   
@@ -64,6 +65,9 @@ class petAnalysis : public gate::IAlgo {
   TFile * getFile() {return _file;}
   void setFile(TFile* file) {_file = file;}
   double * getEntryPlane() {return _entryPlane;}
+  double * getX() {return _x;}
+  double * getY() {return _y;}
+  double * getZ() {return _z;}
 
  private:
   

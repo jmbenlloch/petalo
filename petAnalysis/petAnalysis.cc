@@ -33,7 +33,11 @@ bool petAnalysis::initialize(){
   setFile(file);
   TTree *tree = new TTree("petalo","petalo");
   setTree(tree);
+
   getTree()->Branch("entryPlane",getEntryPlane(),"entryPlane[64]/D");
+  getTree()->Branch("x",getX(),"x/D");
+  getTree()->Branch("y",getX(),"y/D");
+  getTree()->Branch("z",getX(),"z/D");
  
   return true;
 }
@@ -86,6 +90,12 @@ bool petAnalysis::execute(gate::Event& evt){
   for(int i=0; i<64; i++){
 	  getEntryPlane()[i] = findSensors(planes[0],i);
   }
+//  *(getX()) = trueVertex.x();
+//  *(getY()) = trueVertex.y();
+//  *(getZ()) = trueVertex.z();
+  getX()[0] = trueVertex.x();
+  getY()[0] = trueVertex.y();
+  getZ()[0] = trueVertex.z();
   getTree()->Fill();
 
   this->fstore("plane0",sipm_plane0);
@@ -124,7 +134,7 @@ bool petAnalysis::execute(gate::Event& evt){
   }
   //std::cout << "Energy all MCParticles: " << energy << std::endl;
 
-  std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
+//  std::cout << "Event number:" << evt.GetEventID() << "\t(" << "x = " << trueVertex.x() << "\ty = "<< trueVertex.y() << "\t z = " << trueVertex.z() << ")" << std::endl; 
 
   return true;
 }
