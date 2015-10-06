@@ -36,8 +36,8 @@ bool petAnalysis::initialize(){
 
   getTree()->Branch("entryPlane",getEntryPlane(),"entryPlane[64]/D");
   getTree()->Branch("x",getX(),"x/D");
-  getTree()->Branch("y",getX(),"y/D");
-  getTree()->Branch("z",getX(),"z/D");
+  getTree()->Branch("y",getY(),"y/D");
+  getTree()->Branch("z",getZ(),"z/D");
  
   return true;
 }
@@ -76,34 +76,52 @@ bool petAnalysis::execute(gate::Event& evt){
 	  phot = 1;
   }
 
+
+
   /////////////////////////////////////
   // Preproc data for neural network //
   /////////////////////////////////////
-  double entryPlane[64];
-  for(int i=0; i<64; i++){
-	  entryPlane[i] = findSensors(planes[0],i);
-//	  std::cout << entryPlane[i] << ", " << std::endl;
+  
+  //Only photoelectric
+  if(firstDaughter.GetCreatorProc() == std::string("phot") 
+		  && firstDaughter.GetDaughters().size()==0){
+
+	  double entryPlane[64];
+	  for(int i=0; i<64; i++){
+		  entryPlane[i] = findSensors(planes[0],i);
+		  //	  std::cout << entryPlane[i] << ", " << std::endl;
+	  }
+
+	  //Normalize values
+	  std::vector<double> sipm_plane0(entryPlane,entryPlane+64);
+	  double maxSensor = *std::max_element(sipm_plane0.begin(), sipm_plane0.end());
+	  //  std::cout << "max: " << maxSensor << std::endl;
+	  //  for(int i=0; i<64; i++){
+	  //	  getEntryPlane()[i] = findSensors(planes[0],i) / maxSensor;
+	  //  }
+
+
+	  // No normalization
+	  for(int i=0; i<64; i++){
+		  getEntryPlane()[i] = findSensors(planes[0],i);
+	  }
+
+	  //  getX()[0] = trueVertex.x();
+	  //  getY()[0] = trueVertex.y();
+	  //  getZ()[0] = trueVertex.z();
+
+	  //  Normalized values
+	  getX()[0] = (trueVertex.x() + 25) / 50;
+	  getY()[0] = (trueVertex.y() + 25) / 50;
+	  getZ()[0] = (trueVertex.z() + 25) / 50;
+	  getTree()->Fill();
+
+	  //  this->fstore("plane0",sipm_plane0);
+	  //  this->fstore("x",trueVertex.x());
+	  //  this->fstore("y",trueVertex.y());
+	  //  this->fstore("z",trueVertex.z());
+	  //  this->fstore("eventID",evt.GetEventID());
   }
-  std::vector<double> sipm_plane0(entryPlane,entryPlane+64);
-
-
-  for(int i=0; i<64; i++){
-	  getEntryPlane()[i] = findSensors(planes[0],i);
-  }
-//  *(getX()) = trueVertex.x();
-//  *(getY()) = trueVertex.y();
-//  *(getZ()) = trueVertex.z();
-  getX()[0] = trueVertex.x();
-  getY()[0] = trueVertex.y();
-  getZ()[0] = trueVertex.z();
-  getTree()->Fill();
-
-  this->fstore("plane0",sipm_plane0);
-  this->fstore("x",trueVertex.x());
-  this->fstore("y",trueVertex.y());
-  this->fstore("z",trueVertex.z());
-  this->fstore("eventID",evt.GetEventID());
-
 
   //Find second daughter
 /*  std::vector<const gate::MCParticle*> daughters(primary.GetDaughters());
