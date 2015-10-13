@@ -12,6 +12,7 @@ class petAnalysis : public gate::IAlgo {
 	TFile *_file;
 	double _entryPlane[64];
 	double _x[1], _y[1], _z[1];
+	double _maxEntry[1], _maxExit[1], _totalEntry[1], _totalExit[1], _ratio[1];
 
  public:
   
@@ -68,6 +69,12 @@ class petAnalysis : public gate::IAlgo {
   double * getX() {return _x;}
   double * getY() {return _y;}
   double * getZ() {return _z;}
+
+  double * getMaxEntry() {return _maxEntry;}
+  double * getMaxExit() {return _maxExit;}
+  double * getTotalEntry() {return _totalEntry;}
+  double * getTotalExit() {return _totalExit;}
+  double * getRatio() {return _ratio;}
 
  private:
   

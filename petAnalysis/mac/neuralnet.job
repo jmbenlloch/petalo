@@ -26,23 +26,63 @@ CNTJob LIBS SV 1
 ../lib/libpetAnalysis.so
 
 #--------- DATA -------#
-CNTJob INPUT_DATA SV 10
-petalo_prod/petalo.6_64.000.next
-petalo_prod/petalo.6_64.001.next
-petalo_prod/petalo.6_64.002.next
-petalo_prod/petalo.6_64.003.next
-petalo_prod/petalo.6_64.004.next
-petalo_prod/petalo.6_64.005.next
-petalo_prod/petalo.6_64.006.next
-petalo_prod/petalo.6_64.007.next
-petalo_prod/petalo.6_64.008.next
-petalo_prod/petalo.6_64.009.next
+CNTJob INPUT_DATA SV 50
+petalo_prod/petalo.2_64_z5cm.0.next
+petalo_prod/petalo.2_64_z5cm.1.next
+petalo_prod/petalo.2_64_z5cm.2.next
+petalo_prod/petalo.2_64_z5cm.3.next
+petalo_prod/petalo.2_64_z5cm.4.next
+petalo_prod/petalo.2_64_z5cm.5.next
+petalo_prod/petalo.2_64_z5cm.6.next
+petalo_prod/petalo.2_64_z5cm.7.next
+petalo_prod/petalo.2_64_z5cm.8.next
+petalo_prod/petalo.2_64_z5cm.9.next
+petalo_prod/petalo.2_64_z5cm.10.next
+petalo_prod/petalo.2_64_z5cm.11.next
+petalo_prod/petalo.2_64_z5cm.12.next
+petalo_prod/petalo.2_64_z5cm.13.next
+petalo_prod/petalo.2_64_z5cm.14.next
+petalo_prod/petalo.2_64_z5cm.15.next
+petalo_prod/petalo.2_64_z5cm.16.next
+petalo_prod/petalo.2_64_z5cm.17.next
+petalo_prod/petalo.2_64_z5cm.18.next
+petalo_prod/petalo.2_64_z5cm.19.next
+petalo_prod/petalo.2_64_z5cm.20.next
+petalo_prod/petalo.2_64_z5cm.21.next
+petalo_prod/petalo.2_64_z5cm.22.next
+petalo_prod/petalo.2_64_z5cm.23.next
+petalo_prod/petalo.2_64_z5cm.24.next
+petalo_prod/petalo.2_64_z5cm.25.next
+petalo_prod/petalo.2_64_z5cm.26.next
+petalo_prod/petalo.2_64_z5cm.27.next
+petalo_prod/petalo.2_64_z5cm.28.next
+petalo_prod/petalo.2_64_z5cm.29.next
+petalo_prod/petalo.2_64_z5cm.30.next
+petalo_prod/petalo.2_64_z5cm.31.next
+petalo_prod/petalo.2_64_z5cm.32.next
+petalo_prod/petalo.2_64_z5cm.33.next
+petalo_prod/petalo.2_64_z5cm.34.next
+petalo_prod/petalo.2_64_z5cm.35.next
+petalo_prod/petalo.2_64_z5cm.36.next
+petalo_prod/petalo.2_64_z5cm.37.next
+petalo_prod/petalo.2_64_z5cm.38.next
+petalo_prod/petalo.2_64_z5cm.39.next
+petalo_prod/petalo.2_64_z5cm.40.next
+petalo_prod/petalo.2_64_z5cm.41.next
+petalo_prod/petalo.2_64_z5cm.42.next
+petalo_prod/petalo.2_64_z5cm.43.next
+petalo_prod/petalo.2_64_z5cm.44.next
+petalo_prod/petalo.2_64_z5cm.45.next
+petalo_prod/petalo.2_64_z5cm.46.next
+petalo_prod/petalo.2_64_z5cm.47.next
+petalo_prod/petalo.2_64_z5cm.48.next
+petalo_prod/petalo.2_64_z5cm.49.next
 
 #------ SAVE EVENTS IN OUTPUT FILE ----------# 
 CNTJob SAVE I 0
 
 #---------- NUMBER OF EVENTS TO ANALYZE ----------#
-CNTJob NEVENTS I 100000
+CNTJob NEVENTS I 500000
 
 #---------- FIRST EVENT TO ANALYZE ----------#
 CNTJob FEVENT I 0

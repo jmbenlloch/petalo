@@ -39,6 +39,12 @@ bool petAnalysis::initialize(){
   getTree()->Branch("y",getY(),"y/D");
   getTree()->Branch("z",getZ(),"z/D");
  
+  getTree()->Branch("maxEntry",getMaxEntry(),"maxEntry/D");
+  getTree()->Branch("maxExit",getMaxExit(),"maxExit/D");
+  getTree()->Branch("totalEntry",getTotalEntry(),"totalEntry/D");
+  getTree()->Branch("totalExit",getTotalExit(),"totalExit/D");
+  getTree()->Branch("ratio",getRatio(),"ratio/D");
+
   return true;
 }
 
@@ -91,6 +97,27 @@ bool petAnalysis::execute(gate::Event& evt){
 		  entryPlane[i] = findSensors(planes[0],i);
 		  //	  std::cout << entryPlane[i] << ", " << std::endl;
 	  }
+	  double exitPlane[64];
+	  for(int i=0; i<64; i++){
+		  exitPlane[i] = findSensors(planes[2],2000+i);
+	  }
+
+	  //Get maximum values for each plane
+	  std::vector<double> plane0(entryPlane,entryPlane+64);
+	  std::vector<double> plane2(exitPlane,exitPlane+64);
+	  double maxSensorEntry = *std::max_element(plane0.begin(), plane0.end());
+	  double maxSensorExit = *std::max_element(plane2.begin(), plane2.end());
+
+	  double totalChargeEntry, totalChargeExit;
+	  totalChargeEntry = planeCharge(planes[0]); 
+	  totalChargeExit = planeCharge(planes[2]);
+
+	  getMaxEntry()[0] = maxSensorEntry;
+	  getMaxExit()[0] = maxSensorExit;
+	  getRatio()[0] = totalChargeEntry/totalChargeExit;
+	  getTotalEntry()[0] = totalChargeEntry;
+	  getTotalExit()[0] = totalChargeExit;
+
 
 	  //Normalize values
 	  std::vector<double> sipm_plane0(entryPlane,entryPlane+64);
@@ -104,6 +131,7 @@ bool petAnalysis::execute(gate::Event& evt){
 	  // No normalization
 	  for(int i=0; i<64; i++){
 		  getEntryPlane()[i] = findSensors(planes[0],i);
+	//	  std::cout << "sensor[" << i << "] = " << getEntryPlane()[i] << std::endl;
 	  }
 
 	  //  getX()[0] = trueVertex.x();
